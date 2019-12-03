@@ -5,4 +5,8 @@
     <string name="title_notifications">通知</string>
     <string name="progress">进度</string>
     <string name="Mine">我的</string>
+    <string name="action_sign_in">登录</string>
+    <string name="prompt_password">password</string>
+    <string name="action_sign_in_short">short</string>
+    <string name="prompt_email">email</string>
 </resources>
