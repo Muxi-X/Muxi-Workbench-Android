@@ -1,4 +1,4 @@
-package com.muxi.workbench.ui.login;
+package com.muxi.workbench.ui.login.model;
 
 public class User {
 
