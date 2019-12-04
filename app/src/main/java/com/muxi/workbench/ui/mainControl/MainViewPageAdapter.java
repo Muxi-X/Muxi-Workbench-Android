@@ -1,4 +1,4 @@
-package com.muxi.workbench.ui.MainControl;
+package com.muxi.workbench.ui.mainControl;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;

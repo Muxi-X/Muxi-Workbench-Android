@@ -1,7 +1,6 @@
-package com.muxi.workbench.ui.MainControl;
+package com.muxi.workbench.ui.mainControl;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;

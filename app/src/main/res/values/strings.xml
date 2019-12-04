@@ -9,4 +9,7 @@
     <string name="prompt_password">password</string>
     <string name="action_sign_in_short">short</string>
     <string name="prompt_email">email</string>
+    <string name="bt_login">登录</string>
+    <string name="hint_account">账号/邮箱</string>
+    <string name="hint_password">密码</string>
 </resources>

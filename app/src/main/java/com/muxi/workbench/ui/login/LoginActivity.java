@@ -1,6 +1,9 @@
 package com.muxi.workbench.ui.login;
 
-public class LoginActivity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class LoginActivity extends AppCompatActivity {
+
 
 
 }
