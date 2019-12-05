@@ -7,6 +7,7 @@ import android.widget.Toast;
 import com.muxi.workbench.commonUtils.NetUtil;
 import com.muxi.workbench.ui.login.model.LoginBean;
 import com.muxi.workbench.ui.login.model.User;
+import com.muxi.workbench.ui.login.model.UserBean;
 import com.muxi.workbench.ui.login.model.UserWrapper;
 
 import io.reactivex.Observer;
@@ -38,11 +39,8 @@ public class LoginPresenter implements LoginContract.Presenter {
             return;
         }
         String encode= Base64.encodeToString(password.getBytes(),Base64.DEFAULT);
-        String json="{\n" +
-                "  \"username\": \""+account+"\",\n" +
-                "  \"password\": \""+encode+"\"\n" +
-                "}";
-        NetUtil.getInstance().getApi().login(json)
+
+        NetUtil.getInstance().getApi().login(new UserBean(account,encode))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(v->{
