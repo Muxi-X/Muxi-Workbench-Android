@@ -8,7 +8,7 @@ import com.muxi.workbench.R;
 import com.muxi.workbench.ui.home.HomeFragment;
 import com.muxi.workbench.ui.mine.MineFragment;
 import com.muxi.workbench.ui.notifications.NotificationsFragment;
-import com.muxi.workbench.ui.progress.ProgressFragment;
+import com.muxi.workbench.ui.progress.view.ProgressFragment;
 import com.muxi.workbench.ui.project.ProjectFragment;
 
 import androidx.annotation.NonNull;
