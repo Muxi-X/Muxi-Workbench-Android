@@ -12,4 +12,12 @@
     <string name="bt_login">登录</string>
     <string name="hint_account">账号/邮箱</string>
     <string name="hint_password">密码</string>
+    <array name="progress_titlebar_screening">
+        <item>全部</item>
+        <item>产品组</item>
+        <item>设计组</item>
+        <item>前端组</item>
+        <item>安卓组</item>
+        <item>后端组</item>
+    </array>
 </resources>
