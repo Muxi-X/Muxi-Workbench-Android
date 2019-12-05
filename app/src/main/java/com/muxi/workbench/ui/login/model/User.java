@@ -8,6 +8,13 @@ public class User {
     private int uid;
 
 
+    public User(String account, String password, String token, int uid) {
+        this.account = account;
+        this.password = password;
+        this.token = token;
+        this.uid = uid;
+    }
+
     public String getAccount() {
         return account;
     }

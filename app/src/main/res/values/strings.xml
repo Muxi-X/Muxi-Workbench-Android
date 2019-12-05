@@ -5,11 +5,16 @@
     <string name="title_notifications">通知</string>
     <string name="progress">进度</string>
     <string name="Mine">我的</string>
-    <string name="action_sign_in">登录</string>
-    <string name="prompt_password">password</string>
-    <string name="action_sign_in_short">short</string>
-    <string name="prompt_email">email</string>
     <string name="bt_login">登录</string>
     <string name="hint_account">账号/邮箱</string>
     <string name="hint_password">密码</string>
+    <string name="title_activity_login2">Sign in</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
 </resources>
