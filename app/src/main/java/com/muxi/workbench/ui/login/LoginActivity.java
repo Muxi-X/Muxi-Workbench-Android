@@ -88,7 +88,8 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
 
     @Override
     protected void onDestroy() {
-        presenter.onDestroy();
+        if(presenter!=null)
+            presenter.onDestroy();
         super.onDestroy();
     }
 }
