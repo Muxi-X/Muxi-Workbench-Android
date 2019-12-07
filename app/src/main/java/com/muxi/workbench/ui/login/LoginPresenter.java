@@ -2,15 +2,14 @@ package com.muxi.workbench.ui.login;
 
 import android.text.TextUtils;
 import android.util.Base64;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.muxi.workbench.commonUtils.NetUtil;
-import com.muxi.workbench.ui.login.model.LoginResponse1;
-import com.muxi.workbench.ui.login.model.LoginResponse2;
+import com.muxi.workbench.ui.login.model.netcall.LoginResponse1;
+import com.muxi.workbench.ui.login.model.netcall.LoginResponse2;
 import com.muxi.workbench.ui.login.model.User;
-import com.muxi.workbench.ui.login.model.UserBean;
-import com.muxi.workbench.ui.login.model.UserBeanTwo;
+import com.muxi.workbench.ui.login.model.netcall.UserBean;
+import com.muxi.workbench.ui.login.model.netcall.UserBeanTwo;
 import com.muxi.workbench.ui.login.model.UserWrapper;
 
 import io.reactivex.Observable;

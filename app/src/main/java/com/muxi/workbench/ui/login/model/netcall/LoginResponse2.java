@@ -1,4 +1,4 @@
-package com.muxi.workbench.ui.login.model;
+package com.muxi.workbench.ui.login.model.netcall;
 
 public class LoginResponse2 {
 

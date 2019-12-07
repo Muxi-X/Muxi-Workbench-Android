@@ -1,16 +1,13 @@
 package com.muxi.workbench.commonUtils;
 
-import com.muxi.workbench.ui.login.model.LoginResponse1;
-import com.muxi.workbench.ui.login.model.LoginResponse2;
-import com.muxi.workbench.ui.login.model.UserBean;
-import com.muxi.workbench.ui.login.model.UserBeanTwo;
+import com.muxi.workbench.ui.login.model.netcall.LoginResponse1;
+import com.muxi.workbench.ui.login.model.netcall.LoginResponse2;
+import com.muxi.workbench.ui.login.model.netcall.UserBean;
+import com.muxi.workbench.ui.login.model.netcall.UserBeanTwo;
 
 import io.reactivex.Observable;
 import retrofit2.http.Body;
-import retrofit2.http.GET;
-import retrofit2.http.Header;
 import retrofit2.http.POST;
-import retrofit2.http.Path;
 
 public interface RetrofitApi {
 
