@@ -2,6 +2,7 @@ package com.muxi.workbench.ui.login;
 
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.muxi.workbench.commonUtils.NetUtil;
@@ -25,9 +26,10 @@ public class LoginPresenter implements LoginContract.Presenter {
 
     private LoginContract.View view;
     private ListCompositeDisposable disposableContainer;
-    public LoginPresenter(LoginContract.View view){
-        this.view=view;
-        disposableContainer=new ListCompositeDisposable();
+
+    public LoginPresenter(LoginContract.View view) {
+        this.view = view;
+        disposableContainer = new ListCompositeDisposable();
     }
 
     @Override
@@ -96,6 +98,6 @@ public class LoginPresenter implements LoginContract.Presenter {
     @Override
     public void onDestroy() {
         disposableContainer.dispose();
-        view=null;
+        view = null;
     }
 }
