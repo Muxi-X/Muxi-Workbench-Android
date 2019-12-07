@@ -2,6 +2,7 @@ package com.muxi.workbench.ui.login;
 
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.muxi.workbench.commonUtils.NetUtil;
@@ -21,29 +22,30 @@ public class LoginPresenter implements LoginContract.Presenter {
 
     private LoginContract.View view;
     private ListCompositeDisposable disposableContainer;
-    public LoginPresenter(LoginContract.View view){
-        this.view=view;
-        disposableContainer=new ListCompositeDisposable();
+
+    public LoginPresenter(LoginContract.View view) {
+        this.view = view;
+        disposableContainer = new ListCompositeDisposable();
     }
 
     @Override
     public void login() {
-        String account=view.getAccount();
-        String password=view.getPassword();
-        if (TextUtils.isEmpty(account)){
-            Toast.makeText(view.getContext(),"请输入账号",Toast.LENGTH_SHORT).show();
+        String account = view.getAccount();
+        String password = view.getPassword();
+        if (TextUtils.isEmpty(account)) {
+            Toast.makeText(view.getContext(), "请输入账号", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (TextUtils.isEmpty(password)){
-            Toast.makeText(view.getContext(),"请输入密码",Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(password)) {
+            Toast.makeText(view.getContext(), "请输入密码", Toast.LENGTH_SHORT).show();
             return;
         }
-        String encode= Base64.encodeToString(password.getBytes(),Base64.DEFAULT);
+        String encode = Base64.encodeToString(password.getBytes(), Base64.DEFAULT);
 
-        NetUtil.getInstance().getApi().login(new UserBean(account,encode))
+        NetUtil.getInstance().getApi().login(new UserBean(account, encode))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(v->{
+                .doOnSubscribe(v -> {
                     view.showLoading();
                 })
                 .subscribe(new Observer<LoginBean>() {
@@ -54,11 +56,14 @@ public class LoginPresenter implements LoginContract.Presenter {
 
                     @Override
                     public void onNext(LoginBean loginBean) {
-                        if (loginBean.getCode()!=0){
+                        if (loginBean.getCode() != 0) {
                             view.loginFail(loginBean.getMessage());
                             return;
                         }
-                        User user=new User(account,password,loginBean.getData().getToken(),
+
+                        Log.e("TAG", "token in loginbean-->" + loginBean.getData().getToken());
+                        Log.e("TAG", "token in loginbean-->" + loginBean.getData().getToken());
+                        User user = new User(account, password, loginBean.getData().getToken(),
                                 loginBean.getData().getUser_id());
                         UserWrapper.getInstance().setUser(user);
 
@@ -82,6 +87,6 @@ public class LoginPresenter implements LoginContract.Presenter {
     @Override
     public void onDestroy() {
         disposableContainer.dispose();
-        view=null;
+        view = null;
     }
 }

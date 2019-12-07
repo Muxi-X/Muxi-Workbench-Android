@@ -21,7 +21,7 @@ public class NetUtil {
                 .client(okHttpClient)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("http://pass.muxi-tech.xyz/auth/api/")
+                .baseUrl("http://work.muxi-tech.xyz/api/v1.0/")
                 .build()
                 .create(RetrofitApi.class);
     }

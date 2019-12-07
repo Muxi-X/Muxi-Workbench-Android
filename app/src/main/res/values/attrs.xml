@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SplitView">
+        <attr name="date_text" format="string" />
+        <attr name="sign_text" format="string" />
+        <attr name="circle_radius" format="float" />
+        <attr name="date_size" format="dimension" />
+        <attr name="sign_size" format="dimension" />
+        <attr name="data_color" format="color" />
+        <attr name="sign_color" format="color" />
+    </declare-styleable>
+</resources>
