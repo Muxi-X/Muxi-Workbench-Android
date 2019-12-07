@@ -17,4 +17,13 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
+
+    <array name="progress_titlebar_screening">
+        <item>全部</item>
+        <item>产品组</item>
+        <item>设计组</item>
+        <item>前端组</item>
+        <item>安卓组</item>
+        <item>后端组</item>
+    </array>
 </resources>
