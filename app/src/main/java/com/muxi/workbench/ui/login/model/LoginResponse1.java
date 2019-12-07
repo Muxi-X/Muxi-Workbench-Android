@@ -1,6 +1,6 @@
 package com.muxi.workbench.ui.login.model;
 
-public class LoginBean {
+public class LoginResponse1 {
 
 
     /**

@@ -6,14 +6,16 @@ public class User {
     private String password;
     private String token;
     private int uid;
+    private int urole;
 
 
     public User(){}
-    public User(String account, String password, String token, int uid) {
+    public User(String account, String password, String token, int uid,int urole) {
         this.account = account;
         this.password = password;
         this.token = token;
         this.uid = uid;
+        this.urole=urole;
     }
 
     public String getAccount() {
@@ -46,5 +48,13 @@ public class User {
 
     public void setUid(int uid) {
         this.uid = uid;
+    }
+
+    public int getUrole() {
+        return urole;
+    }
+
+    public void setUrole(int urole) {
+        this.urole = urole;
     }
 }

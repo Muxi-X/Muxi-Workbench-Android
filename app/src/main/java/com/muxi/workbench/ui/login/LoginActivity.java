@@ -70,6 +70,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
     @Override
     public void loginFail(String meg) {
         mBtLogin.setClickable(true);
+        mBtLogin.setText("登录");
         Toast.makeText(this,meg,Toast.LENGTH_LONG).show();
     }
 

@@ -5,15 +5,19 @@ import android.util.Base64;
 import android.widget.Toast;
 
 import com.muxi.workbench.commonUtils.NetUtil;
-import com.muxi.workbench.ui.login.model.LoginBean;
+import com.muxi.workbench.ui.login.model.LoginResponse1;
+import com.muxi.workbench.ui.login.model.LoginResponse2;
 import com.muxi.workbench.ui.login.model.User;
 import com.muxi.workbench.ui.login.model.UserBean;
+import com.muxi.workbench.ui.login.model.UserBeanTwo;
 import com.muxi.workbench.ui.login.model.UserWrapper;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.internal.disposables.DisposableContainer;
+import io.reactivex.functions.Function;
 import io.reactivex.internal.disposables.ListCompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
@@ -40,26 +44,36 @@ public class LoginPresenter implements LoginContract.Presenter {
         }
         String encode= Base64.encodeToString(password.getBytes(),Base64.DEFAULT);
 
-        NetUtil.getInstance().getApi().login(new UserBean(account,encode))
+        NetUtil.getInstance().getApi().loginFirst(new UserBean(account,encode))
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(v->{
                     view.showLoading();
                 })
-                .subscribe(new Observer<LoginBean>() {
+                .flatMap(new Function<LoginResponse1, ObservableSource<LoginResponse2>>() {
+                    @Override
+                    public ObservableSource<LoginResponse2> apply(LoginResponse1 loginResponse1) throws Exception {
+                        if (loginResponse1.getCode()!=0){
+                            return Observable.error(new Exception(loginResponse1.getMessage()));
+                        }
+
+                        UserBeanTwo userBeanTwo=new UserBeanTwo();
+                        userBeanTwo.setEmail(account);
+                        userBeanTwo.setToken(loginResponse1.getData().getToken());
+                        return NetUtil.getInstance().getApi().loginWorkbench(userBeanTwo);
+
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<LoginResponse2>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         disposableContainer.add(d);
                     }
 
                     @Override
-                    public void onNext(LoginBean loginBean) {
-                        if (loginBean.getCode()!=0){
-                            view.loginFail(loginBean.getMessage());
-                            return;
-                        }
-                        User user=new User(account,password,loginBean.getData().getToken(),
-                                loginBean.getData().getUser_id());
+                    public void onNext(LoginResponse2 loginBean) {
+
+                        User user=new User(account,password,loginBean.getToken(),loginBean.getUid(),loginBean.getUrole() );
                         UserWrapper.getInstance().setUser(user);
 
                     }
