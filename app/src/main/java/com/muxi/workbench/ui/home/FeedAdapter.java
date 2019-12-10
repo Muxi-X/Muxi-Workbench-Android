@@ -56,15 +56,15 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
         VH vh = (VH) holder;
-        vh.mTime.setText(mData.getTime());
+        vh.mTime.setText(mData.getTimehm());
 
         vh.mHeadShot.setImageURI(mUser.getAvatar_url());
 
         vh.mContent.setText(mSource.getObject_id());
 
-        vh.mTime.setText(mData.getTime());
+        vh.mTime.setText(mData.getTimehm());
 
-        if (mData.isSplit()) vh.mSplitView.setVisibility(View.VISIBLE);
+        if (mData.isIfsplit()) vh.mSplitView.setVisibility(View.VISIBLE);
 
 
         vh.mStatus.setText("创建了进度");
