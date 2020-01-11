@@ -14,36 +14,37 @@ public class NetUtil {
 
     private OkHttpClient client;
     private RetrofitApi api;
-    private NetUtil(){
+
+    private NetUtil() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor()
                 .setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .addInterceptor(interceptor)
                 .build();
 
-        Gson gson=new GsonBuilder().setLenient().create();
-
-        api= new Retrofit.Builder()
+        api = new Retrofit.Builder()
                 .client(okHttpClient)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl("http://work.muxi-tech.xyz/api/v1.0/")
                 .build()
                 .create(RetrofitApi.class);
     }
 
-    public static NetUtil getInstance(){
+    public static NetUtil getInstance() {
         return NetUtilHolder.INSTANCE;
     }
-    private static class NetUtilHolder{
-        private static NetUtil INSTANCE=new NetUtil();
+
+    private static class NetUtilHolder {
+        private static NetUtil INSTANCE = new NetUtil();
 
     }
 
-    public OkHttpClient getClient(){
+    public OkHttpClient getClient() {
         return client;
     }
-    public RetrofitApi getApi(){
+
+    public RetrofitApi getApi() {
         return api;
     }
 }

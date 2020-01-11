@@ -5,8 +5,8 @@ import com.muxi.workbench.ui.home.model.FeedBean;
 public class FeedRepository {
     RemoteDataSource mRemoteDataSource = new RemoteDataSource();
 
-    void getAllData(LoadStatusBeanCallback loadStatusBeanCallback) {
-        mRemoteDataSource.getAllFeedFromRemote(loadStatusBeanCallback);
+    void getAllData(int page,LoadStatusBeanCallback loadStatusBeanCallback) {
+        mRemoteDataSource.getAllFeedFromRemote(loadStatusBeanCallback,page);
     }
 
     interface LoadStatusBeanCallback {
@@ -14,5 +14,7 @@ public class FeedRepository {
         void onDataLoaded(FeedBean mBean);
 
         void onDataNotAvailable();
+
+        void onComplete();
     }
 }

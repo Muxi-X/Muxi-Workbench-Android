@@ -26,6 +26,6 @@ public interface RetrofitApi {
     Observable<LoginResponse2> loginWorkbench(@Body UserBeanTwo userBeanTwo);
 
     @Headers("Content-Type: application/json")
-    @GET("http://work.muxi-tech.xyz/api/v1.0/feed/list/{page}/")
-    Call<FeedBean> getFeed(@Header("token") String token, @Path("page") int page);
+    @GET("feed/list/{page}/")
+    Observable<FeedBean> getFeed(@Header("token") String token, @Path("page") int page);
 }
