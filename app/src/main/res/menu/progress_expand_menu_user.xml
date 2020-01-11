@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/progress_sticky_user"
+        android:title="置顶"
+        android:visible="true"
+        app:showAsAction="ifRoom|withText"/>
+
+    <item
+        android:id="@+id/progress_delete_user"
+        android:title="删除"
+        android:visible="true"
+        app:showAsAction="ifRoom|withText"/>
+
+</menu>

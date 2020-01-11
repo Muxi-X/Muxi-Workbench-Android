@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="9dp"
-    android:orientation="vertical">
+    android:layout_marginTop="9dp"
+    android:orientation="vertical"
+    android:paddingBottom="9dp">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/sdv_avatar_progress_item"
@@ -14,8 +16,8 @@
         android:layout_marginStart="14dp"
         android:layout_marginTop="18dp"
         android:clickable="true"
-        fresco:layout_constraintStart_toStartOf="parent"
-        fresco:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         fresco:roundAsCircle="true" />
 
     <TextView
@@ -27,8 +29,8 @@
         android:text="你的名字"
         android:textColor="#DE000000"
         android:textSize="12sp"
-        fresco:layout_constraintStart_toEndOf="@+id/sdv_avatar_progress_item"
-        fresco:layout_constraintTop_toTopOf="@+id/sdv_avatar_progress_item" />
+        app:layout_constraintStart_toEndOf="@+id/sdv_avatar_progress_item"
+        app:layout_constraintTop_toTopOf="@+id/sdv_avatar_progress_item" />
 
     <TextView
         android:id="@+id/tv_content_progress_item"
@@ -51,26 +53,26 @@
         android:text="今天16：57"
         android:textColor="#ff999999"
         android:textSize="7sp"
-        fresco:layout_constraintBottom_toBottomOf="@+id/sdv_avatar_progress_item"
-        fresco:layout_constraintStart_toStartOf="@+id/tv_username_progress_item" />
+        app:layout_constraintBottom_toBottomOf="@+id/sdv_avatar_progress_item"
+        app:layout_constraintStart_toStartOf="@+id/tv_username_progress_item" />
 
     <ImageView
         android:id="@+id/iv_like_progress_item"
         android:layout_width="18dp"
         android:layout_height="18dp"
-        android:clickable="true"
         android:layout_marginStart="37dp"
         android:layout_marginTop="18dp"
+        android:clickable="true"
         android:src="@drawable/like_none"
-        fresco:layout_constraintStart_toStartOf="parent"
-        fresco:layout_constraintTop_toBottomOf="@+id/tv_content_progress_item" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_content_progress_item" />
 
     <TextView
         android:id="@+id/tv_like_progress_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
         android:layout_marginStart="5dp"
+        android:clickable="true"
         android:text="赞"
         android:textColor="#ff757575"
         android:textSize="9sp"
@@ -84,17 +86,17 @@
         android:layout_height="10dp"
         android:clickable="true"
         android:src="@drawable/comment_icon"
-        fresco:layout_constraintBottom_toBottomOf="@+id/iv_like_progress_item"
-        fresco:layout_constraintEnd_toStartOf="@+id/iv_edit_progress_item"
-        fresco:layout_constraintStart_toStartOf="@+id/tv_like_progress_item"
-        fresco:layout_constraintTop_toTopOf="@+id/iv_like_progress_item" />
+        app:layout_constraintBottom_toBottomOf="@+id/iv_like_progress_item"
+        app:layout_constraintEnd_toStartOf="@+id/iv_edit_progress_item"
+        app:layout_constraintStart_toStartOf="@+id/tv_like_progress_item"
+        app:layout_constraintTop_toTopOf="@+id/iv_like_progress_item" />
 
     <TextView
         android:id="@+id/tv_comment_progress_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
         android:layout_marginStart="7dp"
+        android:clickable="true"
         android:text="评论"
         android:textColor="#ff757575"
         android:textSize="9sp"
@@ -106,12 +108,12 @@
         android:id="@+id/iv_edit_progress_item"
         android:layout_width="15dp"
         android:layout_height="15dp"
-        android:clickable="true"
         android:layout_marginEnd="7dp"
+        android:clickable="true"
         android:src="@drawable/editing_icon"
-        fresco:layout_constraintBottom_toBottomOf="@+id/iv_like_progress_item"
-        fresco:layout_constraintEnd_toStartOf="@+id/tv_edit_progress_item"
-        fresco:layout_constraintTop_toTopOf="@+id/iv_like_progress_item" />
+        app:layout_constraintBottom_toBottomOf="@+id/iv_like_progress_item"
+        app:layout_constraintEnd_toStartOf="@+id/tv_edit_progress_item"
+        app:layout_constraintTop_toTopOf="@+id/iv_like_progress_item" />
 
     <TextView
         android:id="@+id/tv_edit_progress_item"
@@ -122,18 +124,31 @@
         android:text="编辑"
         android:textColor="#ff757575"
         android:textSize="9sp"
-        fresco:layout_constraintBottom_toBottomOf="@+id/iv_edit_progress_item"
-        fresco:layout_constraintEnd_toEndOf="parent"
-        fresco:layout_constraintTop_toTopOf="@+id/iv_edit_progress_item" />
+        app:layout_constraintBottom_toBottomOf="@+id/iv_edit_progress_item"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/iv_edit_progress_item" />
 
     <ImageView
         android:id="@+id/iv_expand_progress_item"
         android:layout_width="27dp"
         android:layout_height="27dp"
-        android:clickable="true"
         android:layout_marginEnd="9dp"
+        android:clickable="true"
         android:src="@drawable/expand_more"
-        fresco:layout_constraintEnd_toEndOf="parent"
-        fresco:layout_constraintTop_toTopOf="@+id/sdv_avatar_progress_item" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/sdv_avatar_progress_item" />
+
+    <TextView
+        android:id="@+id/tv_sticky_tag_progress_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:text="置顶"
+        android:textColor="#FF4E92E3"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_expand_progress_item"
+        app:layout_constraintEnd_toStartOf="@+id/iv_expand_progress_item"
+        app:layout_constraintTop_toTopOf="@+id/iv_expand_progress_item" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -68,6 +68,10 @@ public class ProgressTitleBar extends ConstraintLayout {
         OptionSp.performClick();
     }
 
+    public void setSpinnerLabel(int position) {
+        adapter.setSelectedPosition(position);
+    }
+
     public void setOptionSelectListener(AdapterView.OnItemSelectedListener onItemSelectedListener) {
         OptionSp.setOnItemSelectedListener(onItemSelectedListener);
     }

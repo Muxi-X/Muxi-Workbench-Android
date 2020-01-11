@@ -11,8 +11,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="22dp"
-        android:spinnerMode="dropdown"
         android:gravity="center_horizontal|center"
+        android:spinnerMode="dropdown"
         app:layout_constraintBottom_toTopOf="@+id/view_progress_title_bar_line"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
