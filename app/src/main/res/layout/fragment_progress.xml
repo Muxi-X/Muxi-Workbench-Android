@@ -7,7 +7,7 @@
     <com.muxi.workbench.ui.progress.view.ProgressTitleBar
         android:id="@+id/ptb_progress"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_progress"
