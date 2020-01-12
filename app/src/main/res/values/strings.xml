@@ -18,6 +18,7 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
+    <string name="loadmore">点击加载更多</string>
 
     <array name="progress_titlebar_screening">
         <item>全部</item>

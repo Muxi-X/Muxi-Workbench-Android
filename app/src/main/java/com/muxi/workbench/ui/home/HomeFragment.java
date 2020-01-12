@@ -31,7 +31,6 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     private FeedBean mBean = new FeedBean();
     private ViewStub viewStub;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private LinearLayout mLinearLayout;
     private Button mRetry;
 
 
@@ -41,7 +40,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
 
         mFeedRepository = new FeedRepository();
         mPresenter = new HomePresenter(mFeedRepository, this);
-        mAdapter = new FeedAdapter(mBean, mPresenter);
+
 
     }
 
@@ -57,6 +56,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         toolbar = root.findViewById(R.id.home_toolbar);
         recyclerView = root.findViewById(R.id.home_rcv);
+
         viewStub = root.findViewById(R.id.home_view_stub);
         mSwipeRefreshLayout = root.findViewById(R.id.swipe_refresh);
         mSwipeRefreshLayout.setOnRefreshListener(
@@ -67,8 +67,8 @@ public class HomeFragment extends Fragment implements HomeContract.View {
                     }
                 }
         );
-        mLinearLayout = root.findViewById(R.id.home_content);
-        mLinearLayout.setOnClickListener(new View.OnClickListener() {
+
+        mSwipeRefreshLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mSwipeRefreshLayout.isRefreshing()) {
@@ -82,11 +82,19 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         return root;
     }
 
+
     private void initRv() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(mAdapter);
 
+
+    }
+
+    public void initAdapter(FeedBean mBean) {
+        Log.e("TAG", "Home initAdapter");
+        mAdapter = new FeedAdapter(mBean, mPresenter, listener);
+        recyclerView.setAdapter(mAdapter);
+        mAdapter.setFooter(LayoutInflater.from(this.getContext()).inflate(R.layout.item_home_footer, recyclerView, false));
     }
 
     private void initToolbar() {
@@ -123,18 +131,21 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         }
     };
 
+
     @Override
     public void setPresenter(HomeContract.Presenter presenter) {
         mPresenter = presenter;
     }
 
     @Override
-    public void addItem(FeedBean.DataListBean itemData) {
-
+    public void addItem(FeedBean nextPage) {
+        mAdapter.addData(nextPage);
     }
 
     @Override
     public void showAllData(FeedBean feedBean) {
+        Log.e("TAG", "View show all data");
+        Log.e("TAG", "feedbean" + feedBean.toString());
         mAdapter.replaceData(feedBean);
     }
 
@@ -153,7 +164,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
                 mRetry.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mPresenter.loadAllData();
+                        mPresenter.loadAllData(true);
                         Toast.makeText(getContext(), "i'm trying!", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -170,7 +181,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         mSwipeRefreshLayout.setRefreshing(loadingIndicator);
 
         if (isSucceed) {
-            Toast.makeText(getContext(), "刷新成功", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), "刷新成功", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(getContext(), "刷新失败", Toast.LENGTH_SHORT).show();
         }
@@ -189,7 +200,16 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     @Override
     public void refreshData() {
         viewStub.setVisibility(View.GONE);
-        mPresenter.loadAllData();
+        mPresenter.loadAllData(true);
+    }
+
+    @Override
+    public void showLoadMoreSign(boolean isSuccess) {
+        if (isSuccess) {
+            Toast.makeText(getContext(), "加载成功", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getContext(), "加载失败", Toast.LENGTH_SHORT).show();
+        }
     }
 
 

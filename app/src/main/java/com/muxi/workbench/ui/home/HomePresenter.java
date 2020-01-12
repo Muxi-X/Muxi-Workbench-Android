@@ -2,6 +2,7 @@ package com.muxi.workbench.ui.home;
 
 
 import android.util.Log;
+import android.view.ViewGroup;
 
 import com.muxi.workbench.ui.home.model.FeedBean;
 
@@ -9,6 +10,7 @@ public class HomePresenter implements HomeContract.Presenter {
 
     private FeedRepository mFeedRepository;
     private HomeContract.View mHomeView;
+    private int curPage = 0;
 
     public HomePresenter(FeedRepository feedRepository, HomeContract.View homeView) {
         mFeedRepository = feedRepository;
@@ -20,33 +22,45 @@ public class HomePresenter implements HomeContract.Presenter {
 
     @Override
     public void start() {
-        loadAllData();
+        loadAllData(false);
     }
 
     @Override
-    public void loadAllData() {
-        mFeedRepository.getAllData(new FeedRepository.LoadStatusBeanCallback() {
+    public void loadAllData(boolean isRefresh) {
+        mFeedRepository.getAllData(1, new FeedRepository.LoadStatusBeanCallback() {
             @Override
             public void onDataLoaded(FeedBean mBean) {
-                mHomeView.showAllData(mBean);
+                Log.e("TAG", "HomePresenter onDataLoaded");
+                Log.e("TAG", "feedbean" + mBean.toString());
+                if (isRefresh) {
+                    mHomeView.showAllData(mBean);
+
+                } else mHomeView.initAdapter(mBean);
             }
 
             @Override
             public void onDataNotAvailable() {
-                Log.e("TAG","HomePresenter onDataNotAvailable");
+                Log.e("TAG", "HomePresenter onDataNotAvailable");
+                mHomeView.setLoadingIndicator(false, false);
                 mHomeView.setEmpty();
+            }
+
+            @Override
+            public void onComplete() {
+                curPage = 1;
+                mHomeView.setLoadingIndicator(false, true);
             }
         });
     }
 
     @Override
-    public void addItem(FeedBean.DataListBean itemData) {
-
+    public void addItem(FeedBean itemData) {
+        mHomeView.addItem(itemData);
     }
 
     @Override
     public void refresh() {
-        mFeedRepository.getAllData(new FeedRepository.LoadStatusBeanCallback() {
+        mFeedRepository.getAllData(1, new FeedRepository.LoadStatusBeanCallback() {
             @Override
             public void onDataLoaded(FeedBean mBean) {
 
@@ -56,8 +70,35 @@ public class HomePresenter implements HomeContract.Presenter {
             @Override
             public void onDataNotAvailable() {
 
-                mHomeView.setLoadingIndicator(false, true);
+                mHomeView.setLoadingIndicator(false, false);
 
+            }
+
+            @Override
+            public void onComplete() {
+                Log.e("TAG", "HomePresenter onComplete");
+                mHomeView.setLoadingIndicator(false, true);
+            }
+        });
+    }
+
+    @Override
+    public void loadMore() {
+        mFeedRepository.getAllData(curPage + 1, new FeedRepository.LoadStatusBeanCallback() {
+            @Override
+            public void onDataLoaded(FeedBean mBean) {
+                addItem(mBean);
+            }
+
+            @Override
+            public void onDataNotAvailable() {
+                mHomeView.showLoadMoreSign(false);
+            }
+
+            @Override
+            public void onComplete() {
+                curPage++;
+                mHomeView.showLoadMoreSign(true);
             }
         });
     }

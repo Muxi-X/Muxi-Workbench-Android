@@ -22,7 +22,7 @@ public class SplitView extends View {
     TextView textView;
     float mDateSize, mSignSize, mCircleRadius;
     String mDateColor, mSignColor;
-    String mTextDate = "", mTextSign = "";
+    String mTextDate = " ", mTextSign = " ";
 
     public SplitView(Context context) {
         super(context);
@@ -93,7 +93,7 @@ public class SplitView extends View {
         canvas.drawLine(cx + radius, cy, mLineLength + cx, cy, mPLine);
 
         canvas.drawText(mTextDate, cx - mDTWidth / 2, y, mTPDate);
-        canvas.drawText(mTextSign, width - mTimeWidth, y, mTPSign);
+        canvas.drawText(mTextSign, width - mTimeWidth-16, y, mTPSign);
 
 
     }

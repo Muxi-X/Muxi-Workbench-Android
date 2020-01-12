@@ -13,12 +13,12 @@ import io.reactivex.schedulers.Schedulers;
 
 public class RemoteDataSource {
 
-    public void getAllFeedFromRemote(FeedRepository.LoadStatusBeanCallback callback) {
+    public void getAllFeedFromRemote(FeedRepository.LoadStatusBeanCallback callback,int page) {
         String token = UserWrapper.getInstance().getToken();
-        Log.e("TAG", "token-->" + token);
 
         final Disposable[] mDisposable = new Disposable[1];
-       /*NetUtil.getInstance().getApi().getFeed(token, 1).subscribeOn(Schedulers.io())
+        NetUtil.getInstance().getApi().getFeed(token, page)
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<FeedBean>() {
                     @Override
@@ -28,8 +28,10 @@ public class RemoteDataSource {
 
                     @Override
                     public void onNext(FeedBean feedBean) {
-                        callback.onDataLoaded(feedBean);
                         Log.e("TAG", "RemoteDataSource onNext");
+                        Log.e("TAG", "feedbean" + feedBean.toString());
+
+                        callback.onDataLoaded(feedBean);
 
                     }
 
@@ -42,10 +44,10 @@ public class RemoteDataSource {
 
                     @Override
                     public void onComplete() {
-                        callback.onDataNotAvailable();
                         Log.e("TAG", "RemoteDataSource onComplete");
+                        callback.onComplete();
                     }
-                });*/
+                });
     }
 
 }

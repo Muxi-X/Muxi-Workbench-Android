@@ -6,13 +6,20 @@
     android:layout_height="?attr/actionBarSize"
     android:orientation="horizontal">
 
+    <View
+        android:id="@+id/view_progress_title_bar_line2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#FFB7B7B7"
+        app:layout_constraintBottom_toTopOf ="parent" />
+
     <androidx.appcompat.widget.AppCompatSpinner
         android:id="@+id/spn_progress_title_bar_option"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="22dp"
-        android:spinnerMode="dropdown"
+        android:layout_marginStart="16dp"
         android:gravity="center_horizontal|center"
+        android:spinnerMode="dropdown"
         app:layout_constraintBottom_toTopOf="@+id/view_progress_title_bar_line"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -21,7 +28,6 @@
         android:id="@+id/ib_progress_title_bar_option"
         android:layout_width="11dp"
         android:layout_height="5dp"
-        android:layout_marginStart="3dp"
         android:layout_marginTop="2dp"
         android:background="#ffffff"
         android:scaleType="centerCrop"
@@ -36,7 +42,7 @@
         android:layout_height="wrap_content"
         android:text="进度"
         android:textColor="#FF212121"
-        android:textSize="23sp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

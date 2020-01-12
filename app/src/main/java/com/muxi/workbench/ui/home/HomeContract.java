@@ -6,7 +6,9 @@ public interface HomeContract {
     interface View {
         void setPresenter(Presenter presenter);
 
-        void addItem(FeedBean.DataListBean itemData);
+        void initAdapter(FeedBean feedBean);
+
+        void addItem(FeedBean nextPage);
 
         void showAllData(FeedBean feedBean);
 
@@ -19,15 +21,19 @@ public interface HomeContract {
         void showFile();
 
         void refreshData();
+
+        void showLoadMoreSign(boolean isSuccess);
     }
 
     interface Presenter {
         void start();
 
-        void loadAllData();
+        void loadAllData(boolean isRefresh);
 
-        void addItem(FeedBean.DataListBean itemData);
+        void addItem(FeedBean itemData);
 
         void refresh();
+
+        void loadMore();
     }
 }

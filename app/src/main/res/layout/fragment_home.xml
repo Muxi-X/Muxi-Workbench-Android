@@ -10,7 +10,8 @@
         android:id="@+id/home_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
-        android:elevation="30dp"
+        android:background="@android:color/white"
+        android:elevation="2dp"
         app:title="@string/app_name_chinese" />
     <ViewStub
         android:id="@+id/home_view_stub"
@@ -19,6 +20,7 @@
         android:layout="@layout/item_false_refresh" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:background="@android:color/white"
         android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

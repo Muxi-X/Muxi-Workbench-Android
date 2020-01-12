@@ -5,5 +5,5 @@
     android:gravity="center_horizontal"
     android:padding="8dp"
     android:textColor="#6d6d6d"
-    android:textSize="15sp"
+    android:textSize="17sp"
     tools:text="全部" />
