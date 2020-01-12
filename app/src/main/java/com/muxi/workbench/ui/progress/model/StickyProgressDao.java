@@ -20,6 +20,4 @@ public interface StickyProgressDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void addStickyProgress(StickyProgress stickyProgress);
 
-    @Query("SELECT * FROM StickyProgress WHERE sid = :sid")
-    StickyProgress isStickyProgress(int sid);
 }

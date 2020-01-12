@@ -5,7 +5,17 @@ import java.util.List;
 public class GetStatusListResponse {
 
     /**
-     * statuList : [{"sid":0,"username":"string","uid":0,"time":"string","avatar":"string","title":"string","content":"string","likeCount":0,"iflike":true,"commentCount":0}]
+     * statuList : [
+     * {"sid":0,
+     * "username":"string",
+     * "uid":0,
+     * "time":"string",
+     * "avatar":"string",
+     * "title":"string",
+     * "content":"string",
+     * "likeCount":0,
+     * "iflike":true,
+     * "commentCount":0}]
      * page : 0
      * count : 0
      */
@@ -60,7 +70,7 @@ public class GetStatusListResponse {
         private String title;
         private String content;
         private int likeCount;
-        private boolean iflike;
+        private int iflike;
         private int commentCount;
 
         public int getSid() {
@@ -127,11 +137,11 @@ public class GetStatusListResponse {
             this.likeCount = likeCount;
         }
 
-        public boolean isIflike() {
+        public int isIflike() {
             return iflike;
         }
 
-        public void setIflike(boolean iflike) {
+        public void setIflike(int iflike) {
             this.iflike = iflike;
         }
 

@@ -13,18 +13,49 @@ public interface DataSource {
         void onDataNotAvailable();
     }
 
+    interface LoadStickyProgressCallback {
+
+        void onStickyProgressLoaded(List<Integer> StickyProgressList);
+
+        void onDataNotAvailable();
+
+    }
+
+    interface DeleteProgressCallback {
+
+        void onSuccessfulDelete();
+
+        void onFail();
+    }
+
+
+    interface SetLikeProgressCallback {
+
+        void onSuccessfulSet();
+
+        void onFail();
+    }
+
+    interface CommentProgressCallback {
+
+        void onSuccessfulComment();
+
+        void onFail();
+    }
+
     void getProgressList(int page, @NonNull LoadProgressListCallback callback);
 
-    void commentProgress(int sid, String comment);
+    void commentProgress(int sid, String comment, CommentProgressCallback callback);
 
-    void ifLikeProgress(int sid, boolean iflike);
+    void ifLikeProgress(int sid, boolean iflike, SetLikeProgressCallback callback);
 
     void refreshProgressList();
 
-    void deleteProgress(int sid);
+    void deleteProgress(int sid, @NonNull DeleteProgressCallback callback);
 
     void setStickyProgress(@NonNull int sid);
 
-    boolean isStickyProgress(int sid);
+    void getAllStickyProgress(@NonNull LoadStickyProgressCallback callback);
 
+    void deleteStickyProgress(@NonNull int sid);
 }

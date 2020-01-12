@@ -44,7 +44,7 @@ public interface ProgressContract {
 
         void showMoreProgress(List<Progress> progresses);
 
-        void showLoadingError();
+        void showError();
 
         boolean isActive();
 
@@ -71,6 +71,8 @@ public interface ProgressContract {
         void setProgressFilterType(ProgressFilterType requestType);
 
         ProgressFilterType getFiltering();
+
+        void setStickyProgress();
 
     }
 

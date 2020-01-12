@@ -1,8 +1,9 @@
 package com.muxi.workbench.ui.progress.model;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
-import java.util.Map;
 
 public class ProgressRepository implements DataSource {
 
@@ -32,13 +33,13 @@ public class ProgressRepository implements DataSource {
 
 
     @Override
-    public void commentProgress(int sid, String comment) {
-        mProgressDataSource.commentProgress(sid, comment);
+    public void commentProgress(int sid, String comment, CommentProgressCallback callback) {
+        mProgressDataSource.commentProgress(sid, comment, callback);
     }
 
     @Override
-    public void ifLikeProgress(int sid, boolean iflike) {
-        mProgressDataSource.ifLikeProgress(sid, iflike);
+    public void ifLikeProgress(int sid, boolean iflike, SetLikeProgressCallback callback) {
+        mProgressDataSource.ifLikeProgress(sid, iflike, callback);
     }
 
     @Override
@@ -47,8 +48,8 @@ public class ProgressRepository implements DataSource {
     }
 
     @Override
-    public void deleteProgress(@NonNull int sid) {
-        mProgressDataSource.deleteProgress(sid);
+    public void deleteProgress(@NonNull int sid, DeleteProgressCallback callback) {
+        mProgressDataSource.deleteProgress(sid, callback);
     }
 
     @Override
@@ -57,7 +58,12 @@ public class ProgressRepository implements DataSource {
     }
 
     @Override
-    public boolean isStickyProgress(int sid) {
-        return mProgressDataSource.isStickyProgress(sid);
+    public void getAllStickyProgress(@NonNull LoadStickyProgressCallback callback) {
+        mProgressDataSource.getAllStickyProgress(callback);
+    }
+
+    @Override
+    public void deleteStickyProgress(@NonNull int sid) {
+        mProgressDataSource.deleteStickyProgress(sid);
     }
 }

@@ -13,16 +13,17 @@ public class Progress {
     private int likeCount;
     private boolean isSticky;
 
-    public Progress(int sid, int uid, String avatar, String username, String time, String content, boolean ifLike, int commentCount, int likeCount) {
+    public Progress(int sid, int uid, String avatar, String username, String time, String content, int ifLike, int commentCount, int likeCount) {
         this.sid = sid;
         this.uid = uid;
         this.avatar = avatar;
         this.username = username;
         this.time = time;
         this.content = content;
-        this.ifLike = ifLike;
+        this.ifLike = (ifLike != 0);
         this.commentCount = commentCount;
         this.likeCount = likeCount;
+        this.isSticky = false;
     }
 
     public int getCommentCount() {

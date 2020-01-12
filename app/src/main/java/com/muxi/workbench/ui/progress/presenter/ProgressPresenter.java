@@ -21,6 +21,8 @@ public class ProgressPresenter implements ProgressContract.Presenter {
 
     private ProgressFilterType mCurrentFiltering = ProgressFilterType.ALL_PROGRESS;
 
+    private List<Progress> ProgressListToShow = new ArrayList<>();
+
     public ProgressPresenter(@NonNull ProgressRepository progressRepository, @NonNull ProgressContract.View progressView) {
         mProgressRepository = progressRepository;
         mProgressView = progressView;
@@ -43,14 +45,10 @@ public class ProgressPresenter implements ProgressContract.Presenter {
 
             @Override
             public void onProgressListLoaded(List<Progress> progressList) {
-                List<Progress> ProgressListToShow = new ArrayList<>();
                 int i = 0;
-                for (Progress progress : progressList) {
-                    if ( isSticky(progress.getSid()) ) {
-                        ProgressListToShow.add(i,progress);
-                        i++;
-                        continue;
-                    }
+
+                for (int j=0;j<progressList.size();j++) {
+                    Progress progress=progressList.get(j);
                     switch (mCurrentFiltering) {
                         case ALL_PROGRESS:
                             ProgressListToShow.add(progress);
@@ -83,9 +81,7 @@ public class ProgressPresenter implements ProgressContract.Presenter {
                     }
                 }
 
-                if (!mProgressView.isActive()) {
-                    return;
-                }
+
 
                 mProgressView.showProgressList(ProgressListToShow);
 
@@ -94,11 +90,9 @@ public class ProgressPresenter implements ProgressContract.Presenter {
 
             @Override
             public void onDataNotAvailable() {
-
-                if (!mProgressView.isActive()) {
+                if (!mProgressView.isActive())
                     return;
-                }
-                mProgressView.showLoadingError();
+                mProgressView.showError();
             }
         });
 
@@ -116,20 +110,47 @@ public class ProgressPresenter implements ProgressContract.Presenter {
 
     @Override
     public void likeProgress(int sid) {
-        mProgressRepository.ifLikeProgress(sid, true);
-        mProgressView.showLikeProgress();
+        mProgressRepository.ifLikeProgress(sid, true, new DataSource.SetLikeProgressCallback() {
+            @Override
+            public void onSuccessfulSet() {
+                mProgressView.showLikeProgress();
+            }
+
+            @Override
+            public void onFail() {
+                mProgressView.showError();
+            }
+        });
     }
 
     @Override
     public void cancelLikeProgress(int sid) {
-        mProgressRepository.ifLikeProgress(sid, false);
-        mProgressView.showNotLikedProgress();
+        mProgressRepository.ifLikeProgress(sid, false, new DataSource.SetLikeProgressCallback() {
+            @Override
+            public void onSuccessfulSet() {
+                mProgressView.showNotLikedProgress();
+            }
+
+            @Override
+            public void onFail() {
+                mProgressView.showError();
+            }
+        });
     }
 
     @Override
     public void commentProgress(@NonNull int sid, String comment) {
-        mProgressRepository.commentProgress(sid, comment);
-        mProgressView.renewCommentNum();///todo
+        mProgressRepository.commentProgress(sid, comment, new DataSource.CommentProgressCallback() {
+            @Override
+            public void onSuccessfulComment() {
+                mProgressView.renewCommentNum();
+            }
+
+            @Override
+            public void onFail() {
+                mProgressView.showError();
+            }
+        });
     }
 
     @Override
@@ -170,8 +191,28 @@ public class ProgressPresenter implements ProgressContract.Presenter {
         }
     }
 
-    private boolean isSticky(int sid) {
-        return mProgressRepository.isStickyProgress(sid);
+    @Override
+    public void setStickyProgress() {
+        mProgressRepository.getAllStickyProgress(new DataSource.LoadStickyProgressCallback() {
+            @Override
+            public void onStickyProgressLoaded(List<Integer> StickyProgressList) {
+                for(int i = 0 ; i < ProgressListToShow.size() ; i++) {
+                    if ( StickyProgressList.contains(ProgressListToShow.get(i).getSid() ) ) {
+                        ProgressListToShow.get(i).setSticky(true);
+                        Progress temp = ProgressListToShow.get(i);
+                        ProgressListToShow.remove(i);
+                        ProgressListToShow.add(0,temp);
+                    }
+                }
+                Log.e(".......","");
+                mProgressView.showProgressList(ProgressListToShow);
+            }
+            @Override
+            public void onDataNotAvailable() {
+
+                Log.e("......d.","");
+            }
+        });
     }
 
     @Override

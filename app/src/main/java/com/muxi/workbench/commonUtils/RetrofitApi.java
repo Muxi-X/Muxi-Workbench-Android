@@ -40,7 +40,7 @@ public interface RetrofitApi {
     @DELETE("/status/{sid}/")
     Observable deleteStatus(@Header("token") String token, @Path("sid") int sid);
 
-    @GET("/status/list/{page}/")
+    @GET("http://work.muxi-tech.xyz/api/v1.0/status/list/{page}/")
     Observable<GetStatusListResponse> getStatusList(@Header("token") String token, @Path("page") int page);
 
     @PUT("/status/{sid}/like/")

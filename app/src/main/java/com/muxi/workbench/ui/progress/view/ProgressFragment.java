@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.muxi.workbench.R;
+import com.muxi.workbench.commonUtils.AppExecutors;
 import com.muxi.workbench.ui.login.model.UserWrapper;
 import com.muxi.workbench.ui.progress.ProgressContract;
 import com.muxi.workbench.ui.progress.ProgressFilterType;
@@ -87,10 +88,13 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mPresenter = new ProgressPresenter(ProgressRepository.getInstance(
-                ProgressDataSource.getInstance(StickyProgressDatabase.getInstance(getContext()).
-                        stickyProgressDao())), this);
+        mPresenter = new ProgressPresenter(
+                ProgressRepository.getInstance(
+                    ProgressDataSource.getInstance(
+                        StickyProgressDatabase.getInstance(getContext()).stickyProgressDao(),
+                        new AppExecutors()
+                    )
+                ), this);
     }
 
     @Override
@@ -102,18 +106,22 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_progress, container, false);
 
-        mProgressTitleBar = root.findViewById(R.id.ptb_progress);
+        mAdapter = new ProgressListAdapter(getContext(), new ArrayList<>(), mItemListener);
 
+        mProgressListRv = root.findViewById(R.id.rv_progress);
+        mProgressListRv.setLayoutManager(new LinearLayoutManager(getContext()));
+        mProgressListRv.setAdapter(mAdapter);
+
+        mProgressTitleBar = root.findViewById(R.id.ptb_progress);
         mProgressTitleBar.setOptionSp(getContext());
         mProgressTitleBar.setOptionSelectListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mProgressTitleBar.adapter.setSelectedPosition(position);
-                switch (position){
+                switch (position) {
                     case 0:
                         mPresenter.setProgressFilterType(ProgressFilterType.ALL_PROGRESS);
                         break;
@@ -133,7 +141,6 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
                         mPresenter.setProgressFilterType(ProgressFilterType.BACKEND_PROGRESS);
                         break;
                 }
-                mPresenter.loadProgressList(true);
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -141,18 +148,12 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
         });
 
         mProgressTitleBar.setOptionIbListener(v -> mProgressTitleBar.showSpinner());
-
         mProgressTitleBar.setAddListener(v -> {
              ///TODO  to Progress-editing Fragment
         });
 
-
-        mAdapter = new ProgressListAdapter(getContext(), new ArrayList<>(), mItemListener );
-
-        mProgressListRv = root.findViewById(R.id.rv_progress);
-        mProgressListRv.setAdapter(mAdapter);
-        mProgressListRv.setLayoutManager(new LinearLayoutManager(getContext()));
-
+        mPresenter.loadProgressList(true);
+        mPresenter.setStickyProgress();
 
         return root;
     }
@@ -164,7 +165,7 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
 
     @Override
     public void showProgressList(List<Progress> progressList) {
-        Log.d("!!!!!!!",progressList.size()+"");
+        Log.e(progressList.get(0).getContent(),"?");
         mAdapter.replaceData(progressList);
     }
 
@@ -238,8 +239,8 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
     }
 
     @Override
-    public void showLoadingError() {
-        Toast.makeText(getContext(), "加载失败", Toast.LENGTH_LONG).show();
+    public void showError() {
+        Toast.makeText(getContext(), "失败辽", Toast.LENGTH_LONG).show();
     }
 
     @Override
