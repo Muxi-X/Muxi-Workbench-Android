@@ -11,75 +11,83 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:visibility="gone"
-        fresco:date_text="今"
-        />
+        fresco:date_text="今" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="60dp"
         android:orientation="horizontal">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/head_shot"
-            android:layout_width="40dp"
+            android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_gravity="center"
-            android:layout_marginStart="36dp"
+            android:layout_marginStart="20dp"
+            android:layout_weight="1"
             fresco:layout_constraintBottom_toBottomOf="parent"
             fresco:layout_constraintStart_toStartOf="parent"
             fresco:layout_constraintTop_toTopOf="parent"
-
             fresco:roundAsCircle="true" />
 
-        <TextView
-            android:id="@+id/item_name"
-            style="@style/TextStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ljl233"
-            android:textColor="@color/colorAccent"
-            fresco:layout_constraintBottom_toBottomOf="parent"
-            fresco:layout_constraintStart_toStartOf="@+id/item_status"
-            fresco:layout_constraintTop_toTopOf="parent"
-            fresco:layout_constraintVertical_bias="0.36" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4">
 
-        <TextView
-            android:id="@+id/item_status"
-            style="@style/TextStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:text="  创建了进度："
-            android:textColor="@android:color/black"
-            fresco:layout_constraintBottom_toBottomOf="parent"
-            fresco:layout_constraintStart_toEndOf="@+id/head_shot"
-            fresco:layout_constraintTop_toTopOf="parent"
-            fresco:layout_constraintVertical_bias="0.672" />
+
+            <TextView
+                android:id="@+id/item_name"
+                style="@style/TextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Ljl233"
+                android:textColor="@color/colorAccent"
+                fresco:layout_constraintBottom_toBottomOf="parent"
+                fresco:layout_constraintStart_toStartOf="parent"
+                fresco:layout_constraintTop_toTopOf="parent"
+                fresco:layout_constraintVertical_bias="0.121" />
+
+            <TextView
+                android:id="@+id/item_content"
+                style="@style/TextStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="16dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="10.21"
+                android:textColor="@color/colorAccent"
+                fresco:layout_constraintBottom_toBottomOf="@+id/item_status"
+                fresco:layout_constraintEnd_toEndOf="parent"
+                fresco:layout_constraintStart_toEndOf="@+id/item_status" />
+
+            <TextView
+                android:id="@+id/item_status"
+                style="@style/TextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  创建了进度："
+                android:textColor="@android:color/black"
+                fresco:layout_constraintStart_toStartOf="@+id/item_name"
+                fresco:layout_constraintTop_toBottomOf="@+id/item_name" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         <TextView
             android:id="@+id/item_time"
             style="@style/TextStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:gravity="center"
+            android:layout_height="match_parent"
             android:layout_marginEnd="16dp"
-            android:text="10:23"
-            fresco:layout_constraintBottom_toBottomOf="parent"
-            fresco:layout_constraintEnd_toEndOf="parent"
-            fresco:layout_constraintTop_toTopOf="parent"
-            fresco:layout_constraintVertical_bias="0.508" />
-
-        <TextView
-            android:id="@+id/item_content"
-            style="@style/TextStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="16dp"
-            android:text="10.21"
-            android:textColor="@color/colorAccent"
-            fresco:layout_constraintBottom_toBottomOf="@+id/item_status"
-            fresco:layout_constraintStart_toEndOf="@+id/item_status" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_weight="1"
+            android:text="10:23" />
+    </LinearLayout>
 
 
 </LinearLayout>
