@@ -29,6 +29,7 @@ public class NetUtil {
     public static NetUtil getInstance(){
         return NetUtilHolder.INSTANCE;
     }
+
     private static class NetUtilHolder{
         private static NetUtil INSTANCE=new NetUtil();
 

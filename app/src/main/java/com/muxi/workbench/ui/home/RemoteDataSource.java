@@ -18,7 +18,7 @@ public class RemoteDataSource {
         Log.e("TAG", "token-->" + token);
 
         final Disposable[] mDisposable = new Disposable[1];
-        NetUtil.getInstance().getApi().getFeed(token, 1).subscribeOn(Schedulers.io())
+       /*NetUtil.getInstance().getApi().getFeed(token, 1).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<FeedBean>() {
                     @Override
@@ -45,7 +45,7 @@ public class RemoteDataSource {
                         callback.onDataNotAvailable();
                         Log.e("TAG", "RemoteDataSource onComplete");
                     }
-                });
+                });*/
     }
 
 }
