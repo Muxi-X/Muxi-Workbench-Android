@@ -14,21 +14,15 @@ public interface ProgressContract {
 
         void showProgressList(List<Progress> progressList);
 
-        void showCommentView();
-
         void showProgressDetail(int sid);
 
         void showAddNewProgress();
 
         void showUserInfo(int uid);
 
-        void showLikeProgress();
+        void refreshLikeProgress(int position, int iflike);
 
-        void showNotLikedProgress();
-
-        void showDeleteProgress();
-
-        void renewCommentNum();
+        void showDeleteProgress(int position);
 
         void showSelectAllFilter();
 
@@ -44,9 +38,13 @@ public interface ProgressContract {
 
         void showMoreProgress(List<Progress> progresses);
 
+        void showCommentView();
+
         void showError();
 
-        boolean isActive();
+        void moveNewStickyProgress(int position);
+
+        void moveDeleteStickyProgress(int position);
 
     }
 
@@ -62,9 +60,9 @@ public interface ProgressContract {
 
         void openUserInfo(@NonNull int uid);
 
-        void likeProgress(int sid);
+        void likeProgress(int sid, int position);
 
-        void cancelLikeProgress(int sid);
+        void cancelLikeProgress(int sid, int position);
 
         void commentProgress(int sid, String comment);
 
@@ -72,7 +70,11 @@ public interface ProgressContract {
 
         ProgressFilterType getFiltering();
 
-        void setStickyProgress();
+        void setProgressSticky(int position, Progress progress);
+
+        void deleteProgress(int position, int sid);
+
+        void cancelStickyProgress(int position, Progress progress);
 
     }
 

@@ -8,7 +8,7 @@ public class Progress {
     private String username;
     private String time;
     private String content;
-    private boolean ifLike;
+    private int ifLike;
     private int commentCount;
     private int likeCount;
     private boolean isSticky;
@@ -20,26 +20,23 @@ public class Progress {
         this.username = username;
         this.time = time;
         this.content = content;
-        this.ifLike = (ifLike != 0);
+        this.ifLike = ifLike;
         this.commentCount = commentCount;
         this.likeCount = likeCount;
         this.isSticky = false;
     }
 
-    public int getCommentCount() {
-        return commentCount;
-    }
-
-    public void setCommentCount(int commentCount) {
-        this.commentCount = commentCount;
-    }
-
-    public int getLikeCount() {
-        return likeCount;
-    }
-
-    public void setLikeCount(int likeCount) {
-        this.likeCount = likeCount;
+    public Progress(StickyProgress stickyProgress) {
+        this.sid = stickyProgress.getSid();
+        this.uid = stickyProgress.getUid();
+        this.avatar = stickyProgress.getAvatar();
+        this.username = stickyProgress.getUsername();
+        this.time = stickyProgress.getTime();
+        this.content = stickyProgress.getContent();
+        this.ifLike = stickyProgress.getIfLike();
+        this.commentCount = stickyProgress.getCommentCount();
+        this.likeCount = stickyProgress.getLikeCount();
+        this.isSticky = true;
     }
 
     public int getSid() {
@@ -48,6 +45,14 @@ public class Progress {
 
     public void setSid(int sid) {
         this.sid = sid;
+    }
+
+    public int getUid() {
+        return uid;
+    }
+
+    public void setUid(int uid) {
+        this.uid = uid;
     }
 
     public String getAvatar() {
@@ -66,12 +71,12 @@ public class Progress {
         this.username = username;
     }
 
-    public boolean isIfLike() {
-        return ifLike;
+    public String getTime() {
+        return time;
     }
 
-    public void setIfLike(boolean ifLike) {
-        this.ifLike = ifLike;
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public String getContent() {
@@ -82,20 +87,28 @@ public class Progress {
         this.content = content;
     }
 
-    public String getTime() {
-        return time;
+    public int isIfLike() {
+        return ifLike;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setIfLike(int ifLike) {
+        this.ifLike = ifLike;
     }
 
-    public int getUid() {
-        return uid;
+    public int getCommentCount() {
+        return commentCount;
     }
 
-    public void setUid(int uid) {
-        this.uid = uid;
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
+    }
+
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
     }
 
     public boolean isSticky() {

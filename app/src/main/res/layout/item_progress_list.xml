@@ -2,10 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginVertical="4dp"
     android:layout_marginTop="9dp"
+    android:background="#ffffff"
     android:orientation="vertical"
     android:paddingBottom="9dp">
 
@@ -23,28 +26,37 @@
     <TextView
         android:id="@+id/tv_username_progress_item"
         android:layout_width="wrap_content"
-        android:layout_height="14dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="18dp"
-        android:layout_marginTop="9dp"
         android:text="你的名字"
         android:textColor="#DE000000"
-        android:textSize="12sp"
+        android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@+id/sdv_avatar_progress_item"
         app:layout_constraintTop_toTopOf="@+id/sdv_avatar_progress_item" />
+
 
     <TextView
         android:id="@+id/tv_content_progress_item"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="14dp"
-        android:layout_marginTop="14dp"
-        android:layout_marginEnd="27dp"
-        android:text="离教资考试还有一个月，你准备好了吗？加油加油加油加油加油加油"
-        android:textColor="#ff000000"
-        android:textSize="12sp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="14dp"
+        android:textColor="#DE000000"
+        android:textSize="14sp"
         fresco:layout_constraintEnd_toEndOf="parent"
         fresco:layout_constraintStart_toStartOf="parent"
         fresco:layout_constraintTop_toBottomOf="@+id/sdv_avatar_progress_item" />
+
+    <TextView
+        android:id="@+id/tv_more_content_progress_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="更多......"
+        android:textColor="#084085"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@id/tv_content_progress_item"
+        app:layout_constraintTop_toBottomOf="@+id/tv_content_progress_item" />
 
     <TextView
         android:id="@+id/tv_time_progress_item"
@@ -52,7 +64,7 @@
         android:layout_height="wrap_content"
         android:text="今天16：57"
         android:textColor="#ff999999"
-        android:textSize="7sp"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/sdv_avatar_progress_item"
         app:layout_constraintStart_toStartOf="@+id/tv_username_progress_item" />
 
@@ -61,11 +73,13 @@
         android:layout_width="18dp"
         android:layout_height="18dp"
         android:layout_marginStart="37dp"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="16dp"
         android:clickable="true"
         android:src="@drawable/like_none"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_content_progress_item" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_more_content_progress_item" />
 
     <TextView
         android:id="@+id/tv_like_progress_item"
@@ -75,7 +89,7 @@
         android:clickable="true"
         android:text="赞"
         android:textColor="#ff757575"
-        android:textSize="9sp"
+        android:textSize="12sp"
         fresco:layout_constraintBottom_toBottomOf="@+id/iv_like_progress_item"
         fresco:layout_constraintStart_toEndOf="@+id/iv_like_progress_item"
         fresco:layout_constraintTop_toTopOf="@+id/iv_like_progress_item" />
@@ -99,7 +113,7 @@
         android:clickable="true"
         android:text="评论"
         android:textColor="#ff757575"
-        android:textSize="9sp"
+        android:textSize="12sp"
         fresco:layout_constraintBottom_toBottomOf="@+id/iv_comment_progress_item"
         fresco:layout_constraintStart_toEndOf="@+id/iv_comment_progress_item"
         fresco:layout_constraintTop_toTopOf="@+id/iv_comment_progress_item" />
@@ -123,7 +137,7 @@
         android:clickable="true"
         android:text="编辑"
         android:textColor="#ff757575"
-        android:textSize="9sp"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/iv_edit_progress_item"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/iv_edit_progress_item" />
@@ -134,6 +148,7 @@
         android:layout_height="27dp"
         android:layout_marginEnd="9dp"
         android:clickable="true"
+        android:scaleType="centerInside"
         android:src="@drawable/expand_more"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/sdv_avatar_progress_item" />
@@ -145,7 +160,7 @@
         android:layout_marginEnd="10dp"
         android:text="置顶"
         android:textColor="#FF4E92E3"
-        android:textSize="12sp"
+        android:textSize="13sp"
         app:layout_constraintBottom_toBottomOf="@+id/iv_expand_progress_item"
         app:layout_constraintEnd_toStartOf="@+id/iv_expand_progress_item"
         app:layout_constraintTop_toTopOf="@+id/iv_expand_progress_item" />

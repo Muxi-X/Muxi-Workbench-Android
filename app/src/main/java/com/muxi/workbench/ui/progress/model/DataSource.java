@@ -15,7 +15,7 @@ public interface DataSource {
 
     interface LoadStickyProgressCallback {
 
-        void onStickyProgressLoaded(List<Integer> StickyProgressList);
+        void onStickyProgressLoaded(List<Progress> StickyProgressList);
 
         void onDataNotAvailable();
 
@@ -43,6 +43,13 @@ public interface DataSource {
         void onFail();
     }
 
+    interface LoadProgressCallback {
+
+        void onProgressLoaded();
+
+        void onDataNotAvailable();
+    }
+
     void getProgressList(int page, @NonNull LoadProgressListCallback callback);
 
     void commentProgress(int sid, String comment, CommentProgressCallback callback);
@@ -53,9 +60,11 @@ public interface DataSource {
 
     void deleteProgress(int sid, @NonNull DeleteProgressCallback callback);
 
-    void setStickyProgress(@NonNull int sid);
+    void setStickyProgress(@NonNull Progress progress);
 
     void getAllStickyProgress(@NonNull LoadStickyProgressCallback callback);
 
     void deleteStickyProgress(@NonNull int sid);
+
+    void getProgress(int sid, LoadProgressCallback callback);
 }

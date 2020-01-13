@@ -8,20 +8,18 @@ import com.muxi.workbench.commonUtils.AppExecutors;
 import com.muxi.workbench.commonUtils.NetUtil;
 import com.muxi.workbench.ui.login.model.UserWrapper;
 import com.muxi.workbench.ui.progress.model.net.CommentStautsBean;
-import com.muxi.workbench.ui.progress.model.net.GetAStatusResponse;
 import com.muxi.workbench.ui.progress.model.net.GetStatusListResponse;
 import com.muxi.workbench.ui.progress.model.net.IfLikeStatusBean;
+import com.muxi.workbench.ui.progress.model.net.LikeStatusResponse;
 
-import java.io.SyncFailedException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Response;
 
 public class ProgressDataSource implements DataSource {
 
@@ -92,57 +90,38 @@ public class ProgressDataSource implements DataSource {
 
     @Override
     public void commentProgress(int sid, String comment, CommentProgressCallback callback) {
-
+///todo 详情页
         NetUtil.getInstance().getApi().commentStatus(token, sid, new CommentStautsBean())
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+        }
+
+        @Override
+        public void ifLikeProgress(int sid, boolean iflike, SetLikeProgressCallback callback) {
+
+            NetUtil.getInstance().getApi().ifLikeStatus(token, sid, new IfLikeStatusBean(iflike?1:0))
+                    .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer() {
+                .subscribe(new Observer<LikeStatusResponse>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
+                    public void onSubscribe(Disposable disposable) {
 
                     }
 
                     @Override
-                    public void onNext(Object o) {
+                    public void onNext(LikeStatusResponse likeStatusResponse) {
 
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(Throwable throwable) {
+                        throwable.printStackTrace();
                         callback.onFail();
                     }
 
                     @Override
                     public void onComplete() {
-                        callback.onSuccessfulComment();
-                    }
-                });
-    }
-
-    @Override
-    public void ifLikeProgress(int sid, boolean iflike, SetLikeProgressCallback callback) {
-
-        NetUtil.getInstance().getApi().ifLikeStatus(token, sid, new IfLikeStatusBean(iflike))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(Object o) {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        callback.onFail();
-                    }
-
-                    @Override
-                    public void onComplete() {
+                        Log.e("scuccess","like");
                         callback.onSuccessfulSet();
                     }
                 });
@@ -158,19 +137,20 @@ public class ProgressDataSource implements DataSource {
         NetUtil.getInstance().getApi().deleteStatus(token, sid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer() {
+                .subscribe(new Observer<Response<Void>>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
+                    public void onSubscribe(Disposable disposable) {
 
                     }
 
                     @Override
-                    public void onNext(Object o) {
+                    public void onNext(Response<Void> voidResponse) {
 
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(Throwable throwable) {
+                        throwable.printStackTrace();
                         callback.onFail();
                     }
 
@@ -182,11 +162,11 @@ public class ProgressDataSource implements DataSource {
     }
 
     @Override
-    public void setStickyProgress(@NonNull int sid) {
+    public void setStickyProgress(@NonNull Progress progress) {
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                mStickyProgressDao.addStickyProgress(new StickyProgress(sid));
+                mStickyProgressDao.addStickyProgress(new StickyProgress(progress));
             }
         };
         mAppExecutors.diskIO().execute(r);
@@ -199,12 +179,15 @@ public class ProgressDataSource implements DataSource {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final List<Integer> list = mStickyProgressDao.getStickyProgressList();
+                List<StickyProgress> list = mStickyProgressDao.getStickyProgressList();
+                List<Progress> progressList = new ArrayList<>();
+                for ( int i = 0 ; i < list.size() ; i++ )
+                    progressList.add(new Progress(list.get(i)));
                 mAppExecutors.mainThread().execute(new Runnable() {
                     @Override
                     public void run() {
                         if ( !list.isEmpty() ) {
-                            callback.onStickyProgressLoaded(list);
+                            callback.onStickyProgressLoaded(progressList);
                         } else {
                             callback.onDataNotAvailable();
                         }
@@ -225,5 +208,10 @@ public class ProgressDataSource implements DataSource {
             }
         };
         mAppExecutors.diskIO().execute(runnable);
+    }
+
+    @Override
+    public void getProgress(int sid, LoadProgressCallback callback) {
+
     }
 }
