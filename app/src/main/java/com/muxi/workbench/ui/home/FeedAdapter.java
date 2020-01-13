@@ -79,7 +79,12 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         vh.mTime.setText(mData.getTimehm());
 
         vh.mHeadShot.setImageURI(mUser.getAvatar_url());
-
+        vh.mHeadShot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.onNameClick();
+            }
+        });
 
         vh.mContent.setText(mSource.getObject_name());
         vh.mName.setText(mData.getUser().getName());
