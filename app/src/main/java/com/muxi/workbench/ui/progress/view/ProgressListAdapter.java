@@ -64,11 +64,11 @@ public class ProgressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
             if ( progress.getLikeCount() == 0 )
                 mholder.likeTv.setText("赞");
-            else mholder.likeTv.setText(progress.getLikeCount());
+            else mholder.likeTv.setText(String.valueOf(progress.getLikeCount()));
 
             if ( progress.getCommentCount() == 0 )
                 mholder.commentTv.setText("评论");
-            else mholder.commentTv.setText(progress.getCommentCount());
+            else mholder.commentTv.setText(String.valueOf(progress.getCommentCount()));
 
             if ( progress.isSticky() )
                 mholder.stickyTv.setVisibility(View.VISIBLE);

@@ -7,12 +7,19 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.text.TextPaint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
 import com.muxi.workbench.R;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Objects;
 
 public class SplitView extends View {
     TextPaint mTPDate = new TextPaint(Paint.ANTI_ALIAS_FLAG);
@@ -22,7 +29,7 @@ public class SplitView extends View {
     TextView textView;
     float mDateSize, mSignSize, mCircleRadius;
     String mDateColor, mSignColor;
-    String mTextDate = " ", mTextSign = " ";
+    String mTextDate = " ", mTextSign = " ", mTextWeek = " ";
 
     public SplitView(Context context) {
         super(context);
@@ -77,23 +84,23 @@ public class SplitView extends View {
         int cx = width / 24 + radius;
         int cy = height / 2;
 
-        int mLineLength = (int) (width * 0.7);
+        int mLineLength = (int) (width * 0.75);
 
 
         //文字的宽度
-        int mDTWidth = (int) mTPDate.measureText(mTextDate);
+        int mDTWidth = (int) mTPDate.measureText(mTextDate.substring(5));
+        int mWeekWid = (int) mTPDate.measureText(mTextWeek);
         int mTimeWidth = (int) mTPDate.measureText(mTextSign);
-
         //文字的y轴
         Paint.FontMetrics fontMetrics = mTPDate.getFontMetrics();
         int y = (int) (height / 2 + (Math.abs(fontMetrics.ascent) - fontMetrics.descent) / 2);
 
-
         canvas.drawCircle(cx, cy, radius, mPCircle);
-        canvas.drawLine(cx + radius, cy, mLineLength + cx, cy, mPLine);
+        canvas.drawLine(cx + radius+10, cy, mLineLength + cx, cy, mPLine);
 
-        canvas.drawText(mTextDate, cx - mDTWidth / 2, y, mTPDate);
-        canvas.drawText(mTextSign, width - mTimeWidth-16, y, mTPSign);
+        canvas.drawText(mTextDate.substring(5), cx - mDTWidth / 2, y - radius / 3, mTPDate);
+        canvas.drawText(mTextWeek, cx - mWeekWid / 2, y + radius / 3, mTPDate);
+        canvas.drawText(mTextSign, width - mTimeWidth - 16, y, mTPSign);
 
 
     }
@@ -148,6 +155,7 @@ public class SplitView extends View {
     }
 
     public void setTextDate(String mTextDate) {
+        mTextWeek = dateToWeek(mTextDate);
         this.mTextDate = mTextDate;
     }
 
@@ -155,5 +163,20 @@ public class SplitView extends View {
         this.mTextSign = mTextTime;
     }
 
-
+    public static String dateToWeek(String datetime) {
+        SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/d");
+        String[] weekDays = {"周日", "周一", "周二", "周三", "周四", "周五", "周六"};
+        Calendar cal = Calendar.getInstance(); // 获得一个日历
+        Date datet = null;
+        try {
+            datet = f.parse(datetime);
+            cal.setTime(datet);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        int w = cal.get(Calendar.DAY_OF_WEEK) - 1; // 指示一个星期中的某天。
+        if (w < 0)
+            w = 0;
+        return weekDays[w];
+    }
 }
