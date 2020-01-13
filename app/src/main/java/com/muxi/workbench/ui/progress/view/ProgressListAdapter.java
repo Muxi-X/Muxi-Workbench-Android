@@ -153,8 +153,8 @@ public class ProgressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public void replaceData(List<Progress> progresslist) {
-        Log.e(">>>>>>>>>>>>>>>>","");
-        ProgressList.addAll(progresslist);
+        ProgressList=progresslist;
+        Log.e("TAG","p add all");
         notifyDataSetChanged();
     }
 

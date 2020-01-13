@@ -165,7 +165,7 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
 
     @Override
     public void showProgressList(List<Progress> progressList) {
-        Log.e(progressList.get(0).getContent(),"?");
+        Log.e(progressList.get(0).getContent(),"showProgressList");
         mAdapter.replaceData(progressList);
     }
 

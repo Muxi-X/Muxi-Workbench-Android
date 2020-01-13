@@ -82,7 +82,7 @@ public class ProgressPresenter implements ProgressContract.Presenter {
                 }
 
 
-
+                Log.e("TAG","load list in presentter"+ProgressListToShow.get(0).getAvatar());
                 mProgressView.showProgressList(ProgressListToShow);
 
                 showFilterLabel();

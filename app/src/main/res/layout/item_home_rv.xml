@@ -10,13 +10,16 @@
         android:id="@+id/split_bar"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:visibility="gone"
+        android:layout_marginTop="5dp"
+        android:background="@android:color/white"
+        android:visibility="visible"
         fresco:date_text="今" />
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:background="@android:color/white"
         android:orientation="horizontal">
 
         <com.facebook.drawee.view.SimpleDraweeView
@@ -82,10 +85,10 @@
             android:id="@+id/item_time"
             style="@style/TextStyle"
             android:layout_width="0dp"
-            android:gravity="center"
             android:layout_height="match_parent"
             android:layout_marginEnd="16dp"
             android:layout_weight="1"
+            android:gravity="center"
             android:text="10:23" />
     </LinearLayout>
 
