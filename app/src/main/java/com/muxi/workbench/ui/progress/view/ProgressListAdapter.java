@@ -22,6 +22,7 @@ import com.muxi.workbench.ui.progress.model.Progress;
 import org.jsoup.Jsoup;
 
 import java.util.List;
+import java.util.PrimitiveIterator;
 
 public class ProgressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -196,16 +197,34 @@ public class ProgressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public void replaceData(List<Progress> progresslist) {
+        ProgressList.clear();
         ProgressList.addAll(progresslist);
         notifyDataSetChanged();
     }
 
-    public void moveProgress(int position) {
-        Progress temp = ProgressList.get(position);
-        ProgressList.remove(position);
-        temp.setSticky(true);
-        ProgressList.add(0,temp);
-        notifyItemRangeChanged(0,position+1);
+    public void moveProgress(int position, int operator) {
+        if ( operator == 0 ) {
+            Progress temp = ProgressList.get(position);
+            ProgressList.remove(position);
+            temp.setSticky(true);
+            ProgressList.add(0, temp);
+            notifyItemRangeChanged(0, position + 1);
+        } else {
+            Progress temp = ProgressList.get(position);
+            ProgressList.remove(position);
+            temp.setSticky(false);
+            for ( int i = position ; i < ProgressList.size() ; i++ ) {
+                if ( !ProgressList.get(i).isSticky() ) {
+                    if ( ProgressList.get(i).getSid() < temp.getSid() ) {
+                        ProgressList.add(i,temp);
+                        break;
+                    }
+                }
+            }
+            if ( ProgressList.get(ProgressList.size()-1).getSid()-1 == temp.getSid() )
+                ProgressList.add(temp);
+            notifyItemRangeChanged(position,ProgressList.size()-position);
+        }
     }
 
     class MoreViewHolder extends RecyclerView.ViewHolder {

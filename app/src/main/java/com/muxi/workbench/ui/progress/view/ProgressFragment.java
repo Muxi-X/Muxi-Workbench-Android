@@ -30,8 +30,6 @@ import java.util.List;
 
 public class ProgressFragment extends Fragment implements ProgressContract.View {
 
-    private int uid = UserWrapper.getInstance().getUser().getUid();
-
     private ProgressContract.Presenter mPresenter;
 
     private ProgressTitleBar mProgressTitleBar;
@@ -166,7 +164,7 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
              ///TODO  to Progress-editing Fragment
         });
 
-        mPresenter.loadProgressList(true);
+//        mPresenter.loadProgressList(true);
 
         return root;
     }
@@ -178,7 +176,6 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
 
     @Override
     public void showProgressList(List<Progress> progressList) {
-        mProgressSrl.setEnabled(false);
         mAdapter.replaceData(progressList);
     }
 
@@ -200,34 +197,40 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
     @Override
     public void showSelectAllFilter() {
         mProgressTitleBar.setSpinnerLabel(0);
+        mPresenter.loadProgressList(true);
     }
 
     @Override
     public void showSelectProductFilter() {
         mProgressTitleBar.setSpinnerLabel(1);
+        mPresenter.loadProgressList(true);
     }
 
     @Override
     public void showSelectBackendFilter() {
         mProgressTitleBar.setSpinnerLabel(5);
+        mPresenter.loadProgressList(true);
 
     }
 
     @Override
     public void showSelectFrontendFilter() {
         mProgressTitleBar.setSpinnerLabel(3);
+        mPresenter.loadProgressList(true);
 
     }
 
     @Override
     public void showSelectAndroidFilter() {
         mProgressTitleBar.setSpinnerLabel(4);
+        mPresenter.loadProgressList(true);
 
     }
 
     @Override
     public void showSelectDesignFilter() {
         mProgressTitleBar.setSpinnerLabel(2);
+        mPresenter.loadProgressList(true);
 
     }
 
@@ -238,6 +241,7 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
 
     @Override
     public void showUserInfo(int uid) {
+        Toast.makeText(getContext(),"去往个人主页",Toast.LENGTH_LONG).show();
         ///todo intent to info
     }
 
@@ -248,6 +252,7 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
 
     @Override
     public void showAddNewProgress() {
+        Toast.makeText(getContext(),"去往新进度编辑页",Toast.LENGTH_LONG).show();
         ///todo intent to empty edit-fragment
     }
 
@@ -258,11 +263,11 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
 
     @Override
     public void moveNewStickyProgress(int position) {
-        mAdapter.moveProgress(position);
+        mAdapter.moveProgress(position, 0);
     }
 
     @Override
     public void moveDeleteStickyProgress(int position) {
-       // mAdapter.moveProgress(position);
+        mAdapter.moveProgress(position, 1);
     }
 }

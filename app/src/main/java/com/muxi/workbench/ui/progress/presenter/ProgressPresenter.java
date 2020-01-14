@@ -10,8 +10,18 @@ import com.muxi.workbench.ui.progress.model.DataSource;
 import com.muxi.workbench.ui.progress.model.Progress;
 import com.muxi.workbench.ui.progress.model.ProgressRepository;
 
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 public class ProgressPresenter implements ProgressContract.Presenter {
 
@@ -34,6 +44,7 @@ public class ProgressPresenter implements ProgressContract.Presenter {
 
     @Override
     public void start() {
+        mCurrentFiltering = ProgressFilterType.ALL_PROGRESS;
         page = 1;
     }
 
@@ -46,20 +57,43 @@ public class ProgressPresenter implements ProgressContract.Presenter {
             page = 1;
         else
             page++;
-        Log.e("load",ifForceUpdate+"  "+page);
 
-        if ( ifForceUpdate ) {
-            mProgressRepository.getAllStickyProgress(new DataSource.LoadStickyProgressCallback() {
-                @Override
-                public void onStickyProgressLoaded(List<Progress> StickyProgressList) {
-                    Log.e("sticky","get");
+        List<Integer> StickyProgressSidList = new ArrayList<>();
+        List<Integer> UserListToShow = new ArrayList<>();
+
+        mProgressRepository.getAllStickyProgress(new DataSource.LoadStickyProgressCallback() {
+            @Override
+            public void onStickyProgressLoaded(List<Progress> StickyProgressList) {
+                if (ifForceUpdate)
                     ProgressListToShow.addAll(StickyProgressList);
-                }
-                @Override
-                public void onDataNotAvailable() {
-                    Log.e("sticky", "get none");
-                }
-            });
+                for (int i = 0; i < StickyProgressList.size(); i++)
+                    StickyProgressSidList.add(StickyProgressList.get(i).getSid());
+            }
+
+            @Override
+            public void onDataNotAvailable() {
+            }
+        });
+
+        switch (mCurrentFiltering) {
+            case ALL_PROGRESS:
+                UserListToShow.add(0);
+                break;
+            case PRODUCT_PROGRESS:
+                getGroupUserList(UserListToShow,1);
+                break;
+            case DESIGN_PROGRESS:
+                getGroupUserList(UserListToShow,5);
+                break;
+            case ANDROID_PROGRESS:
+                getGroupUserList(UserListToShow,4);
+                break;
+            case BACKEND_PROGRESS:
+                getGroupUserList(UserListToShow,3);
+                break;
+            case FRONTEND_PROGRESS:
+                getGroupUserList(UserListToShow,2);
+                break;
         }
 
         mProgressRepository.getProgressList(page, new DataSource.LoadProgressListCallback() {
@@ -67,55 +101,26 @@ public class ProgressPresenter implements ProgressContract.Presenter {
             @Override
             public void onProgressListLoaded(List<Progress> progressList) {
 
-                showFilterLabel();
-
-                for (int j=0;j<progressList.size();j++) {
-
+                for (int j=0 ; j < progressList.size() ; j++ ) {
                     Progress progress = progressList.get(j);
-                    switch (mCurrentFiltering) {
-                        case ALL_PROGRESS:
-                            ProgressListToShow.add(progress);
-                            break;
-                        case PRODUCT_PROGRESS:
-                            if (ifThisGroup(progress.getUid(), 1)) {
-                                ProgressListToShow.add(progress);
-                            }
-                            break;
-                        case DESIGN_PROGRESS:
-                            if (ifThisGroup(progress.getUid(), 2)) {
-                                ProgressListToShow.add(progress);
-                            }
-                            break;
-                        case ANDROID_PROGRESS:
-                            if (ifThisGroup(progress.getUid(), 3)) {
-                                ProgressListToShow.add(progress);
-                            }
-                            break;
-                        case BACKEND_PROGRESS:
-                            if (ifThisGroup(progress.getUid(), 4)) {
-                                ProgressListToShow.add(progress);
-                            }
-                            break;
-                        case FRONTEND_PROGRESS:
-                            if (ifThisGroup(progress.getUid(), 5)) {
-                                ProgressListToShow.add(progress);
-                            }
-                            break;
-                    }
+                    if ( StickyProgressSidList.contains(progress.getSid()))
+                        continue;
+                    if ( UserListToShow.size() == 1 )
+                        ProgressListToShow.add(progress);
+                    else if ( UserListToShow.contains(progress.getUid()) )
+                        ProgressListToShow.add(progress);
                 }
 
                 if ( ifForceUpdate ) {
-                    Log.e("refresh","replaceAll");
                     mProgressView.showProgressList(ProgressListToShow);
                 } else {
-                    Log.e("refresh","Add");
                     mProgressView.showMoreProgress(ProgressListToShow);
                 }
             }
 
             @Override
             public void onDataNotAvailable() {
-                Log.e("getPage1","fail");
+                Log.e("getPage","fail");
                 mProgressView.showError();
             }
         });
@@ -185,11 +190,21 @@ public class ProgressPresenter implements ProgressContract.Presenter {
     @Override
     public void setProgressFilterType(ProgressFilterType requestType) {
         mCurrentFiltering = requestType;
+        showFilterLabel();
     }
 
-    private boolean ifThisGroup(int uid, int gid) {
-        ///todo add judgement
-        return true;
+    private void getGroupUserList(List<Integer> userList, int gid) {
+
+        mProgressRepository.getGroupUserList(gid, new DataSource.GetGroupUserListCallback() {
+            @Override
+            public void onSuccessfulGet(List<Integer> UserList) {
+                userList.addAll(UserList);
+            }
+            @Override
+            public void onFail() {
+                mProgressView.showError();
+            }
+        });
     }
 
     private void showFilterLabel() {

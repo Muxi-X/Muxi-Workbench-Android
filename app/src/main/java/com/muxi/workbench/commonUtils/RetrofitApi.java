@@ -7,6 +7,7 @@ import com.muxi.workbench.ui.login.model.netcall.UserBean;
 import com.muxi.workbench.ui.login.model.netcall.UserBeanTwo;
 import com.muxi.workbench.ui.progress.model.net.CommentStautsBean;
 import com.muxi.workbench.ui.progress.model.net.GetAStatusResponse;
+import com.muxi.workbench.ui.progress.model.net.GetGroupUserListResponse;
 import com.muxi.workbench.ui.progress.model.net.GetStatusListResponse;
 import com.muxi.workbench.ui.progress.model.net.IfLikeStatusBean;
 import com.muxi.workbench.ui.progress.model.net.LikeStatusResponse;
@@ -51,5 +52,8 @@ public interface RetrofitApi {
 
     @PUT("http://work.muxi-tech.xyz/api/v1.0/status/{sid}/comments/")
     Observable<Response<Void>> commentStatus(@Header("token") String token, @Path("sid") int sid, @Body CommentStautsBean commentStautsBean);
+
+    @GET("http://work.muxi-tech.xyz/api/v1.0/group/{gid}/userList/")
+    Observable<GetGroupUserListResponse> getGroupUserList(@Header("token") String token, @Path("gid") int gid);
 
 }

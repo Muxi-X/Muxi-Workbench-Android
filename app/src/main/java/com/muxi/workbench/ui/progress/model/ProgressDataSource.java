@@ -6,8 +6,10 @@ import androidx.annotation.NonNull;
 
 import com.muxi.workbench.commonUtils.AppExecutors;
 import com.muxi.workbench.commonUtils.NetUtil;
+import com.muxi.workbench.ui.login.model.User;
 import com.muxi.workbench.ui.login.model.UserWrapper;
 import com.muxi.workbench.ui.progress.model.net.CommentStautsBean;
+import com.muxi.workbench.ui.progress.model.net.GetGroupUserListResponse;
 import com.muxi.workbench.ui.progress.model.net.GetStatusListResponse;
 import com.muxi.workbench.ui.progress.model.net.IfLikeStatusBean;
 import com.muxi.workbench.ui.progress.model.net.LikeStatusResponse;
@@ -212,6 +214,37 @@ public class ProgressDataSource implements DataSource {
 
     @Override
     public void getProgress(int sid, LoadProgressCallback callback) {
+        ///todo get a progress
+    }
 
+    @Override
+    public void getGroupUserList(int gid, GetGroupUserListCallback callback) {
+        List<Integer> UserList = new ArrayList<>();
+        NetUtil.getInstance().getApi().getGroupUserList(token, gid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<GetGroupUserListResponse>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(GetGroupUserListResponse getGroupUserListResponse) {
+                        for ( int i = 0 ; i < getGroupUserListResponse.getList().size() ; i++ )
+                            UserList.add(getGroupUserListResponse.getList().get(i).getUserID());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        callback.onFail();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        callback.onSuccessfulGet(UserList);
+                    }
+                });
     }
 }

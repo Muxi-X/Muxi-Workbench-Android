@@ -50,6 +50,14 @@ public interface DataSource {
         void onDataNotAvailable();
     }
 
+    interface GetGroupUserListCallback {
+
+        void onSuccessfulGet(List<Integer> UserList);
+
+        void onFail();
+
+    }
+
     void getProgressList(int page, @NonNull LoadProgressListCallback callback);
 
     void commentProgress(int sid, String comment, CommentProgressCallback callback);
@@ -67,4 +75,6 @@ public interface DataSource {
     void deleteStickyProgress(@NonNull int sid);
 
     void getProgress(int sid, LoadProgressCallback callback);
+
+    void getGroupUserList(int gid, GetGroupUserListCallback callback);
 }

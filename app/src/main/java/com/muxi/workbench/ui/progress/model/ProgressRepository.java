@@ -68,4 +68,9 @@ public class ProgressRepository implements DataSource {
     public void getProgress(int sid, LoadProgressCallback callback) {
         mProgressDataSource.getProgress(sid, callback);
     }
+
+    @Override
+    public void getGroupUserList(int gid, GetGroupUserListCallback callback) {
+        mProgressDataSource.getGroupUserList(gid, callback);
+    }
 }
