@@ -1,5 +1,7 @@
 package com.muxi.workbench.ui.progress.view;
 
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,7 +18,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.muxi.workbench.R;
 import com.muxi.workbench.commonUtils.AppExecutors;
-import com.muxi.workbench.ui.login.model.UserWrapper;
 import com.muxi.workbench.ui.progress.ProgressContract;
 import com.muxi.workbench.ui.progress.ProgressFilterType;
 import com.muxi.workbench.ui.progress.model.Progress;
@@ -100,6 +102,7 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -129,6 +132,8 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
 
         mProgressTitleBar = root.findViewById(R.id.ptb_progress);
         mProgressTitleBar.setOptionSp(getContext());
+        mProgressTitleBar.setBackgroundColor(Color.parseColor("#ffffff"));
+        mProgressTitleBar.setElevation(2);
         mProgressTitleBar.setOptionSelectListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -177,6 +182,7 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
     @Override
     public void showProgressList(List<Progress> progressList) {
         mAdapter.replaceData(progressList);
+        mProgressSrl.setRefreshing(false);
     }
 
     @Override

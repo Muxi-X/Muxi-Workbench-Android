@@ -22,7 +22,6 @@ import com.muxi.workbench.ui.progress.model.Progress;
 import org.jsoup.Jsoup;
 
 import java.util.List;
-import java.util.PrimitiveIterator;
 
 public class ProgressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -64,14 +63,16 @@ public class ProgressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             Progress progress = ProgressList.get(position);
 
             String Acontent = Jsoup.parse(progress.getContent()).body().wholeText();
-            while ( Acontent.charAt(0) == '\n' )
+
+            while ( Acontent.length() > 0 && Acontent.charAt(0) == '\n' )
                 Acontent = Acontent.substring(1);
-            Acontent.replaceAll("\n\n","\n");
-            while ( Acontent.length() > 0 && Acontent.charAt(Acontent.length() -1) == '\n' ) {
+            while ( Acontent.length() > 0 && Acontent.charAt(Acontent.length() -1) == '\n' )
                 Acontent = Acontent.substring(0,Acontent.length()-1);
-            }
+
             if (progress.getContent().contains("img"))
                 Acontent = Acontent.concat("\n[图片]");
+
+
             if (Acontent.length() > 150 ) {
                 Acontent = Acontent.substring(0,150);
                 mholder.moreContentTv.setVisibility(View.VISIBLE);
