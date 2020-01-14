@@ -1,7 +1,5 @@
 package com.muxi.workbench.ui.progress.model;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 
@@ -44,7 +42,6 @@ public class ProgressRepository implements DataSource {
 
     @Override
     public void refreshProgressList() {
-
     }
 
     @Override
@@ -53,8 +50,8 @@ public class ProgressRepository implements DataSource {
     }
 
     @Override
-    public void setStickyProgress(@NonNull int sid) {
-        mProgressDataSource.setStickyProgress(sid);
+    public void setStickyProgress(@NonNull Progress progress) {
+        mProgressDataSource.setStickyProgress(progress);
     }
 
     @Override
@@ -65,5 +62,15 @@ public class ProgressRepository implements DataSource {
     @Override
     public void deleteStickyProgress(@NonNull int sid) {
         mProgressDataSource.deleteStickyProgress(sid);
+    }
+
+    @Override
+    public void getProgress(int sid, LoadProgressCallback callback) {
+        mProgressDataSource.getProgress(sid, callback);
+    }
+
+    @Override
+    public void getGroupUserList(int gid, GetGroupUserListCallback callback) {
+        mProgressDataSource.getGroupUserList(gid, callback);
     }
 }

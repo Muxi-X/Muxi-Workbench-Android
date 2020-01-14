@@ -11,10 +11,10 @@ import java.util.List;
 @Dao
 public interface StickyProgressDao {
 
-    @Query("SELECT * FROM StickyProgress")
-    List<Integer> getStickyProgressList();
+    @Query("SELECT * FROM stickyprogresses")
+    List<StickyProgress> getStickyProgressList();
 
-    @Query( "DELETE FROM StickyProgress WHERE sid =:sid")
+    @Query( "DELETE FROM stickyprogresses WHERE Sid = :sid")
      void deleteStickyProgress(int sid);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

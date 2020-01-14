@@ -92,11 +92,10 @@ public class ProgressTitleBar extends ConstraintLayout {
         public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             View view = super.getDropDownView(position, convertView, parent);
             TextView textView = (TextView)view;
-            if(selectedPosition == position){
+            if ( selectedPosition == position ) {
                 textView.setTextColor(0xff373741);
                 textView.getPaint().setFakeBoldText(true);
-            }
-            else{
+            } else{
                 textView.setTextColor(0xff6d6d6d);
                 textView.getPaint().setFakeBoldText(false);
             }

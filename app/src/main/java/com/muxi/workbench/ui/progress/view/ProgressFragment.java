@@ -1,7 +1,6 @@
 package com.muxi.workbench.ui.progress.view;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.muxi.workbench.R;
 import com.muxi.workbench.commonUtils.AppExecutors;
@@ -30,13 +30,13 @@ import java.util.List;
 
 public class ProgressFragment extends Fragment implements ProgressContract.View {
 
-    private int uid = UserWrapper.getInstance().getUser().getUid();
-
     private ProgressContract.Presenter mPresenter;
 
     private ProgressTitleBar mProgressTitleBar;
 
     private RecyclerView mProgressListRv;
+
+    private SwipeRefreshLayout mProgressSrl;
 
     private ProgressListAdapter mAdapter;
 
@@ -58,11 +58,11 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
         }
 
         @Override
-        public void onLikeClick(Progress likeProgress) {
-            if ( likeProgress.isIfLike() )
-                mPresenter.likeProgress(likeProgress.getSid());
+        public void onLikeClick(Progress likeProgress, int position) {
+            if ( likeProgress.isIfLike() == 1 )
+                mPresenter.cancelLikeProgress(likeProgress.getSid(), position);
             else
-                mPresenter.cancelLikeProgress(likeProgress.getSid());
+                mPresenter.likeProgress(likeProgress.getSid(), position);
         }
 
         @Override
@@ -77,13 +77,9 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
 
         @Override
         public void onEditClick(Progress editProgress) {
-
+            Toast.makeText(getContext(), "去编辑进度",Toast.LENGTH_LONG).show();
         }
     };
-
-    public static ProgressFragment newInstance() {
-        return new ProgressFragment();
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -91,7 +87,7 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
         mPresenter = new ProgressPresenter(
                 ProgressRepository.getInstance(
                     ProgressDataSource.getInstance(
-                        StickyProgressDatabase.getInstance(getContext()).stickyProgressDao(),
+                            StickyProgressDatabase.getInstance(getContext()).ProgressDao(),
                         new AppExecutors()
                     )
                 ), this);
@@ -109,8 +105,24 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_progress, container, false);
 
-        mAdapter = new ProgressListAdapter(getContext(), new ArrayList<>(), mItemListener);
+        mProgressSrl = root.findViewById(R.id.srl_progress);
+        mProgressSrl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mPresenter.loadProgressList(true);
+            }
+        });
+        mProgressSrl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mProgressSrl.isRefreshing()) {
+                    mProgressSrl.setRefreshing(false);
+                    Toast.makeText(getContext(), "已停止更新", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
+        mAdapter = new ProgressListAdapter(mPresenter, getContext(), new ArrayList<>(), mItemListener);
         mProgressListRv = root.findViewById(R.id.rv_progress);
         mProgressListRv.setLayoutManager(new LinearLayoutManager(getContext()));
         mProgressListRv.setAdapter(mAdapter);
@@ -152,8 +164,7 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
              ///TODO  to Progress-editing Fragment
         });
 
-        mPresenter.loadProgressList(true);
-        mPresenter.setStickyProgress();
+//        mPresenter.loadProgressList(true);
 
         return root;
     }
@@ -165,76 +176,72 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
 
     @Override
     public void showProgressList(List<Progress> progressList) {
-        Log.e(progressList.get(0).getContent(),"showProgressList");
         mAdapter.replaceData(progressList);
     }
 
     @Override
     public void showCommentView() {
-
+        Toast.makeText(getContext(),"去评论",Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void showProgressDetail(int sid) {
-
+        Toast.makeText(getContext(),"去详情页",Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void showLikeProgress() {
-
-    }
-
-    @Override
-    public void showNotLikedProgress() {
-
-    }
-
-    @Override
-    public void renewCommentNum() {
-
+    public void refreshLikeProgress(int position, int iflike) {
+        mAdapter.notifyProgress(position, iflike);
     }
 
     @Override
     public void showSelectAllFilter() {
         mProgressTitleBar.setSpinnerLabel(0);
+        mPresenter.loadProgressList(true);
     }
 
     @Override
     public void showSelectProductFilter() {
         mProgressTitleBar.setSpinnerLabel(1);
+        mPresenter.loadProgressList(true);
     }
 
     @Override
     public void showSelectBackendFilter() {
         mProgressTitleBar.setSpinnerLabel(5);
+        mPresenter.loadProgressList(true);
 
     }
 
     @Override
     public void showSelectFrontendFilter() {
         mProgressTitleBar.setSpinnerLabel(3);
+        mPresenter.loadProgressList(true);
 
     }
 
     @Override
     public void showSelectAndroidFilter() {
         mProgressTitleBar.setSpinnerLabel(4);
+        mPresenter.loadProgressList(true);
 
     }
 
     @Override
     public void showSelectDesignFilter() {
         mProgressTitleBar.setSpinnerLabel(2);
+        mPresenter.loadProgressList(true);
 
     }
 
     @Override
     public void showMoreProgress(List<Progress> progresses) {
-        ///todo showMoreProgress
+        mAdapter.addMoreProgress(progresses);
     }
 
     @Override
     public void showUserInfo(int uid) {
+        Toast.makeText(getContext(),"去往个人主页",Toast.LENGTH_LONG).show();
         ///todo intent to info
     }
 
@@ -244,17 +251,23 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
     }
 
     @Override
-    public boolean isActive() {
-        return false;
-    }
-
-    @Override
     public void showAddNewProgress() {
-        ///todo intent to add
+        Toast.makeText(getContext(),"去往新进度编辑页",Toast.LENGTH_LONG).show();
+        ///todo intent to empty edit-fragment
     }
 
     @Override
-    public void showDeleteProgress() {
+    public void showDeleteProgress(int position) {
+        mAdapter.removeData(position);
+    }
 
+    @Override
+    public void moveNewStickyProgress(int position) {
+        mAdapter.moveProgress(position, 0);
+    }
+
+    @Override
+    public void moveDeleteStickyProgress(int position) {
+        mAdapter.moveProgress(position, 1);
     }
 }
