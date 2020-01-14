@@ -31,9 +31,9 @@ public interface RetrofitApi {
     @POST("http://work.muxixyz.com/api/v1.0/auth/login/")
     Observable<LoginResponse2> loginWorkbench(@Body UserBeanTwo userBeanTwo);
 
-    @Headers("Content-Type: application/json")
     @GET("feed/list/{page}/")
     Observable<FeedBean> getFeed(@Header("token") String token, @Path("page") int page);
+
     @GET("/status/{sid}/")
     Observable<GetAStatusResponse> getAStatus(@Header("token") String token, @Path("sid") int sid);
 

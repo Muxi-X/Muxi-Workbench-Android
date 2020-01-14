@@ -94,35 +94,36 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
         stringBuilder.append(mData.getAction());
-        switch (mSource.getProject_id()) {
+        switch (mSource.getKind_id()) {
             case 1:
-                stringBuilder.append("团队");
+                stringBuilder.append("了团队");
                 break;
 
             case 2:
-                stringBuilder.append("项目");
+                stringBuilder.append("了项目");
                 break;
 
             case 3:
-                stringBuilder.append("文档");
+                stringBuilder.append("了文档");
                 break;
 
             case 4:
-                stringBuilder.append("文件");
+                stringBuilder.append("了文件");
                 break;
 
             case 5:
-                stringBuilder.append("");
+                stringBuilder.append("了进度");
                 break;
 
             case 6:
-                stringBuilder.append("进度");
+                stringBuilder.append("了进度");
                 break;
 
             default:
                 break;
         }
-        stringBuilder.append(mSource.getProject_name());
+        if (!mSource.getProject_name().contains("noname"))
+            stringBuilder.append(mSource.getProject_name());
         vh.mStatus.setText(stringBuilder);
 
 
