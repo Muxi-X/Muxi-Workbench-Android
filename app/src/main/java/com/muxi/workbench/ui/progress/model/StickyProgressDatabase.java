@@ -20,7 +20,7 @@ public abstract class StickyProgressDatabase extends RoomDatabase {
         synchronized (sLock) {
             if (INSTANCE == null) {
                 INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                        StickyProgressDatabase.class, "StickyProgress.db").fallbackToDestructiveMigration().build();
+                        StickyProgressDatabase.class, "StickyProgress.db").build();
             }
             return INSTANCE;
         }
