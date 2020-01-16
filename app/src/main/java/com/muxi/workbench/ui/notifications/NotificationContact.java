@@ -15,6 +15,8 @@ public interface NotificationContact {
         void showMore();
 
         void refresh();
+
+        void goToDetail(int sourceId);
     }
 
     interface Presenter {
@@ -27,6 +29,8 @@ public interface NotificationContact {
         void loadMore();
 
         void clearRedNode();
+
+        void read(int sourceId);
     }
 
 

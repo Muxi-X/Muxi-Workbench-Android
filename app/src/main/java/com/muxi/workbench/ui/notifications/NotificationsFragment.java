@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
@@ -40,6 +41,13 @@ public class NotificationsFragment extends Fragment implements NotificationConta
         recyclerView = root.findViewById(R.id.notification_rv);
         emptyIv = root.findViewById(R.id.notification_empty);
 
+        tvReadAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "全部已读", Toast.LENGTH_SHORT).show();
+                allRead();
+            }
+        });
 
         return root;
     }
@@ -89,5 +97,10 @@ public class NotificationsFragment extends Fragment implements NotificationConta
     @Override
     public void refresh() {
         mPresenter.refresh();
+    }
+
+    @Override
+    public void goToDetail(int sourceId) {
+
     }
 }
