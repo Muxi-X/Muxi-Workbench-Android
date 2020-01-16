@@ -48,7 +48,7 @@ public class ProgressDetailRemoteDataSource implements ProgressDetailDataSource 
 
                     @Override
                     public void onNext(GetAStatusResponse getAStatusResponse) {
-                        callback.onSucessGet(getAStatusResponse);
+                        callback.onSuccessGet(getAStatusResponse);
                     }
 
                     @Override

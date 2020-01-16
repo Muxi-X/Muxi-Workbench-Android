@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,6 +23,7 @@ import com.muxi.workbench.ui.progress.model.progressDetail.ProgressDetailReposit
 import com.muxi.workbench.ui.progress.presenter.ProgressDetailPresenter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProgressDetailFragment extends Fragment implements ProgressDetailContract.View {
 
@@ -36,34 +38,38 @@ public class ProgressDetailFragment extends Fragment implements ProgressDetailCo
     ProgressDetailListAdapter.ProgressDetailListener mPRogressDetailListener = new ProgressDetailListAdapter.ProgressDetailListener() {
         @Override
         public void onLikeClick() {
-
+            mPresenter.setLikeProgress();
         }
 
         @Override
         public void onEditClick() {
-
+            Toast.makeText(getContext(), "去编辑进度", Toast.LENGTH_SHORT).show();
+            ///todo 去编辑进度页
         }
 
         @Override
         public void onCommentClick() {
-
+            ///TODO 获得编辑框焦点
         }
 
         @Override
         public void onUserClick() {
-
+            Toast.makeText(getContext(), "去个人主页", Toast.LENGTH_LONG).show();
+            ///todo  去个人主页
         }
 
         @Override
         public void onDeleteCommentClick() {
-
+            mPresenter.deleteComment();
         }
     };
+
+    public ProgressDetailFragment() {
+    }
 
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.start();
     }
 
     @Override
@@ -88,12 +94,26 @@ public class ProgressDetailFragment extends Fragment implements ProgressDetailCo
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);//添加默认的返回图标
         ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(true); //设置返回键可用
 
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ///todo 返回
+            }
+        });
+
+        mPresenter.start(this.getArguments().getInt("sid"), this.getArguments().getString("avatar"), this.getArguments().getString("username"));
+
         return root;
     }
 
     @Override
     public void setPresenter(ProgressDetailContract.Presenter mPresenter) {
         mPresenter = mPresenter;
+    }
+
+    @Override
+    public void showProgressDetail(Progress progress, List<Comment> commentList) {
+        mAdapter.refresh(progress, commentList);
     }
 
     @Override
@@ -120,4 +140,6 @@ public class ProgressDetailFragment extends Fragment implements ProgressDetailCo
     public void showEditProgress() {
 
     }
+
+
 }

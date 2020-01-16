@@ -24,6 +24,7 @@ public class Progress {
         this.avatar = avatar;
         this.username = username;
         this.time = time;
+        this.title = title;
         this.content = content;
         this.ifLike = ifLike;
         this.commentCount = commentCount;

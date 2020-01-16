@@ -26,7 +26,7 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
 
     private Progress mProgress;
 
-    private List<Comment> commentList;
+    private List<Comment> mCommentList;
 
     private int uid = UserWrapper.getInstance().getUser().getUid();
 
@@ -46,11 +46,11 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
 
     }
 
-    public ProgressDetailListAdapter(Context mContext, Progress mProgress, List<Comment> commentList, ProgressDetailListener mProgressDetailListener) {
-        this.mContext = mContext;
-        this.mProgress = mProgress;
-        this.commentList = commentList;
-        this.mProgressDetailListener = mProgressDetailListener;
+    public ProgressDetailListAdapter(Context context, Progress progress, List<Comment> commentList, ProgressDetailListener progressDetailListener) {
+        this.mContext = context;
+        this.mProgress = progress;
+        this.mCommentList = commentList;
+        this.mProgressDetailListener = progressDetailListener;
     }
 
     @NonNull
@@ -121,7 +121,7 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
         } else if ( holder instanceof CommentViewHolder) {
 
             CommentViewHolder mholder = (CommentViewHolder)holder;
-            Comment comment = commentList.get(position-1);
+            Comment comment = mCommentList.get(position-1);
 
             if ( uid == comment.getUid()) {
                 mholder.mDeleteTv.setVisibility(View.VISIBLE);
@@ -146,7 +146,7 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
 
     @Override
     public int getItemCount() {
-        return commentList.size()+1;
+        return mCommentList.size()+1;
     }
 
     @Override
@@ -154,6 +154,12 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
         if ( position == 0 )
             return 0;
         else return 1;
+    }
+
+    public void refresh (Progress progress, List<Comment> commentList) {
+        mProgress = progress;
+        mCommentList = commentList;
+        notifyDataSetChanged();
     }
 
     class ContentViewHolder extends RecyclerView.ViewHolder {
