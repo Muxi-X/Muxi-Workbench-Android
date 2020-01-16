@@ -1,7 +1,8 @@
-package com.muxi.workbench.ui.progress;
+package com.muxi.workbench.ui.progress.contract;
 
 import androidx.annotation.NonNull;
 
+import com.muxi.workbench.ui.progress.ProgressFilterType;
 import com.muxi.workbench.ui.progress.model.Progress;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public interface ProgressContract {
 
         void showDeleteProgress(int position);
 
-        void showSelectAllFilter();
+  /*      void showSelectAllFilter();
 
         void showSelectProductFilter();
 
@@ -34,7 +35,7 @@ public interface ProgressContract {
 
         void showSelectAndroidFilter();
 
-        void showSelectDesignFilter();
+        void showSelectDesignFilter();*/
 
         void showMoreProgress(List<Progress> progresses);
 
@@ -50,7 +51,7 @@ public interface ProgressContract {
 
     interface Presenter {
 
-        void start();
+        void start(ProgressFilterType lastProgressFilterType, int lastPage);
 
         void loadProgressList(boolean ifForceUpdate);
 
@@ -64,11 +65,11 @@ public interface ProgressContract {
 
         void cancelLikeProgress(int sid, int position);
 
-        void commentProgress(int sid, String comment);
-
         void setProgressFilterType(ProgressFilterType requestType);
 
-        ProgressFilterType getFiltering();
+        int getFiltering();
+
+        int getPage();
 
         void setProgressSticky(int position, Progress progress);
 

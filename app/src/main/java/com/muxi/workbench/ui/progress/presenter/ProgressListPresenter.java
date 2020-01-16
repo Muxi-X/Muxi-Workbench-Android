@@ -4,28 +4,18 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.muxi.workbench.ui.progress.ProgressContract;
+import com.muxi.workbench.ui.progress.contract.ProgressContract;
 import com.muxi.workbench.ui.progress.ProgressFilterType;
-import com.muxi.workbench.ui.progress.model.DataSource;
 import com.muxi.workbench.ui.progress.model.Progress;
-import com.muxi.workbench.ui.progress.model.ProgressRepository;
-
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
+import com.muxi.workbench.ui.progress.model.progressList.ProgressListDataSource;
+import com.muxi.workbench.ui.progress.model.progressList.ProgressListRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
+public class ProgressListPresenter implements ProgressContract.Presenter {
 
-public class ProgressPresenter implements ProgressContract.Presenter {
-
-    private final ProgressRepository mProgressRepository;
+    private final ProgressListRepository mProgressListRepository;
 
     private final ProgressContract.View mProgressView;
 
@@ -35,17 +25,16 @@ public class ProgressPresenter implements ProgressContract.Presenter {
 
     private static int page = 1;
 
-    public ProgressPresenter(@NonNull ProgressRepository progressRepository, @NonNull ProgressContract.View progressView) {
-        mProgressRepository = progressRepository;
+    public ProgressListPresenter(@NonNull ProgressListRepository progressListRepository, @NonNull ProgressContract.View progressView) {
+        mProgressListRepository = progressListRepository;
         mProgressView = progressView;
-
-       mProgressView.setPresenter(this);
+        mProgressView.setPresenter(this);
     }
 
     @Override
-    public void start() {
-        mCurrentFiltering = ProgressFilterType.ALL_PROGRESS;
-        page = 1;
+    public void start(ProgressFilterType lasProgressFilterType, int lastPage) {
+        mCurrentFiltering = lasProgressFilterType;
+        page = lastPage;
     }
 
     @Override
@@ -61,7 +50,7 @@ public class ProgressPresenter implements ProgressContract.Presenter {
         List<Integer> StickyProgressSidList = new ArrayList<>();
         List<Integer> UserListToShow = new ArrayList<>();
 
-        mProgressRepository.getAllStickyProgress(new DataSource.LoadStickyProgressCallback() {
+        mProgressListRepository.getAllStickyProgress(new ProgressListDataSource.LoadStickyProgressCallback() {
             @Override
             public void onStickyProgressLoaded(List<Progress> StickyProgressList) {
                 if (ifForceUpdate)
@@ -96,7 +85,7 @@ public class ProgressPresenter implements ProgressContract.Presenter {
                 break;
         }
 
-        mProgressRepository.getProgressList(page, new DataSource.LoadProgressListCallback() {
+        mProgressListRepository.getProgressList(page, new ProgressListDataSource.LoadProgressListCallback() {
 
             @Override
             public void onProgressListLoaded(List<Progress> progressList) {
@@ -111,9 +100,11 @@ public class ProgressPresenter implements ProgressContract.Presenter {
                         ProgressListToShow.add(progress);
                 }
 
-                if ( ifForceUpdate ) {
+                if ( ifForceUpdate || page == 1 ) {
+                    Log.e("progressfragment","replace");
                     mProgressView.showProgressList(ProgressListToShow);
                 } else {
+                    Log.e("progressfragment","addMore");
                     mProgressView.showMoreProgress(ProgressListToShow);
                 }
             }
@@ -139,7 +130,7 @@ public class ProgressPresenter implements ProgressContract.Presenter {
 
     @Override
     public void likeProgress(int sid, int position) {
-        mProgressRepository.ifLikeProgress(sid, true, new DataSource.SetLikeProgressCallback() {
+        mProgressListRepository.ifLikeProgress(sid, true, new ProgressListDataSource.SetLikeProgressCallback() {
             @Override
             public void onSuccessfulSet() {
                 mProgressView.refreshLikeProgress(position, 1);
@@ -154,7 +145,7 @@ public class ProgressPresenter implements ProgressContract.Presenter {
 
     @Override
     public void cancelLikeProgress(int sid, int position) {
-        mProgressRepository.ifLikeProgress(sid, false, new DataSource.SetLikeProgressCallback() {
+        mProgressListRepository.ifLikeProgress(sid, false, new ProgressListDataSource.SetLikeProgressCallback() {
             @Override
             public void onSuccessfulSet() {
                 mProgressView.refreshLikeProgress(position, 0);
@@ -168,34 +159,38 @@ public class ProgressPresenter implements ProgressContract.Presenter {
     }
 
     @Override
-    public void commentProgress(@NonNull int sid, String comment) {
-        mProgressRepository.commentProgress(sid, comment, new DataSource.CommentProgressCallback() {
-            @Override
-            public void onSuccessfulComment() {
-
-            }
-
-            @Override
-            public void onFail() {
-                mProgressView.showError();
-            }
-        });
+    public int getFiltering() {
+        switch (mCurrentFiltering) {
+            case ALL_PROGRESS:
+                return 0;
+            case DESIGN_PROGRESS:
+                return 5;
+            case ANDROID_PROGRESS:
+                return 3;
+            case BACKEND_PROGRESS:
+                return 4;
+            case PRODUCT_PROGRESS:
+                return 1;
+            case FRONTEND_PROGRESS:
+                return 2;
+        }
+        return 0;
     }
 
     @Override
-    public ProgressFilterType getFiltering() {
-        return mCurrentFiltering;
+    public int getPage() {
+        return page;
     }
 
     @Override
     public void setProgressFilterType(ProgressFilterType requestType) {
         mCurrentFiltering = requestType;
-        showFilterLabel();
+       // showFilterLabel();
     }
 
     private void getGroupUserList(List<Integer> userList, int gid) {
 
-        mProgressRepository.getGroupUserList(gid, new DataSource.GetGroupUserListCallback() {
+        mProgressListRepository.getGroupUserList(gid, new ProgressListDataSource.GetGroupUserListCallback() {
             @Override
             public void onSuccessfulGet(List<Integer> UserList) {
                 userList.addAll(UserList);
@@ -207,7 +202,7 @@ public class ProgressPresenter implements ProgressContract.Presenter {
         });
     }
 
-    private void showFilterLabel() {
+  /*  private void showFilterLabel() {
         switch (mCurrentFiltering) {
             case ALL_PROGRESS:
                 mProgressView.showSelectAllFilter();
@@ -228,7 +223,7 @@ public class ProgressPresenter implements ProgressContract.Presenter {
                 mProgressView.showSelectProductFilter();
                 break;
         }
-    }
+    }*/
 
     @Override
     public void openUserInfo(@NonNull int uid) {
@@ -237,7 +232,7 @@ public class ProgressPresenter implements ProgressContract.Presenter {
 
     @Override
     public void deleteProgress(int position, int sid) {
-        mProgressRepository.deleteProgress(sid, new DataSource.DeleteProgressCallback() {
+        mProgressListRepository.deleteProgress(sid, new ProgressListDataSource.DeleteProgressCallback() {
             @Override
             public void onSuccessfulDelete() {
                 mProgressView.showDeleteProgress(position);
@@ -252,13 +247,13 @@ public class ProgressPresenter implements ProgressContract.Presenter {
 
     @Override
     public void setProgressSticky(int position, Progress progress) {
-        mProgressRepository.setStickyProgress(progress);
+        mProgressListRepository.setStickyProgress(progress);
         mProgressView.moveNewStickyProgress(position);
     }
 
     @Override
     public void cancelStickyProgress(int position, Progress progress) {
-        mProgressRepository.deleteStickyProgress(progress.getSid());
+        mProgressListRepository.deleteStickyProgress(progress.getSid());
         mProgressView.moveDeleteStickyProgress(position);
     }
 }

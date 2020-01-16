@@ -1,19 +1,12 @@
-package com.muxi.workbench.ui.progress.view;
+package com.muxi.workbench.ui.progress.view.progressLIst;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Outline;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewOutlineProvider;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
@@ -64,6 +57,13 @@ public class ProgressTitleBar extends ConstraintLayout {
         AddIb = findViewById(R.id.ib_progress_title_bar_add);
         OptionIb = findViewById(R.id.ib_progress_title_bar_option);
         mConstraintLayout = findViewById(R.id.cl_progress_title_bar);
+        OptionIb.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("progressfragment","optionImageButton click");
+                OptionSp.performClick();
+            }
+        });
 
     }
 
@@ -79,19 +79,12 @@ public class ProgressTitleBar extends ConstraintLayout {
         AddIb.setOnClickListener(onClickListener);
     }
 
-    public void setOptionIbListener(OnClickListener onClickListener) {
-        OptionIb.setOnClickListener(onClickListener);
-    }
-
-    public void showSpinner(){
-        OptionSp.performClick();
-    }
-
     public void setSpinnerLabel(int position) {
         adapter.setSelectedPosition(position);
     }
 
     public void setOptionSelectListener(AdapterView.OnItemSelectedListener onItemSelectedListener) {
+        Log.e("progressfragment","Spinner set on Item selected");
         OptionSp.setOnItemSelectedListener(onItemSelectedListener);
     }
 

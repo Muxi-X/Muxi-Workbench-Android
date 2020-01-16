@@ -1,10 +1,12 @@
-package com.muxi.workbench.ui.progress.model;
+package com.muxi.workbench.ui.progress.model.progressList;
 
 import androidx.annotation.NonNull;
 
+import com.muxi.workbench.ui.progress.model.Progress;
+
 import java.util.List;
 
-public interface DataSource {
+public interface ProgressListDataSource {
 
     interface LoadProgressListCallback {
 
@@ -36,20 +38,6 @@ public interface DataSource {
         void onFail();
     }
 
-    interface CommentProgressCallback {
-
-        void onSuccessfulComment();
-
-        void onFail();
-    }
-
-    interface LoadProgressCallback {
-
-        void onProgressLoaded();
-
-        void onDataNotAvailable();
-    }
-
     interface GetGroupUserListCallback {
 
         void onSuccessfulGet(List<Integer> UserList);
@@ -59,8 +47,6 @@ public interface DataSource {
     }
 
     void getProgressList(int page, @NonNull LoadProgressListCallback callback);
-
-    void commentProgress(int sid, String comment, CommentProgressCallback callback);
 
     void ifLikeProgress(int sid, boolean iflike, SetLikeProgressCallback callback);
 
@@ -73,8 +59,6 @@ public interface DataSource {
     void getAllStickyProgress(@NonNull LoadStickyProgressCallback callback);
 
     void deleteStickyProgress(@NonNull int sid);
-
-    void getProgress(int sid, LoadProgressCallback callback);
 
     void getGroupUserList(int gid, GetGroupUserListCallback callback);
 }

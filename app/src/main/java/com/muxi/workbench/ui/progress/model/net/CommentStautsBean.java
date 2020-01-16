@@ -8,6 +8,10 @@ public class CommentStautsBean {
 
     private String content;
 
+    public CommentStautsBean(String content) {
+        this.content = content;
+    }
+
     public String getContent() {
         return content;
     }

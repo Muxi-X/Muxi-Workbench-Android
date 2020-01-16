@@ -1,4 +1,4 @@
-package com.muxi.workbench.ui.progress.model;
+package com.muxi.workbench.ui.progress.model.progressList;
 
 import android.util.Log;
 
@@ -6,9 +6,10 @@ import androidx.annotation.NonNull;
 
 import com.muxi.workbench.commonUtils.AppExecutors;
 import com.muxi.workbench.commonUtils.NetUtil;
-import com.muxi.workbench.ui.login.model.User;
 import com.muxi.workbench.ui.login.model.UserWrapper;
-import com.muxi.workbench.ui.progress.model.net.CommentStautsBean;
+import com.muxi.workbench.ui.progress.model.Progress;
+import com.muxi.workbench.ui.progress.model.StickyProgress;
+import com.muxi.workbench.ui.progress.model.StickyProgressDao;
 import com.muxi.workbench.ui.progress.model.net.GetGroupUserListResponse;
 import com.muxi.workbench.ui.progress.model.net.GetStatusListResponse;
 import com.muxi.workbench.ui.progress.model.net.IfLikeStatusBean;
@@ -23,9 +24,9 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Response;
 
-public class ProgressDataSource implements DataSource {
+public class ProgressListRemoteAndLocalDataSource implements ProgressListDataSource {
 
-    private static ProgressDataSource INSTANCE;
+    private static ProgressListRemoteAndLocalDataSource INSTANCE;
 
     private StickyProgressDao mStickyProgressDao;
 
@@ -33,21 +34,18 @@ public class ProgressDataSource implements DataSource {
 
     private final String token = UserWrapper.getInstance().getToken();
 
-    private final int uid = UserWrapper.getInstance().getUser().getUid();
-
-    public static ProgressDataSource getInstance(StickyProgressDao stickyProgressDao, AppExecutors mAppExecutors) {
+    public static ProgressListRemoteAndLocalDataSource getInstance(StickyProgressDao stickyProgressDao, AppExecutors mAppExecutors) {
         if (INSTANCE == null) {
-            synchronized (ProgressDataSource.class) {
+            synchronized (ProgressListRemoteAndLocalDataSource.class) {
                 if ( INSTANCE == null ) {
-                    INSTANCE = new ProgressDataSource(stickyProgressDao, mAppExecutors);
+                    INSTANCE = new ProgressListRemoteAndLocalDataSource(stickyProgressDao, mAppExecutors);
                 }
             }
         }
         return INSTANCE;
     }
 
-    // Prevent direct instantiation.
-    private ProgressDataSource(StickyProgressDao stickyProgressDao, AppExecutors appExecutors) {
+    private ProgressListRemoteAndLocalDataSource(StickyProgressDao stickyProgressDao, AppExecutors appExecutors) {
         mStickyProgressDao = stickyProgressDao;
         mAppExecutors = appExecutors;
     }
@@ -71,7 +69,7 @@ public class ProgressDataSource implements DataSource {
                         for (GetStatusListResponse.StatuListBean statuListBean : getStatusListResponse.getStatuList() ) {
                             progressList.add(new Progress(statuListBean.getSid(),
                                     statuListBean.getUid(), statuListBean.getAvatar(),
-                                    statuListBean.getUsername(), statuListBean.getTime(),
+                                    statuListBean.getUsername(), statuListBean.getTime(), statuListBean.getTitle(),
                                     statuListBean.getContent(), statuListBean.isIflike(),
                                     statuListBean.getCommentCount(), statuListBean.getLikeCount()));
                         }
@@ -89,14 +87,6 @@ public class ProgressDataSource implements DataSource {
                     }
                 });
     }
-
-    @Override
-    public void commentProgress(int sid, String comment, CommentProgressCallback callback) {
-///todo 详情页
-        NetUtil.getInstance().getApi().commentStatus(token, sid, new CommentStautsBean())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-        }
 
         @Override
         public void ifLikeProgress(int sid, boolean iflike, SetLikeProgressCallback callback) {
@@ -210,11 +200,6 @@ public class ProgressDataSource implements DataSource {
             }
         };
         mAppExecutors.diskIO().execute(runnable);
-    }
-
-    @Override
-    public void getProgress(int sid, LoadProgressCallback callback) {
-        ///todo get a progress
     }
 
     @Override

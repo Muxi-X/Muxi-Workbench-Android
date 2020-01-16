@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="5dp"
+    android:background="#ffffff"
+    android:orientation="vertical">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/sdv_avatar_progressdetail_comment_item"
+        android:layout_width="41dp"
+        android:layout_height="41dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="18dp"
+        android:clickable="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        fresco:roundAsCircle="true" />
+
+    <TextView
+        android:id="@+id/tv_username_progressdetail_comment_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="9dp"
+        android:layout_marginTop="7dp"
+        android:text="你的名字"
+        android:textColor="#FF4E92E3"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@+id/sdv_avatar_progressdetail_comment_item"
+        app:layout_constraintTop_toTopOf="@+id/sdv_avatar_progressdetail_comment_item" />
+
+
+    <TextView
+        android:id="@+id/tv_content_progressdetail_comment_item"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="9dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="14dp"
+        android:textColor="#DE000000"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/sdv_avatar_progressdetail_comment_item"
+        app:layout_constraintTop_toBottomOf="@id/tv_username_progressdetail_comment_item"
+        tools:ignore="WebViewLayout" />
+
+    <TextView
+        android:id="@+id/tv_time_progressdetail_comment_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:layout_marginBottom="6dp"
+        android:text="今天16：57"
+        android:textColor="#FF999999"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tv_username_progressdetail_comment_item"
+        app:layout_constraintTop_toBottomOf="@id/tv_content_progressdetail_comment_item" />
+
+
+    <TextView
+        android:id="@+id/tv_delete_progressdetail_comment_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:text="删除"
+        android:textColor="#FF999999"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@+id/tv_time_progressdetail_comment_item"
+        app:layout_constraintTop_toTopOf="@+id/tv_time_progressdetail_comment_item" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

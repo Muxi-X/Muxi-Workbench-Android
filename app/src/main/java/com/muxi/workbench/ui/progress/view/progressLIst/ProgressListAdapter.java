@@ -1,4 +1,4 @@
-package com.muxi.workbench.ui.progress.view;
+package com.muxi.workbench.ui.progress.view.progressLIst;
 
 import android.content.Context;
 import android.util.Log;
@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.muxi.workbench.R;
 import com.muxi.workbench.ui.login.model.UserWrapper;
-import com.muxi.workbench.ui.progress.ProgressContract;
+import com.muxi.workbench.ui.progress.contract.ProgressContract;
 import com.muxi.workbench.ui.progress.model.Progress;
 
 import org.jsoup.Jsoup;
@@ -95,7 +95,7 @@ public class ProgressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             mholder.contentTv.setText(Acontent);
             mholder.avatarSdv.setImageURI(progress.getAvatar());
 
-            if ( progress.isIfLike() == 1 )
+            if ( progress.getIfLike() == 1 )
                 mholder.likeIv.setImageResource(R.drawable.like_red);
             else mholder.likeIv.setImageResource(R.drawable.like_none);
 

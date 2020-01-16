@@ -3,14 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginVertical="4dp"
-    android:layout_marginTop="9dp"
     android:background="#ffffff"
-    android:orientation="vertical"
-    android:paddingBottom="9dp">
+    android:orientation="vertical">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/sdv_avatar_progress_item"
@@ -74,7 +71,7 @@
         android:layout_height="18dp"
         android:layout_marginStart="37dp"
         android:layout_marginTop="6dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="5dp"
         android:clickable="true"
         android:src="@drawable/like_none"
         app:layout_constraintBottom_toBottomOf="parent"
