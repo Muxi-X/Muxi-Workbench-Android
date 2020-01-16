@@ -40,14 +40,20 @@ public class HomeFragment extends Fragment implements HomeContract.View {
 
         mFeedRepository = new FeedRepository();
         mPresenter = new HomePresenter(mFeedRepository, this);
+        Log.e("Fragment left cycle", ":onCreate");
+    }
 
-
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.e("Fragment left cycle", ":onStart");
     }
 
     @Override
     public void onResume() {
         super.onResume();
         mPresenter.start();
+        Log.e("Fragment left cycle", ":onResume");
     }
 
     @Nullable
@@ -56,6 +62,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         toolbar = root.findViewById(R.id.home_toolbar);
         recyclerView = root.findViewById(R.id.home_rcv);
+        Log.e("Fragment left cycle", ":onCreateView");
 
         viewStub = root.findViewById(R.id.home_view_stub);
         mSwipeRefreshLayout = root.findViewById(R.id.swipe_refresh);

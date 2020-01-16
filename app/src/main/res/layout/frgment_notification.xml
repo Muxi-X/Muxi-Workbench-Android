@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/notification_bar"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
         android:background="@android:color/white"
@@ -15,6 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/notification"
+            android:textColor="@android:color/black"
             android:textSize="@dimen/textSize"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -27,11 +29,11 @@
             android:layout_height="20dp"
             android:layout_marginEnd="8dp"
             android:src="@drawable/read"
-            app:layout_constraintBottom_toBottomOf="@+id/textView2"
-            app:layout_constraintEnd_toStartOf="@+id/textView2" />
+            app:layout_constraintBottom_toBottomOf="@+id/item_notification_read_all"
+            app:layout_constraintEnd_toStartOf="@+id/item_notification_read_all" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/item_notification_read_all"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
             android:layout_marginEnd="16dp"
@@ -45,5 +47,15 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/notification_rv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:layout_below="@+id/notification_bar"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/notification_empty"
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/empty_notif"
+        android:visibility="visible" />
+</RelativeLayout>
