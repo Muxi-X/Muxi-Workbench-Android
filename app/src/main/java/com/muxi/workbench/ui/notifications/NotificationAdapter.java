@@ -1,5 +1,6 @@
 package com.muxi.workbench.ui.notifications;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,24 +17,29 @@ import java.util.List;
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.NotificationVH> {
 
     private NotificationContact.Presenter mPresenter;
-    private List<NotificationsBean.ListBean> listBeans = new ArrayList<>();
+    private List<NotificationsResponse.ListBean> listBeans = new ArrayList<>();
     private List<Boolean> readedList = new ArrayList<>();
+
+    public NotificationAdapter(NotificationContact.Presenter presenter, NotificationsResponse response) {
+        mPresenter = presenter;
+        listBeans = response.getList();
+    }
 
     @NonNull
     @Override
     public NotificationVH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new NotificationVH(
-                LayoutInflater.from(parent.getContext()).
-                        inflate(R.layout.item_notification_rv, parent, false));
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        View itemView = layoutInflater.inflate(R.layout.item_notification_rv, parent, false);
+        return new NotificationVH(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull NotificationVH holder, int position) {
-        NotificationsBean.ListBean bean = listBeans.get(position);
+        NotificationsResponse.ListBean bean = listBeans.get(position);
+        if (readedList.size() > 0)
+            readedList.set(position, bean.isReaded());
 
-        readedList.set(position, bean.isReaded());
-
-        if (readedList.get(position)) {
+        if (bean.isReaded()) {
             holder.mNode.setVisibility(View.GONE);
             holder.mReaded.setVisibility(View.VISIBLE);
         } else {
@@ -56,6 +62,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     @Override
     public int getItemCount() {
+        Log.e("Notification adapter", "number=" + listBeans.size());
         return listBeans.size();
     }
 
@@ -64,15 +71,19 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         notifyItemChanged(position);
     }
 
-    public void setListBeans(NotificationsBean notificationsBean) {
-        listBeans = notificationsBean.getList();
+    public void setListBeans(NotificationsResponse notificationsResponse) {
+        listBeans = notificationsResponse.getList();
+        notifyDataSetChanged();
+    }
 
-
+    public void clearAll() {
+        listBeans.clear();
+        notifyDataSetChanged();
     }
 
     class NotificationVH extends RecyclerView.ViewHolder {
-        TextView mTitle, mContent, mReaded, mNode;
-        View mItemView;
+        TextView mTitle, mContent, mReaded;
+        View mItemView, mNode;
 
         NotificationVH(@NonNull View itemView) {
             super(itemView);
@@ -81,7 +92,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             mContent = itemView.findViewById(R.id.item_notification_content);
             mReaded = itemView.findViewById(R.id.get_it);
             mNode = itemView.findViewById(R.id.item_notification_node);
-
         }
     }
 }

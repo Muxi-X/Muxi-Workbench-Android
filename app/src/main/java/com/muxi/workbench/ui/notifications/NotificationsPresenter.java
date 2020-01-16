@@ -18,6 +18,25 @@ public class NotificationsPresenter implements NotificationContact.Presenter {
 
     @Override
     public void loadAllData(boolean isRefresh) {
+
+        mRepository.getNotifications(new NotificationsRepository.LoadNotiResponseCallback() {
+            @Override
+            public void onDataLoaded(NotificationsResponse mBean) {
+                if (isRefresh) mView.showAllData(mBean);
+                else mView.initAdapter(mBean);
+            }
+
+            @Override
+            public void onDataNotAvailable() {
+                mView.showError();
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        }, 1);
+
     }
 
     @Override
@@ -32,7 +51,23 @@ public class NotificationsPresenter implements NotificationContact.Presenter {
 
     @Override
     public void clearRedNode() {
+        mAdapter.clearAll();
+        mRepository.clearAllNotifications(new NotificationsRepository.LoadNotiResponseCallback() {
+            @Override
+            public void onDataLoaded(NotificationsResponse mBean) {
 
+            }
+
+            @Override
+            public void onDataNotAvailable() {
+                mView.showError();
+            }
+
+            @Override
+            public void onComplete() {
+                mView.allRead();
+            }
+        });
     }
 
     @Override

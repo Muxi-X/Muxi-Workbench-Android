@@ -11,8 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.muxi.workbench.R;
@@ -24,6 +23,7 @@ public class NotificationsFragment extends Fragment implements NotificationConta
     private RecyclerView recyclerView;
     private NotificationsRepository repository;
     private ImageView emptyIv;
+    private NotificationAdapter mAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,7 +48,8 @@ public class NotificationsFragment extends Fragment implements NotificationConta
                 allRead();
             }
         });
-
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
         return root;
     }
 
@@ -69,13 +70,14 @@ public class NotificationsFragment extends Fragment implements NotificationConta
     }
 
     @Override
-    public void initAdapter(NotificationAdapter adapter) {
-        recyclerView.setAdapter(adapter);
+    public void initAdapter(NotificationsResponse response) {
+        mAdapter = new NotificationAdapter(mPresenter, response);
+        recyclerView.setAdapter(mAdapter);
     }
 
     @Override
-    public void showAllData(NotificationsBean notificationsBean) {
-        mPresenter.loadAllData(false);
+    public void showAllData(NotificationsResponse notificationsResponse) {
+        mAdapter.setListBeans(notificationsResponse);
     }
 
     @Override
@@ -86,7 +88,7 @@ public class NotificationsFragment extends Fragment implements NotificationConta
 
     @Override
     public void allRead() {
-        mPresenter.clearRedNode();
+        Toast.makeText(getContext(), "一扫而空", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -97,6 +99,11 @@ public class NotificationsFragment extends Fragment implements NotificationConta
     @Override
     public void refresh() {
         mPresenter.refresh();
+    }
+
+    @Override
+    public void showError() {
+        Toast.makeText(getContext(), "发生错误了...", Toast.LENGTH_SHORT).show();
     }
 
     @Override

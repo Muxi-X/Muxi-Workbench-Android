@@ -2,7 +2,7 @@ package com.muxi.workbench.ui.notifications;
 
 import java.util.List;
 
-public class NotificationsBean {
+public class NotificationsResponse {
 
     private List<ListBean> list;
 
