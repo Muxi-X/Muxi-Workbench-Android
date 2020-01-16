@@ -1,10 +1,19 @@
 package com.muxi.workbench.ui.progress.view;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Outline;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewOutlineProvider;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
@@ -14,6 +23,7 @@ import androidx.annotation.ArrayRes;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -24,6 +34,14 @@ public class ProgressTitleBar extends ConstraintLayout {
     private AppCompatSpinner OptionSp;
     private ImageButton AddIb, OptionIb;
     public SpinnerAdapter adapter;
+    private ConstraintLayout mConstraintLayout;
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public void setElevation(float elevation) {
+        super.setElevation(elevation);
+        mConstraintLayout.setElevation(elevation);
+    }
 
     public ProgressTitleBar(Context context) {
         super(context);
@@ -45,6 +63,7 @@ public class ProgressTitleBar extends ConstraintLayout {
         OptionSp = findViewById(R.id.spn_progress_title_bar_option);
         AddIb = findViewById(R.id.ib_progress_title_bar_add);
         OptionIb = findViewById(R.id.ib_progress_title_bar_option);
+        mConstraintLayout = findViewById(R.id.cl_progress_title_bar);
 
     }
 
