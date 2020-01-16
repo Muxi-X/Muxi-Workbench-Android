@@ -1,14 +1,16 @@
-package com.muxi.workbench.ui.progress.view;
+package com.muxi.workbench.ui.progress.view.progressLIst;
 
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
@@ -18,14 +20,14 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.muxi.workbench.R;
 import com.muxi.workbench.commonUtils.AppExecutors;
-import com.muxi.workbench.ui.progress.ProgressContract;
+import com.muxi.workbench.ui.progress.contract.ProgressContract;
 import com.muxi.workbench.ui.progress.ProgressFilterType;
 import com.muxi.workbench.ui.progress.model.Progress;
-import com.muxi.workbench.ui.progress.model.ProgressDataSource;
-import com.muxi.workbench.ui.progress.model.ProgressRepository;
+import com.muxi.workbench.ui.progress.model.progressList.ProgressListRemoteAndLocalDataSource;
+import com.muxi.workbench.ui.progress.model.progressList.ProgressListRepository;
 import com.muxi.workbench.ui.progress.model.StickyProgressDatabase;
-import com.muxi.workbench.ui.progress.presenter.ProgressPresenter;
-import com.muxi.workbench.ui.progress.view.ProgressListAdapter.ProgressItemListener;
+import com.muxi.workbench.ui.progress.presenter.ProgressListPresenter;
+import com.muxi.workbench.ui.progress.view.progressLIst.ProgressListAdapter.ProgressItemListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +44,10 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
 
     private ProgressListAdapter mAdapter;
 
+    private ProgressFilterType lastProgressFilterType = ProgressFilterType.ALL_PROGRESS;
+
+    private int lastPage = 1;
+
 
     ProgressItemListener mItemListener = new ProgressItemListener() {
         @Override
@@ -51,6 +57,7 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
 
         @Override
         public void onMoreClick() {
+            Log.e("progressfragment","addmore to load");
             mPresenter.loadProgressList(false);
         }
 
@@ -61,7 +68,7 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
 
         @Override
         public void onLikeClick(Progress likeProgress, int position) {
-            if ( likeProgress.isIfLike() == 1 )
+            if ( likeProgress.getIfLike() == 1 )
                 mPresenter.cancelLikeProgress(likeProgress.getSid(), position);
             else
                 mPresenter.likeProgress(likeProgress.getSid(), position);
@@ -71,7 +78,7 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
         public void onCommentClick(Progress commentProgress) {
             if ( commentProgress.getCommentCount() == 0 ) {
                 String comment ="";
-                mPresenter.commentProgress(commentProgress.getSid(),comment);
+                ///todo 去往详情页 获取评论焦点
             } else {
                 mPresenter.openProgressDetails(commentProgress);
             }
@@ -85,10 +92,11 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        Log.e("progressfragment","oncreate");
         super.onCreate(savedInstanceState);
-        mPresenter = new ProgressPresenter(
-                ProgressRepository.getInstance(
-                    ProgressDataSource.getInstance(
+        mPresenter = new ProgressListPresenter(
+                ProgressListRepository.getInstance(
+                    ProgressListRemoteAndLocalDataSource.getInstance(
                             StickyProgressDatabase.getInstance(getContext()).ProgressDao(),
                         new AppExecutors()
                     )
@@ -96,22 +104,121 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        mPresenter.start();
+    public void onPause() {
+        Log.e("progressfragment","onpause");
+        super.onPause();
+
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        Log.e("progressfragment","onsaveInstanceState");
+        outState.putInt("ProgressFilerType",mPresenter.getFiltering());
+        outState.putInt("page",mPresenter.getPage());
+    }
+
+    @Override
+    public void onResume() {
+        Log.e("progressfragment","onresume");
+        super.onResume();
+        mPresenter.start(lastProgressFilterType, lastPage);
+    }
+
+    @Override
+    public void onStart() {
+        Log.e("progressfragment","onstart");
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        Log.e("progressfragment","onstop");
+        super.onStop();
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        Log.e("progressfragment","onviewStateRestroed");
+        super.onViewStateRestored(savedInstanceState);
+        if ( savedInstanceState != null ) {
+            switch (savedInstanceState.getInt("ProgressFilerType", 0)) {
+                case 0:
+                    lastProgressFilterType = ProgressFilterType.ALL_PROGRESS;
+                    break;
+                case 1:
+                    lastProgressFilterType = ProgressFilterType.PRODUCT_PROGRESS;
+                    break;
+                case 2:
+                    lastProgressFilterType = ProgressFilterType.FRONTEND_PROGRESS;
+                    break;
+                case 3:
+                    lastProgressFilterType = ProgressFilterType.ANDROID_PROGRESS;
+                    break;
+                case 4:
+                    lastProgressFilterType = ProgressFilterType.BACKEND_PROGRESS;
+                    break;
+                case 5:
+                    lastProgressFilterType = ProgressFilterType.DESIGN_PROGRESS;
+                    break;
+            }
+            lastPage = savedInstanceState.getInt("page", 1);
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        Log.e("progressfragment","ondestoryview");
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.e("progressfragment","ondestory");
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDetach() {
+        Log.e("progressfragment","ondetach");
+        super.onDetach();
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.e("progressfragment","oncreateview");
+        if ( savedInstanceState != null ) {
+            switch (savedInstanceState.getInt("ProgressFilerType", 0)) {
+                case 0:
+                    lastProgressFilterType = ProgressFilterType.ALL_PROGRESS;
+                    break;
+                case 1:
+                    lastProgressFilterType = ProgressFilterType.PRODUCT_PROGRESS;
+                    break;
+                case 2:
+                    lastProgressFilterType = ProgressFilterType.FRONTEND_PROGRESS;
+                    break;
+                case 3:
+                    lastProgressFilterType = ProgressFilterType.ANDROID_PROGRESS;
+                    break;
+                case 4:
+                    lastProgressFilterType = ProgressFilterType.BACKEND_PROGRESS;
+                    break;
+                case 5:
+                    lastProgressFilterType = ProgressFilterType.DESIGN_PROGRESS;
+                    break;
+            }
+            lastPage = savedInstanceState.getInt("page", 1);
+        }
+
         View root = inflater.inflate(R.layout.fragment_progress, container, false);
 
         mProgressSrl = root.findViewById(R.id.srl_progress);
         mProgressSrl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                Log.e("progressfragment","swipeRefreshLayout refresh to load");
                 mPresenter.loadProgressList(true);
             }
         });
@@ -137,25 +244,38 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
         mProgressTitleBar.setOptionSelectListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.e("progressfragment","onItemSelected"+position);
                 mProgressTitleBar.adapter.setSelectedPosition(position);
                 switch (position) {
                     case 0:
                         mPresenter.setProgressFilterType(ProgressFilterType.ALL_PROGRESS);
+                        Log.e("progressfragment","change spinner to all to load");
+                        mPresenter.loadProgressList(true);
                         break;
                     case 1:
                         mPresenter.setProgressFilterType(ProgressFilterType.PRODUCT_PROGRESS);
+                        Log.e("progressfragment","change spinner to product to load");
+                        mPresenter.loadProgressList(true);
                         break;
                     case 2:
                         mPresenter.setProgressFilterType(ProgressFilterType.DESIGN_PROGRESS);
+                        Log.e("progressfragment","change spinner to design to load");
+                        mPresenter.loadProgressList(true);
                         break;
                     case 3:
                         mPresenter.setProgressFilterType(ProgressFilterType.FRONTEND_PROGRESS);
+                        Log.e("progressfragment","change spinner to frontend to load");
+                        mPresenter.loadProgressList(true);
                         break;
                     case 4:
                         mPresenter.setProgressFilterType(ProgressFilterType.ANDROID_PROGRESS);
+                        Log.e("progressfragment","change spinner to android to load");
+                        mPresenter.loadProgressList(true);
                         break;
                     case 5:
                         mPresenter.setProgressFilterType(ProgressFilterType.BACKEND_PROGRESS);
+                        Log.e("progressfragment","change spinner to backend to load");
+                        mPresenter.loadProgressList(true);
                         break;
                 }
             }
@@ -164,12 +284,9 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
             }
         });
 
-        mProgressTitleBar.setOptionIbListener(v -> mProgressTitleBar.showSpinner());
         mProgressTitleBar.setAddListener(v -> {
              ///TODO  to Progress-editing Fragment
         });
-
-//        mPresenter.loadProgressList(true);
 
         return root;
     }
@@ -199,46 +316,36 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
     public void refreshLikeProgress(int position, int iflike) {
         mAdapter.notifyProgress(position, iflike);
     }
-
+/*
     @Override
     public void showSelectAllFilter() {
         mProgressTitleBar.setSpinnerLabel(0);
-        mPresenter.loadProgressList(true);
     }
 
     @Override
     public void showSelectProductFilter() {
         mProgressTitleBar.setSpinnerLabel(1);
-        mPresenter.loadProgressList(true);
     }
 
     @Override
     public void showSelectBackendFilter() {
         mProgressTitleBar.setSpinnerLabel(5);
-        mPresenter.loadProgressList(true);
-
     }
 
     @Override
     public void showSelectFrontendFilter() {
         mProgressTitleBar.setSpinnerLabel(3);
-        mPresenter.loadProgressList(true);
-
     }
 
     @Override
     public void showSelectAndroidFilter() {
         mProgressTitleBar.setSpinnerLabel(4);
-        mPresenter.loadProgressList(true);
-
     }
 
     @Override
     public void showSelectDesignFilter() {
         mProgressTitleBar.setSpinnerLabel(2);
-        mPresenter.loadProgressList(true);
-
-    }
+    }*/
 
     @Override
     public void showMoreProgress(List<Progress> progresses) {

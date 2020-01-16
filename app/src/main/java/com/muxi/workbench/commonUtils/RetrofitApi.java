@@ -17,7 +17,6 @@ import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.DELETE;
 import retrofit2.http.PUT;
@@ -47,10 +46,13 @@ public interface RetrofitApi {
     @PUT("http://work.muxi-tech.xyz/api/v1.0/status/{sid}/like/")
     Observable<LikeStatusResponse> ifLikeStatus(@Header("token") String token, @Path("sid") int sid, @Body IfLikeStatusBean ifLikeStatusBean);
 
-    @PUT("http://work.muxi-tech.xyz/api/v1.0/status/{sid}/comments/")
+    @POST("http://work.muxi-tech.xyz/api/v1.0/status/{sid}/comments/")
     Observable<Response<Void>> commentStatus(@Header("token") String token, @Path("sid") int sid, @Body CommentStautsBean commentStautsBean);
 
     @GET("http://work.muxi-tech.xyz/api/v1.0/group/{gid}/userList/")
     Observable<GetGroupUserListResponse> getGroupUserList(@Header("token") String token, @Path("gid") int gid);
+
+    @DELETE("http://work.muxi-tech.xyz/api/v1.0/status/{sid}/comment/{cid}/")
+    Observable<Response<Void>> deleteComment(@Header("token") String token, @Path("sid") int sid, @Path("cid") int cid);
 
 }

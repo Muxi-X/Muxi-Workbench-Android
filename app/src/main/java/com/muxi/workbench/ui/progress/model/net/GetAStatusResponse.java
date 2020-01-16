@@ -4,7 +4,6 @@ import java.util.List;
 
 public class GetAStatusResponse {
 
-
     /**
      * sid : 0
      * title : string

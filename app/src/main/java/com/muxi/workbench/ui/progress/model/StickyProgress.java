@@ -25,6 +25,9 @@ public final class StickyProgress {
     @ColumnInfo(name = "time")
     private final String mTime;
 
+    @ColumnInfo(name = "title")
+    private final String mTitle;
+
     @ColumnInfo(name = "content")
     private final String mContent;
 
@@ -38,12 +41,13 @@ public final class StickyProgress {
     private final int mLikeCount;
 
 
-    public StickyProgress(int sid, int uid, String avatar, String username, String time, String content, int ifLike, int commentCount, int likeCount) {
+    public StickyProgress(int sid, int uid, String avatar, String username, String time, String title, String content, int ifLike, int commentCount, int likeCount) {
         this.mSid = sid;
         this.mUid = uid;
         this.mAvatar = avatar;
         this.mUsername = username;
         this.mTime = time;
+        this.mTitle = title;
         this.mContent = content;
         this.mIfLike = ifLike;
         this.mCommentCount = commentCount;
@@ -53,7 +57,7 @@ public final class StickyProgress {
     @Ignore
     public StickyProgress(Progress progress) {
         this(progress.getSid(), progress.getUid(), progress.getAvatar(), progress.getUsername(),
-                progress.getTime(), progress.getContent(), progress.isIfLike(),
+                progress.getTime(), progress.getTitle(), progress.getContent(), progress.getIfLike(),
                 progress.getCommentCount(), progress.getLikeCount());
     }
 
@@ -75,6 +79,10 @@ public final class StickyProgress {
 
     public String getTime() {
         return mTime;
+    }
+
+    public String getTitle() {
+        return mTitle;
     }
 
     public String getContent() {
