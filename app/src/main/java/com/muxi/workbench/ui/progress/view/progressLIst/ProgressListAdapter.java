@@ -1,7 +1,6 @@
 package com.muxi.workbench.ui.progress.view.progressLIst;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -185,7 +184,6 @@ public class ProgressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public void addMoreProgress (List<Progress> progresses) {
-        Log.e("addMore",progresses.size()+"");
         int last = ProgressList.size();
         ProgressList.addAll(progresses);
         notifyItemRangeInserted(last, progresses.size());
@@ -198,8 +196,7 @@ public class ProgressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public void replaceData(List<Progress> progresslist) {
-        ProgressList.clear();
-        ProgressList.addAll(progresslist);
+        ProgressList = progresslist;
         notifyDataSetChanged();
     }
 

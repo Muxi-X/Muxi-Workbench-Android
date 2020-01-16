@@ -60,7 +60,6 @@ public class ProgressTitleBar extends ConstraintLayout {
         OptionIb.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("progressfragment","optionImageButton click");
                 OptionSp.performClick();
             }
         });
@@ -84,7 +83,6 @@ public class ProgressTitleBar extends ConstraintLayout {
     }
 
     public void setOptionSelectListener(AdapterView.OnItemSelectedListener onItemSelectedListener) {
-        Log.e("progressfragment","Spinner set on Item selected");
         OptionSp.setOnItemSelectedListener(onItemSelectedListener);
     }
 

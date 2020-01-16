@@ -22,10 +22,6 @@ public class ProgressListRepository implements ProgressListDataSource {
         return INSTANCE;
     }
 
-    public static void destroyInstance() {
-        INSTANCE = null;
-    }
-
     @Override
     public void getProgressList(int page, @NonNull LoadProgressListCallback callback) {
         mProgressListDataSource.getProgressList(page,callback);

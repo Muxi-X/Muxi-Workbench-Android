@@ -32,9 +32,7 @@ public class ProgressListPresenter implements ProgressContract.Presenter {
     }
 
     @Override
-    public void start(ProgressFilterType lasProgressFilterType, int lastPage) {
-        mCurrentFiltering = lasProgressFilterType;
-        page = lastPage;
+    public void start () {
     }
 
     @Override
@@ -90,6 +88,8 @@ public class ProgressListPresenter implements ProgressContract.Presenter {
             @Override
             public void onProgressListLoaded(List<Progress> progressList) {
 
+                ProgressListToShow.clear();
+
                 for (int j=0 ; j < progressList.size() ; j++ ) {
                     Progress progress = progressList.get(j);
                     if ( StickyProgressSidList.contains(progress.getSid()))
@@ -101,10 +101,8 @@ public class ProgressListPresenter implements ProgressContract.Presenter {
                 }
 
                 if ( ifForceUpdate || page == 1 ) {
-                    Log.e("progressfragment","replace");
                     mProgressView.showProgressList(ProgressListToShow);
                 } else {
-                    Log.e("progressfragment","addMore");
                     mProgressView.showMoreProgress(ProgressListToShow);
                 }
             }
@@ -185,7 +183,6 @@ public class ProgressListPresenter implements ProgressContract.Presenter {
     @Override
     public void setProgressFilterType(ProgressFilterType requestType) {
         mCurrentFiltering = requestType;
-       // showFilterLabel();
     }
 
     private void getGroupUserList(List<Integer> userList, int gid) {
@@ -201,29 +198,6 @@ public class ProgressListPresenter implements ProgressContract.Presenter {
             }
         });
     }
-
-  /*  private void showFilterLabel() {
-        switch (mCurrentFiltering) {
-            case ALL_PROGRESS:
-                mProgressView.showSelectAllFilter();
-                break;
-            case ANDROID_PROGRESS:
-                mProgressView.showSelectAndroidFilter();
-                break;
-            case BACKEND_PROGRESS:
-                mProgressView.showSelectBackendFilter();
-                break;
-            case DESIGN_PROGRESS:
-                mProgressView.showSelectDesignFilter();
-                break;
-            case FRONTEND_PROGRESS:
-                mProgressView.showSelectFrontendFilter();
-                break;
-            case PRODUCT_PROGRESS:
-                mProgressView.showSelectProductFilter();
-                break;
-        }
-    }*/
 
     @Override
     public void openUserInfo(@NonNull int uid) {
