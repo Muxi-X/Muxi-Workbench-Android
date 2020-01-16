@@ -25,18 +25,6 @@ public interface ProgressContract {
 
         void showDeleteProgress(int position);
 
-  /*      void showSelectAllFilter();
-
-        void showSelectProductFilter();
-
-        void showSelectBackendFilter();
-
-        void showSelectFrontendFilter();
-
-        void showSelectAndroidFilter();
-
-        void showSelectDesignFilter();*/
-
         void showMoreProgress(List<Progress> progresses);
 
         void showCommentView();
@@ -51,7 +39,7 @@ public interface ProgressContract {
 
     interface Presenter {
 
-        void start(ProgressFilterType lastProgressFilterType, int lastPage);
+        void start();
 
         void loadProgressList(boolean ifForceUpdate);
 

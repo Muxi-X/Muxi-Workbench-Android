@@ -1,7 +1,5 @@
 package com.muxi.workbench.ui.progress.model.progressList;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.muxi.workbench.commonUtils.AppExecutors;
@@ -113,7 +111,6 @@ public class ProgressListRemoteAndLocalDataSource implements ProgressListDataSou
 
                     @Override
                     public void onComplete() {
-                        Log.e("scuccess","like");
                         callback.onSuccessfulSet();
                     }
                 });
@@ -167,7 +164,6 @@ public class ProgressListRemoteAndLocalDataSource implements ProgressListDataSou
 
     @Override
     public void getAllStickyProgress(@NonNull LoadStickyProgressCallback callback) {
-        Log.e("ddd","");///todo   not active.
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
