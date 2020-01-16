@@ -19,6 +19,9 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="loadmore">点击加载更多</string>
+    <string name="notification">通知</string>
+    <string name="allread">全部已读</string>
+    <string name="get_it">已读</string>
 
     <array name="progress_titlebar_screening">
         <item>全部</item>
