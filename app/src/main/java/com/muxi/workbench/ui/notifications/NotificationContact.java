@@ -4,9 +4,9 @@ public interface NotificationContact {
     interface View {
         void setPresenter(Presenter presenter);
 
-        void initAdapter(NotificationAdapter adapter);
+        void initAdapter(NotificationsResponse notificationsResponse);
 
-        void showAllData(NotificationsBean notificationsBean);
+        void showAllData(NotificationsResponse notificationsResponse);
 
         void setEmpty();
 
@@ -15,6 +15,10 @@ public interface NotificationContact {
         void showMore();
 
         void refresh();
+
+        void showError();
+
+        void goToDetail(int sourceId);
     }
 
     interface Presenter {
@@ -27,6 +31,8 @@ public interface NotificationContact {
         void loadMore();
 
         void clearRedNode();
+
+        void read(int sourceId);
     }
 
 

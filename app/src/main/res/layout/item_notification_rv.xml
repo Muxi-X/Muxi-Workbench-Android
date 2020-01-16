@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="100dp"
-    android:orientation="vertical">
+    android:layout_marginTop="10dp"
+    android:background="@android:color/white">
 
     <TextView
         android:id="@+id/item_notification_tittle"

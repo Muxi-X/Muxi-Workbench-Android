@@ -5,6 +5,7 @@ import com.muxi.workbench.ui.login.model.netcall.LoginResponse1;
 import com.muxi.workbench.ui.login.model.netcall.LoginResponse2;
 import com.muxi.workbench.ui.login.model.netcall.UserBean;
 import com.muxi.workbench.ui.login.model.netcall.UserBeanTwo;
+import com.muxi.workbench.ui.notifications.NotificationsResponse;
 import com.muxi.workbench.ui.progress.model.net.CommentStautsBean;
 import com.muxi.workbench.ui.progress.model.net.GetAStatusResponse;
 import com.muxi.workbench.ui.progress.model.net.GetGroupUserListResponse;
@@ -21,6 +22,7 @@ import retrofit2.http.POST;
 import retrofit2.http.DELETE;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface RetrofitApi {
 
@@ -55,4 +57,6 @@ public interface RetrofitApi {
     @DELETE("http://work.muxi-tech.xyz/api/v1.0/status/{sid}/comment/{cid}/")
     Observable<Response<Void>> deleteComment(@Header("token") String token, @Path("sid") int sid, @Path("cid") int cid);
 
+    @GET("http://work.muxi-tech.xyz/api/v1.0/message/list/")
+    Observable<NotificationsResponse> getNotifications(@Header("token") String token, @Query("page") int page);
 }

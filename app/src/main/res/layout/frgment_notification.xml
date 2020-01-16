@@ -49,7 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/notification_bar"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
     <ImageView
         android:id="@+id/notification_empty"
@@ -57,5 +57,5 @@
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
         android:src="@drawable/empty_notif"
-        android:visibility="visible" />
+        android:visibility="gone" />
 </RelativeLayout>
