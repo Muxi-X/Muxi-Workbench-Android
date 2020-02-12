@@ -1,9 +1,10 @@
-package com.muxi.workbench.ui.home;
+package com.muxi.workbench.ui.home.model;
 
 import android.util.Log;
 
 import com.muxi.workbench.commonUtils.NetUtil;
 import com.muxi.workbench.ui.home.model.FeedBean;
+import com.muxi.workbench.ui.home.model.FeedRepository;
 import com.muxi.workbench.ui.login.model.UserWrapper;
 
 import io.reactivex.Observer;
@@ -13,7 +14,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class RemoteDataSource {
 
-    public static void getAllFeedFromRemote(FeedRepository.LoadStatusBeanCallback callback,int page) {
+    public static void getAllFeedFromRemote(FeedRepository.LoadStatusBeanCallback callback, int page) {
         String token = UserWrapper.getInstance().getToken();
 
         final Disposable[] mDisposable = new Disposable[1];

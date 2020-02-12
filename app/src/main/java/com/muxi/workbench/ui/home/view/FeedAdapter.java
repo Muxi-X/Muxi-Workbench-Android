@@ -1,4 +1,4 @@
-package com.muxi.workbench.ui.home;
+package com.muxi.workbench.ui.home.view;
 
 import android.content.Context;
 import android.util.Log;
@@ -12,10 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.muxi.workbench.R;
-import com.muxi.workbench.commonUtils.TransCodingUtil;
+import com.muxi.workbench.ui.home.HomeContract;
 import com.muxi.workbench.ui.home.model.FeedBean;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -40,8 +39,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     }
 
-    public void setFooter(View FooterView) {
-        mFooter = FooterView;
+    public void setFooter(View FooterView, boolean ifShow) {
+        if (ifShow)
+            mFooter = FooterView;
+        else mFooter = null;
     }
 
     @Override
@@ -73,6 +74,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         //设置分割线
         if (mData.isIfsplit()) vh.mSplitView.setVisibility(View.VISIBLE);
+        else vh.mSplitView.setVisibility(View.GONE);
         vh.mSplitView.setTextDate(mData.getTimeday());
         vh.mSplitView.setTextSign(mData.getTimehm());
 
@@ -143,7 +145,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         private VH(@NonNull View itemView) {
             super(itemView);
-
             mSplitView = itemView.findViewById(R.id.split_bar);
             mHeadShot = itemView.findViewById(R.id.head_shot);
             mName = itemView.findViewById(R.id.item_name);

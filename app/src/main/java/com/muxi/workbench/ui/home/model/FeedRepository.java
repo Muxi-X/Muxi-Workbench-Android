@@ -1,14 +1,12 @@
-package com.muxi.workbench.ui.home;
-
-import com.muxi.workbench.ui.home.model.FeedBean;
+package com.muxi.workbench.ui.home.model;
 
 public class FeedRepository {
 
-    void getAllData(int page, LoadStatusBeanCallback loadStatusBeanCallback) {
+    public void getAllData(int page, LoadStatusBeanCallback loadStatusBeanCallback) {
         RemoteDataSource.getAllFeedFromRemote(loadStatusBeanCallback, page);
     }
 
-    interface LoadStatusBeanCallback {
+    public interface LoadStatusBeanCallback {
 
         void onDataLoaded(FeedBean mBean);
 

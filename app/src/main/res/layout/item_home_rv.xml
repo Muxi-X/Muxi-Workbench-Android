@@ -6,10 +6,10 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.muxi.workbench.ui.home.SplitView
+    <com.muxi.workbench.ui.home.view.SplitView
         android:id="@+id/split_bar"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="100dp"
         android:layout_marginTop="5dp"
         android:background="@android:color/white"
         android:visibility="gone"

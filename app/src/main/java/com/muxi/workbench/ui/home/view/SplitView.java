@@ -1,4 +1,4 @@
-package com.muxi.workbench.ui.home;
+package com.muxi.workbench.ui.home.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;

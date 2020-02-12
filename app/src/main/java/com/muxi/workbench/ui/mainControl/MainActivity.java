@@ -7,7 +7,7 @@ import android.view.View;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.muxi.workbench.R;
-import com.muxi.workbench.ui.home.HomeFragment;
+import com.muxi.workbench.ui.home.view.HomeFragment;
 import com.muxi.workbench.ui.mine.MineFragment;
 import com.muxi.workbench.ui.notifications.NotificationsFragment;
 import com.muxi.workbench.ui.progress.view.progressLIst.ProgressFragment;
@@ -32,8 +32,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            getWindow().getDecorView().
+                    setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                            View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
         initView();
 

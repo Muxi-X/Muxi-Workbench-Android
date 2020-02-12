@@ -1,4 +1,4 @@
-package com.muxi.workbench.ui.home;
+package com.muxi.workbench.ui.home.view;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,7 +19,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.muxi.workbench.R;
+import com.muxi.workbench.commonUtils.MyRefreshLayout;
+import com.muxi.workbench.ui.home.HomeContract;
+import com.muxi.workbench.ui.home.HomePresenter;
 import com.muxi.workbench.ui.home.model.FeedBean;
+import com.muxi.workbench.ui.home.model.FeedRepository;
 
 public class HomeFragment extends Fragment implements HomeContract.View {
     private Toolbar toolbar;
@@ -30,7 +33,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     private FeedAdapter mAdapter;
     private FeedBean mBean = new FeedBean();
     private ViewStub viewStub;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private MyRefreshLayout mSwipeRefreshLayout;
     private Button mRetry;
 
 
@@ -84,6 +87,27 @@ public class HomeFragment extends Fragment implements HomeContract.View {
                 }
             }
         });
+
+        mSwipeRefreshLayout.setOnLoadMoreListener(new MyRefreshLayout.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                mPresenter.loadMore();
+                mSwipeRefreshLayout.setLoading(false);
+            }
+        });
+
+        mSwipeRefreshLayout.setFooterCallback(new MyRefreshLayout.FooterCallBack() {
+            @Override
+            public void addFooterView(View footerView) {
+                mAdapter.setFooter(footerView, true);
+            }
+
+            @Override
+            public void removeFooterView(View footerView) {
+                mAdapter.setFooter(footerView, false);
+            }
+        });
+
         initToolbar();
         initRv();
         return root;
@@ -101,7 +125,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         Log.e("TAG", "Home initAdapter");
         mAdapter = new FeedAdapter(mBean, mPresenter, listener);
         recyclerView.setAdapter(mAdapter);
-        mAdapter.setFooter(LayoutInflater.from(this.getContext()).inflate(R.layout.item_home_footer, recyclerView, false));
+//        mAdapter.setFooter(LayoutInflater.from(this.getContext()).inflate(R.layout.item_home_footer, recyclerView, false));
     }
 
     private void initToolbar() {

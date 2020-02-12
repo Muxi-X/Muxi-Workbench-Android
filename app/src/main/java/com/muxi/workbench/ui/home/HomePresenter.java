@@ -2,9 +2,9 @@ package com.muxi.workbench.ui.home;
 
 
 import android.util.Log;
-import android.view.ViewGroup;
 
 import com.muxi.workbench.ui.home.model.FeedBean;
+import com.muxi.workbench.ui.home.model.FeedRepository;
 
 public class HomePresenter implements HomeContract.Presenter {
 
