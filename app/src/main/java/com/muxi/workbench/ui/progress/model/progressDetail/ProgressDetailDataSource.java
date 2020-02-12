@@ -6,7 +6,7 @@ public interface ProgressDetailDataSource {
 
     interface loadProgressCallback {
 
-        void onSucessGet(GetAStatusResponse getAStatusResponse);
+        void onSuccessGet(GetAStatusResponse getAStatusResponse);
 
         void onFail();
 

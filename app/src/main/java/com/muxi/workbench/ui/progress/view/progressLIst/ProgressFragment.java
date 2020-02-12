@@ -3,6 +3,7 @@ package com.muxi.workbench.ui.progress.view.progressLIst;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +13,14 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.muxi.workbench.R;
 import com.muxi.workbench.commonUtils.AppExecutors;
+import com.muxi.workbench.ui.login.model.UserWrapper;
 import com.muxi.workbench.ui.progress.contract.ProgressContract;
 import com.muxi.workbench.ui.progress.ProgressFilterType;
 import com.muxi.workbench.ui.progress.model.Progress;
@@ -25,6 +28,7 @@ import com.muxi.workbench.ui.progress.model.progressList.ProgressListRemoteAndLo
 import com.muxi.workbench.ui.progress.model.progressList.ProgressListRepository;
 import com.muxi.workbench.ui.progress.model.StickyProgressDatabase;
 import com.muxi.workbench.ui.progress.presenter.ProgressListPresenter;
+import com.muxi.workbench.ui.progress.view.progressDetail.ProgressDetailFragment;
 import com.muxi.workbench.ui.progress.view.progressLIst.ProgressListAdapter.ProgressItemListener;
 
 import java.util.ArrayList;
@@ -68,12 +72,22 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
 
         @Override
         public void onCommentClick(Progress commentProgress) {
+            Fragment newFragment = new ProgressDetailFragment();
+            Bundle status = new Bundle();
             if ( commentProgress.getCommentCount() == 0 ) {
-                String comment ="";
                 ///todo 去往详情页 获取评论焦点
+                status.putInt("ifComment",1);
             } else {
-                mPresenter.openProgressDetails(commentProgress);
+                status.putInt("ifComment",1);
             }
+            status.putInt("sid",commentProgress.getSid());
+            status.putString("avatar", commentProgress.getAvatar());
+            status.putString("username", commentProgress.getUsername());
+            newFragment.setArguments(status);
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.viewpage,newFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
         }
 
         @Override
@@ -166,6 +180,11 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
         mProgressTitleBar.setAddListener(v -> {
              ///TODO  to Progress-editing Fragment
         });
+
+        Log.e("user", "acount : "+UserWrapper.getInstance().getUser().getAccount());
+
+        Log.e("user", "urole : "+UserWrapper.getInstance().getUser().getUrole());
+
 
         return root;
     }
