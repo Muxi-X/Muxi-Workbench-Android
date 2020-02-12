@@ -116,7 +116,7 @@ public class MyRefreshLayout extends SwipeRefreshLayout {
         if (mListView != null && mListView.getAdapter() != null) {
             LinearLayoutManager manager = (LinearLayoutManager) mListView.getLayoutManager();
 
-            condition2 = manager.findLastVisibleItemPosition() == (mListView.getAdapter().getItemCount() - 1);
+            condition2 = manager.findLastVisibleItemPosition() <= (mListView.getAdapter().getItemCount() - 4);
 
         }
         if (condition2) {
