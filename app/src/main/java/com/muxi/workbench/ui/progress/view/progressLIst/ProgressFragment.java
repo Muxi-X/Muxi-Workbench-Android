@@ -20,6 +20,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.muxi.workbench.R;
 import com.muxi.workbench.commonUtils.AppExecutors;
+import com.muxi.workbench.commonUtils.MyRefreshLayout;
 import com.muxi.workbench.ui.login.model.UserWrapper;
 import com.muxi.workbench.ui.progress.contract.ProgressContract;
 import com.muxi.workbench.ui.progress.ProgressFilterType;
@@ -42,7 +43,7 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
 
     private RecyclerView mProgressListRv;
 
-    private SwipeRefreshLayout mProgressSrl;
+    private MyRefreshLayout mProgressSrl;
 
     private ProgressListAdapter mAdapter;
 
@@ -64,7 +65,7 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
 
         @Override
         public void onLikeClick(Progress likeProgress, int position) {
-            if ( likeProgress.getIfLike() == 1 )
+            if (likeProgress.getIfLike() == 1)
                 mPresenter.cancelLikeProgress(likeProgress.getSid(), position);
             else
                 mPresenter.likeProgress(likeProgress.getSid(), position);
@@ -74,25 +75,25 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
         public void onCommentClick(Progress commentProgress) {
             Fragment newFragment = new ProgressDetailFragment();
             Bundle status = new Bundle();
-            if ( commentProgress.getCommentCount() == 0 ) {
+            if (commentProgress.getCommentCount() == 0) {
                 ///todo 去往详情页 获取评论焦点
-                status.putInt("ifComment",1);
+                status.putInt("ifComment", 1);
             } else {
-                status.putInt("ifComment",1);
+                status.putInt("ifComment", 1);
             }
-            status.putInt("sid",commentProgress.getSid());
+            status.putInt("sid", commentProgress.getSid());
             status.putString("avatar", commentProgress.getAvatar());
             status.putString("username", commentProgress.getUsername());
             newFragment.setArguments(status);
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.viewpage,newFragment);
+            transaction.replace(R.id.viewpage, newFragment);
             transaction.addToBackStack(null);
             transaction.commit();
         }
 
         @Override
         public void onEditClick(Progress editProgress) {
-            Toast.makeText(getContext(), "去编辑进度",Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "去编辑进度", Toast.LENGTH_LONG).show();
         }
     };
 
@@ -101,10 +102,10 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
         super.onCreate(savedInstanceState);
         mPresenter = new ProgressListPresenter(
                 ProgressListRepository.getInstance(
-                    ProgressListRemoteAndLocalDataSource.getInstance(
-                            StickyProgressDatabase.getInstance(getContext()).ProgressDao(),
-                        new AppExecutors()
-                    )
+                        ProgressListRemoteAndLocalDataSource.getInstance(
+                                StickyProgressDatabase.getInstance(getContext()).ProgressDao(),
+                                new AppExecutors()
+                        )
                 ), this);
     }
 
@@ -129,6 +130,16 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
                     mProgressSrl.setRefreshing(false);
                     Toast.makeText(getContext(), "已停止更新", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+        /*
+         * @author ljl
+         */
+        mProgressSrl.setOnLoadMoreListener(new MyRefreshLayout.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                mPresenter.loadProgressList(false);
+                mProgressSrl.setLoading(false);
             }
         });
 
@@ -172,18 +183,19 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
                         break;
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
 
         mProgressTitleBar.setAddListener(v -> {
-             ///TODO  to Progress-editing Fragment
+            ///TODO  to Progress-editing Fragment
         });
 
-        Log.e("user", "acount : "+UserWrapper.getInstance().getUser().getAccount());
+        Log.e("user", "acount : " + UserWrapper.getInstance().getUser().getAccount());
 
-        Log.e("user", "urole : "+UserWrapper.getInstance().getUser().getUrole());
+        Log.e("user", "urole : " + UserWrapper.getInstance().getUser().getUrole());
 
 
         return root;
@@ -202,12 +214,12 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
 
     @Override
     public void showCommentView() {
-        Toast.makeText(getContext(),"去评论",Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), "去评论", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void showProgressDetail(int sid) {
-        Toast.makeText(getContext(),"去详情页",Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), "去详情页", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -222,7 +234,7 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
 
     @Override
     public void showUserInfo(int uid) {
-        Toast.makeText(getContext(),"去往个人主页",Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), "去往个人主页", Toast.LENGTH_LONG).show();
         ///todo intent to info
     }
 
@@ -233,7 +245,7 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
 
     @Override
     public void showAddNewProgress() {
-        Toast.makeText(getContext(),"去往新进度编辑页",Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), "去往新进度编辑页", Toast.LENGTH_LONG).show();
         ///todo intent to empty edit-fragment
     }
 

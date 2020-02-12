@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    <com.muxi.workbench.commonUtils.MyRefreshLayout
         android:id="@+id/srl_progress"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -20,7 +20,7 @@
             android:layout_height="match_parent"
             android:background="#FFFAFAFA" />
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </com.muxi.workbench.commonUtils.MyRefreshLayout>
 
 
 </LinearLayout>
