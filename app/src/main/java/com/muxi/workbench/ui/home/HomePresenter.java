@@ -10,7 +10,7 @@ public class HomePresenter implements HomeContract.Presenter {
 
     private FeedRepository mFeedRepository;
     private HomeContract.View mHomeView;
-    private int curPage = 0;
+    private static int curPage = 0;
 
     public HomePresenter(FeedRepository feedRepository, HomeContract.View homeView) {
         mFeedRepository = feedRepository;
