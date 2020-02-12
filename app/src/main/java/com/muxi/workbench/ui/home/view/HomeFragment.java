@@ -96,17 +96,17 @@ public class HomeFragment extends Fragment implements HomeContract.View {
             }
         });
 
-        mSwipeRefreshLayout.setFooterCallback(new MyRefreshLayout.FooterCallBack() {
-            @Override
-            public void addFooterView(View footerView) {
-                mAdapter.setFooter(footerView, true);
-            }
-
-            @Override
-            public void removeFooterView(View footerView) {
-                mAdapter.setFooter(footerView, false);
-            }
-        });
+//        mSwipeRefreshLayout.setFooterCallback(new MyRefreshLayout.FooterCallBack() {
+//            @Override
+//            public void addFooterView(View footerView) {
+//                mAdapter.setFooter(footerView, true);
+//            }
+//
+//            @Override
+//            public void removeFooterView(View footerView) {
+//                mAdapter.setFooter(footerView, false);
+//            }
+//        });
 
         initToolbar();
         initRv();
@@ -130,21 +130,18 @@ public class HomeFragment extends Fragment implements HomeContract.View {
 
     private void initToolbar() {
         toolbar.inflateMenu(R.menu.home_toolbar_item);
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.home_scan_code:
-                        //todo: scan code
-                        break;
-                    case R.id.home_add:
-                        //todo: add progress
-                        break;
-                    default:
-                        break;
-                }
-                return true;
+        toolbar.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.home_scan_code:
+                    //todo: scan code
+                    break;
+                case R.id.home_add:
+                    //todo: add progress
+                    break;
+                default:
+                    break;
             }
+            return true;
         });
     }
 

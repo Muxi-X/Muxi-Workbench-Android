@@ -30,17 +30,14 @@ public class HomePresenter implements HomeContract.Presenter {
         mFeedRepository.getAllData(1, new FeedRepository.LoadStatusBeanCallback() {
             @Override
             public void onDataLoaded(FeedBean mBean) {
-                Log.e("TAG", "HomePresenter onDataLoaded");
-                Log.e("TAG", "feedbean" + mBean.toString());
-                if (isRefresh) {
+                if (isRefresh)
                     mHomeView.showAllData(mBean);
-
-                } else mHomeView.initAdapter(mBean);
+                else
+                    mHomeView.initAdapter(mBean);//isRefresh false 表示第一次请求
             }
 
             @Override
             public void onDataNotAvailable() {
-                Log.e("TAG", "HomePresenter onDataNotAvailable");
                 mHomeView.setLoadingIndicator(false, false);
                 mHomeView.setEmpty();
             }
