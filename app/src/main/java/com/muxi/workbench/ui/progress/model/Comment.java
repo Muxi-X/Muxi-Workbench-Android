@@ -2,15 +2,15 @@ package com.muxi.workbench.ui.progress.model;
 
 public class Comment {
 
-    private int uid;
+    //private int uid;
     private int cid;
     private String username;
     private String avatar;
     private String time;
     private String content;
 
-    public Comment(int uid, int cid, String username, String avatar, String time, String content) {
-        this.uid = uid;
+    public Comment(int cid, String username, String avatar, String time, String content) {
+      //  this.uid = uid;
         this.cid = cid;
         this.username = username;
         this.avatar = avatar;
@@ -18,13 +18,13 @@ public class Comment {
         this.content = content;
     }
 
-    public int getUid() {
-        return uid;
-    }
+    //public int getUid() {
+    //    return uid;
+    //}
 
-    public void setUid(int uid) {
-        this.uid = uid;
-    }
+    //public void setUid(int uid) {
+    //    this.uid = uid;
+    //}
 
     public int getCid() {
         return cid;

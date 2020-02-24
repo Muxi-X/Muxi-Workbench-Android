@@ -8,6 +8,7 @@ import com.muxi.workbench.ui.login.model.UserWrapper;
 import com.muxi.workbench.ui.progress.model.Progress;
 import com.muxi.workbench.ui.progress.model.StickyProgress;
 import com.muxi.workbench.ui.progress.model.StickyProgressDao;
+import com.muxi.workbench.ui.progress.model.net.GetAStatusResponse;
 import com.muxi.workbench.ui.progress.model.net.GetGroupUserListResponse;
 import com.muxi.workbench.ui.progress.model.net.GetStatusListResponse;
 import com.muxi.workbench.ui.progress.model.net.IfLikeStatusBean;
@@ -225,6 +226,43 @@ public class ProgressListRemoteAndLocalDataSource implements ProgressListDataSou
                     @Override
                     public void onComplete() {
                         callback.onSuccessfulGet(UserList);
+                    }
+                });
+    }
+
+    @Override
+    public void getProgress(int sid, String avatar, String username, int uid, LoadProgressCallback callback) {
+        Progress progress = new Progress();
+        NetUtil.getInstance().getApi().getAStatus(token, sid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<GetAStatusResponse>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                    }
+
+                    @Override
+                    public void onNext(GetAStatusResponse getAStatusResponse) {
+                        progress.setIfLike(getAStatusResponse.getIflike());
+                        progress.setLikeCount(getAStatusResponse.getLikeCount());
+                        progress.setTime(getAStatusResponse.getTime());
+                        progress.setSid(getAStatusResponse.getSid());
+                        progress.setContent(getAStatusResponse.getContent());
+                        progress.setCommentCount(getAStatusResponse.getCommentList().size());
+                        progress.setTitle(getAStatusResponse.getTitle());
+                        progress.setAvatar(avatar);
+                        progress.setUsername(username);
+                        progress.setUid(uid);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        callback.onDataNotAvailable();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        callback.onProgressLoaded(progress);
                     }
                 });
     }

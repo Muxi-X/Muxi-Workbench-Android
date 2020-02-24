@@ -1,4 +1,4 @@
-package com.muxi.workbench.ui.progress.view.progressLIst;
+package com.muxi.workbench.ui.progress.view.progressList;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -123,13 +123,13 @@ public class ProgressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 mholder.editTv.setOnClickListener(v -> mItemListener.onEditClick(ProgressList.get(position)));
             }
 
-            mholder.itemView.setOnClickListener(v -> mItemListener.onItemClick(ProgressList.get(position)));
+            mholder.itemView.setOnClickListener(v -> mItemListener.onItemClick(ProgressList.get(position), position));
             mholder.avatarSdv.setOnClickListener(v -> mItemListener.onUserClick(ProgressList.get(position).getUid()));
             mholder.usernameTv.setOnClickListener(v -> mItemListener.onUserClick(ProgressList.get(position).getUid()));
             mholder.likeIv.setOnClickListener(v -> mItemListener.onLikeClick(ProgressList.get(position), position));
             mholder.likeTv.setOnClickListener(v -> mItemListener.onLikeClick(ProgressList.get(position), position));
-            mholder.commentIv.setOnClickListener(v -> mItemListener.onCommentClick(ProgressList.get(position)));
-            mholder.commentTv.setOnClickListener(v -> mItemListener.onCommentClick(ProgressList.get(position)));
+            mholder.commentIv.setOnClickListener(v -> mItemListener.onCommentClick(ProgressList.get(position), position));
+            mholder.commentTv.setOnClickListener(v -> mItemListener.onCommentClick(ProgressList.get(position), position));
             mholder.expandIv.setOnClickListener(v -> showPopupMenu(mholder.expandIv, mContext, uid == progress.getUid(), position, progress) );
 
         } else if (holder instanceof MoreViewHolder) {
@@ -189,15 +189,27 @@ public class ProgressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         notifyItemRangeInserted(last, progresses.size());
     }
 
-    public void notifyProgress(int position, int iflike) {
+    public void notifyProgressLike(int position, int iflike) {
         ProgressList.get(position).setIfLike(iflike);
         ProgressList.get(position).setLikeCount(ProgressList.get(position).getLikeCount()+(iflike==1?1:-1));
         notifyItemChanged(position);
     }
 
+    public void notifyProgress(int position, Progress progress) {
+        if ( position != -1) {
+            ProgressList.set(position, progress);
+            notifyItemChanged(position);
+        }
+    }
+
     public void replaceData(List<Progress> progresslist) {
-        ProgressList = progresslist;
-        notifyDataSetChanged();
+        if ( progresslist != null ) {
+            int t = ProgressList.size();
+            ProgressList.clear();
+            notifyItemRangeRemoved(0, t);
+            ProgressList.addAll(progresslist);
+            notifyItemRangeInserted(0, progresslist.size());
+        }
     }
 
     public void moveProgress(int position, int operator) {
@@ -210,18 +222,21 @@ public class ProgressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         } else {
             Progress temp = ProgressList.get(position);
             ProgressList.remove(position);
+            notifyItemRangeRemoved(position,1);
             temp.setSticky(false);
             for ( int i = position ; i < ProgressList.size() ; i++ ) {
                 if ( !ProgressList.get(i).isSticky() ) {
                     if ( ProgressList.get(i).getSid() < temp.getSid() ) {
                         ProgressList.add(i,temp);
+                        notifyItemInserted(i);
                         break;
                     }
                 }
             }
-            if ( ProgressList.get(ProgressList.size()-1).getSid()-1 == temp.getSid() )
+            if ( ProgressList.get(ProgressList.size()-1).getSid()-1 == temp.getSid() ) {
                 ProgressList.add(temp);
-            notifyItemRangeChanged(position,ProgressList.size()-position);
+                notifyItemInserted(ProgressList.size());
+            }
         }
     }
 
@@ -234,11 +249,11 @@ public class ProgressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public interface ProgressItemListener {
-        void onItemClick(Progress clickedProgress);
+        void onItemClick(Progress clickedProgress, int position);
         void onMoreClick();
         void onUserClick(int uid);
         void onLikeClick(Progress likeProgress, int position);
-        void onCommentClick(Progress commentProgress);
+        void onCommentClick(Progress commentProgress, int position);
         void onEditClick(Progress editProgress);
     }
 

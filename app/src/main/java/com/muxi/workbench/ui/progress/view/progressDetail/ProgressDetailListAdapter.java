@@ -1,6 +1,7 @@
 package com.muxi.workbench.ui.progress.view.progressDetail;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,7 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
 
     private List<Comment> mCommentList;
 
-    private int uid = UserWrapper.getInstance().getUser().getUid();
+    private String mUsername = "";
 
     private ProgressDetailListener mProgressDetailListener;
 
@@ -46,11 +47,15 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
 
     }
 
-    public ProgressDetailListAdapter(Context context, Progress progress, List<Comment> commentList, ProgressDetailListener progressDetailListener) {
+    public ProgressDetailListAdapter(Context context, Progress progress, List<Comment> commentList, ProgressDetailListener progressDetailListener, String username) {
+        if ( username == null ) {
+            Log.e("TTTTTTT", "the username in adapter is null");
+        }
         this.mContext = context;
         this.mProgress = progress;
         this.mCommentList = commentList;
         this.mProgressDetailListener = progressDetailListener;
+        this.mUsername = username;
     }
 
     @NonNull
@@ -70,11 +75,11 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
 
             ContentViewHolder mholder = (ContentViewHolder)holder;
 
-            if ( uid == mProgress.getUid() ) {
+            if ( mUsername.equals( mProgress.getUsername() ) ) {
                 mholder.mEditTv.setClickable(true);
                 mholder.mEditIv.setClickable(true);
                 mholder.mEditIv.setImageResource(R.drawable.editing_icon);
-                mholder.mEditTv.setText("评论");
+                mholder.mEditTv.setText("编辑");
                 mholder.mEditTv.setVisibility(View.VISIBLE);
                 mholder.mEditIv.setVisibility(View.VISIBLE);
                 mholder.mEditIv.setOnClickListener(v -> mProgressDetailListener.onEditClick());
@@ -95,13 +100,13 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
             if ( mProgress.getLikeCount() == 0 ) {
                 mholder.mLikeTv.setText("赞");
             } else {
-                mholder.mLikeTv.setText(mProgress.getLikeCount());
+                mholder.mLikeTv.setText(String.valueOf(mProgress.getLikeCount()));
             }
 
             if ( mProgress.getCommentCount() == 0 ) {
                 mholder.mCommentTv.setText("评论");
             } else {
-                mholder.mCommentTv.setText(mProgress.getCommentCount());
+                mholder.mCommentTv.setText(String.valueOf(mProgress.getCommentCount()));
             }
 
             mholder.mTitleTv.setText(mProgress.getTitle());
@@ -123,7 +128,7 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
             CommentViewHolder mholder = (CommentViewHolder)holder;
             Comment comment = mCommentList.get(position-1);
 
-            if ( uid == comment.getUid()) {
+            if ( mUsername.equals(comment.getUsername())) {
                 mholder.mDeleteTv.setVisibility(View.VISIBLE);
                 mholder.mDeleteTv.setText("删除");
                 mholder.mDeleteTv.setClickable(true);
@@ -156,8 +161,20 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
         else return 1;
     }
 
-    public void refresh (Progress progress, List<Comment> commentList) {
+    public void refreshProgressLike(int iflike) {
+        mProgress.setIfLike(iflike);
+        notifyItemChanged(0);
+    }
+
+    public void refreshComment(List<Comment> commentList) {
+        mCommentList.clear();
+        mCommentList.addAll(commentList);
+        notifyDataSetChanged();
+    }
+
+    public void refresh (Progress progress, List<Comment> commentList, String username) {
         mProgress = progress;
+        mUsername = username;
         mCommentList = commentList;
         notifyDataSetChanged();
     }

@@ -25,7 +25,7 @@ public class ProgressDetailRepository implements ProgressDetailDataSource {
 
 
     @Override
-    public void getProgressDetail(int sid, loadProgressCallback callback) {
+    public void getProgressDetail(int sid, LoadProgressCallback callback) {
         mProgressDetailDataSource.getProgressDetail(sid, callback);
     }
 
