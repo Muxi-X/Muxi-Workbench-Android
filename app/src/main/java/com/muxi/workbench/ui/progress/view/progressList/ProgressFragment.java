@@ -53,7 +53,7 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
         public void onItemClick(Progress clickedProgress, int position) {
             Intent toDetailIntent = ProgressDetailActivity
                     .newIntent(getContext(), clickedProgress.getSid(), clickedProgress.getUsername(),
-                            clickedProgress.getAvatar(), false, position);
+                            clickedProgress.getAvatar(), false, clickedProgress.getTitle(), position);
             startActivityForResult(toDetailIntent, 1);
             startActivity(toDetailIntent);
         }
@@ -82,11 +82,11 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
             if (commentProgress.getCommentCount() == 0)
                 toDetailIntent = ProgressDetailActivity
                         .newIntent(getContext(), commentProgress.getSid(), commentProgress.getUsername(),
-                        commentProgress.getAvatar(), true, position);
+                        commentProgress.getAvatar(), true, commentProgress.getTitle(), position);
             else
                 toDetailIntent = ProgressDetailActivity
                         .newIntent(getContext(), commentProgress.getSid(), commentProgress.getUsername(),
-                        commentProgress.getAvatar(), false, position);
+                        commentProgress.getAvatar(), false, commentProgress.getTitle(), position);
             startActivityForResult(toDetailIntent, 1);
             startActivity(toDetailIntent);
         }

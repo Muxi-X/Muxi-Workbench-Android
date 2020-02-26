@@ -38,7 +38,7 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
     private Toolbar mToolbar;
     private RecyclerView mProgressDetailRv;
     private CommentSendView mCommentSendView;
-    private String mAvatar = " ", mUsername = " ";
+    private String mAvatar = " ", mUsername = " ", mTitle = " ";
     private boolean mIfComment;
     private int mPosition; //当前进度在ProgressList页的位置
     private int mSid;
@@ -83,13 +83,14 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
      * @param position         点击位置，等待传回ProgressList做数据更新
      * @return
      */
-    public static Intent newIntent(Context packageContext, int sid, String username, String avatar, boolean ifComment, int position) {
+    public static Intent newIntent(Context packageContext, int sid, String username, String avatar, boolean ifComment, String title, int position) {
         Intent intent = new Intent(packageContext, ProgressDetailActivity.class);
         intent.putExtra("sid", sid);
         intent.putExtra("avatar", avatar);
         intent.putExtra("username", username);
         intent.putExtra("ifComment", ifComment);
         intent.putExtra("position", position);
+        intent.putExtra("title", title);
         return intent;
     }
 
@@ -114,6 +115,7 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
         mSid = intent.getIntExtra("sid", -1);
         mUsername = intent.getStringExtra("username");
         mAvatar = intent.getStringExtra("avatar");
+        mTitle = intent.getStringExtra("title");
 
         mAdapter = new ProgressDetailListAdapter(this, new Progress(), new ArrayList<Comment>(), mProgressDetailListener, mUsername);
 
@@ -125,7 +127,7 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);//添加默认的返回图标
         //getSupportActionBar().setHomeButtonEnabled(true); //设置返回键可用
-        getSupportActionBar().setTitle(mUsername+"的进度");
+        getSupportActionBar().setTitle(mTitle);
         //mToolbar.setTitle(mUsername+"的进度");
 
 
@@ -151,49 +153,17 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if ( item.getItemId() == android.R.id.home) {
-            //Intent backIntent = new Intent();
-            //backIntent.putExtra("position", mPosition);
-            //backIntent.putExtra("sid", mSid);
-            //backIntent.putExtra("avatar", mAvatar);
-            //backIntent.putExtra("username", mUsername);
-            //setResult(RESULT_OK, backIntent);
-            Log.e("TTTTTTTTTTT","kkkkk");
+            Intent backIntent = new Intent();
+            backIntent.putExtra("position", mPosition);
+            backIntent.putExtra("sid", mSid);
+            backIntent.putExtra("avatar", mAvatar);
+            backIntent.putExtra("username", mUsername);
+            setResult(RESULT_OK, backIntent);
             finish();
             finish();
         }
         return super.onOptionsItemSelected(item);
     }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.e("TTTTT", "onStart()");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.e("TTTTT", "onStop()");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.e("TTTTT", "onDestory()");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.e("TTTTT", "onPause()");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.e("TTTTT", "onResume()");
-    }
-
 
     @Override
     public void setPresenter(ProgressDetailContract.Presenter presenter) {

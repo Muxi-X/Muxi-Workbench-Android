@@ -58,30 +58,33 @@ public class ProgressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         if (holder instanceof MyViewHolder) {
 
             MyViewHolder mholder = (MyViewHolder)holder;
-
             Progress progress = ProgressList.get(position);
 
             String Acontent = Jsoup.parse(progress.getContent()).body().wholeText();
-
-            while ( Acontent.length() > 0 && Acontent.charAt(0) == '\n' )
-                Acontent = Acontent.substring(1);
-            while ( Acontent.length() > 0 && Acontent.charAt(Acontent.length() -1) == '\n' )
-                Acontent = Acontent.substring(0,Acontent.length()-1);
-
+            StringBuffer contentBuffer = new StringBuffer();
+            contentBuffer.append(Acontent);
+            while ( contentBuffer.length() > 0 && contentBuffer.charAt(0) == '\n' )
+                contentBuffer.deleteCharAt(0);
+            while ( contentBuffer.length() > 0 && contentBuffer.charAt(contentBuffer.length() -1) == '\n' )
+                contentBuffer.deleteCharAt(contentBuffer.length()-1);
+            for ( int i = 1 ; i < contentBuffer.length(); i++ ) {
+                if ( contentBuffer.charAt(i) == '\n' && contentBuffer.charAt(i-1)=='\n' )
+                    contentBuffer.deleteCharAt(i);
+            }
+            boolean hasPic = false;
             if (progress.getContent().contains("img"))
-                Acontent = Acontent.concat("\n[图片]");
+                hasPic = true;
 
-
-            if (Acontent.length() > 150 ) {
-                Acontent = Acontent.substring(0,150);
+            if (contentBuffer.length() > 150 ) {
+                contentBuffer.substring(0,150);
                 mholder.moreContentTv.setVisibility(View.VISIBLE);
             } else {
                 int count = 0;
-                for ( int i = 0 ; i < Acontent.length() ; i++ ) {
-                    if ( Acontent.charAt(i) == '\n' )
+                for ( int i = 0 ; i < contentBuffer.length() ; i++ ) {
+                    if ( contentBuffer.charAt(i) == '\n' )
                         count++;
                     if ( count > 8 ) {
-                        Acontent = Acontent.substring(0,i);
+                        contentBuffer.substring(0,i);
                         mholder.moreContentTv.setVisibility(View.VISIBLE);
                         break;
                     }
@@ -89,9 +92,15 @@ public class ProgressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 if ( count < 8 )
                     mholder.moreContentTv.setVisibility(View.GONE);
             }
+            if ( hasPic ) {
+                if ( contentBuffer.length() == 0 )
+                    contentBuffer.append("[图片]");
+                else
+                    contentBuffer.append("\n[图片]");
+            }
             mholder.usernameTv.setText(progress.getUsername());
             mholder.timeTv.setText(progress.getTime());
-            mholder.contentTv.setText(Acontent);
+            mholder.contentTv.setText(contentBuffer);
             mholder.avatarSdv.setImageURI(progress.getAvatar());
 
             if ( progress.getIfLike() == 1 )
