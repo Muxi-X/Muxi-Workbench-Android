@@ -1,9 +1,7 @@
 package com.muxi.workbench.ui.progress.view.progressDetail;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,9 +12,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -94,18 +90,52 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
         return intent;
     }
 
+
+    @Override
+    public void onResume() {
+        Log.e("TTTTT", this.hashCode()+" onResume()");
+        super.onResume();
+    }
+
+    @Override
+    public void onStart() {
+        Log.e("TTTTT", this.hashCode()+" onStart()");
+        super.onStart();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        Log.e("TTTTT", this.hashCode()+" onSaveInstanceState()");
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onStop() {
+        Log.e("TTTTT", this.hashCode()+" onStop()");
+        super.onStop();
+    }
+
+    @Override
+    public void onPause() {
+        Log.e("TTTTT", this.hashCode()+" onPause()");
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.e("TTTTT", this.hashCode()+" onDestroy()");
+        super.onDestroy();
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e("TTTTT", "onCreate()");
+        Log.e("TTTTT", this.hashCode()+" onCreate()");
         setContentView(R.layout.activity_progress_detail);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            getWindow().getDecorView().
-                    setSystemUiVisibility(//View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
-                            View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
         mPresenter = new ProgressDetailPresenter(this, ProgressDetailRepository.getInstance(ProgressDetailRemoteDataSource.getInstance()));
 
@@ -124,11 +154,22 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
         mProgressDetailRv.setAdapter(mAdapter);
 
         mToolbar = findViewById(R.id.tb_progressdetail);
+        mToolbar.setTitle(mTitle);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);//添加默认的返回图标
-        //getSupportActionBar().setHomeButtonEnabled(true); //设置返回键可用
-        getSupportActionBar().setTitle(mTitle);
-        //mToolbar.setTitle(mUsername+"的进度");
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("TTTTT", ProgressDetailActivity.this.hashCode()+ "  is clicked to return");
+                Intent backIntent = new Intent();
+                backIntent.putExtra("position", mPosition);
+                backIntent.putExtra("sid", mSid);
+                backIntent.putExtra("avatar", mAvatar);
+                backIntent.putExtra("username", mUsername);
+                setResult(RESULT_OK, backIntent);
+                finish();
+            }
+        });
 
 
         mCommentSendView = findViewById(R.id.csv_progressdetail);
@@ -149,7 +190,7 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
         if ( mIfComment )
             showEditCommentView();
     }
-
+/*
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if ( item.getItemId() == android.R.id.home) {
@@ -160,10 +201,9 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
             backIntent.putExtra("username", mUsername);
             setResult(RESULT_OK, backIntent);
             finish();
-            finish();
         }
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     @Override
     public void setPresenter(ProgressDetailContract.Presenter presenter) {

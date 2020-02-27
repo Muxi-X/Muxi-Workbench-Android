@@ -1,9 +1,6 @@
 package com.muxi.workbench.ui.progress.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-public class Progress implements Parcelable {
+public class Progress {
 
     private int sid;
     private int uid;
@@ -47,54 +44,6 @@ public class Progress implements Parcelable {
         this.likeCount = stickyProgress.getLikeCount();
         this.isSticky = true;
     }
-
-    public Progress(Parcel parcel) {
-        this.sid = parcel.readInt();
-        this.uid = parcel.readInt();
-        this.avatar = parcel.readString();
-        this.username = parcel.readString();
-        this.time = parcel.readString();
-        this.title = parcel.readString();
-        this.content = parcel.readString();
-        this.ifLike = parcel.readInt();
-        this.commentCount = parcel.readInt();
-        this.likeCount = parcel.readInt();
-        this.isSticky = parcel.readBoolean();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(sid);
-        dest.writeInt(uid);
-        dest.writeString(avatar);
-        dest.writeString(username);
-        dest.writeString(time);
-        dest.writeString(title);
-        dest.writeString(content);
-        dest.writeInt(ifLike);
-        dest.writeInt(commentCount);
-        dest.writeInt(likeCount);
-        dest.writeBoolean(isSticky);
-    }
-
-    public static final Creator<Progress> CREATOR = new Creator<Progress>() {
-
-        /**
-         * 供外部类反序列化本类数组使用
-         */
-        @Override
-        public Progress[] newArray(int size) {
-            return new Progress[size];
-        }
-
-        /**
-         * 从Parcel中读取数据
-         */
-        @Override
-        public Progress createFromParcel(Parcel source) {
-            return new Progress(source);
-        }
-    };
 
     public int getSid() {
         return sid;
@@ -183,11 +132,5 @@ public class Progress implements Parcelable {
     public void setSticky(boolean sticky) {
         isSticky = sticky;
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
 
 }
