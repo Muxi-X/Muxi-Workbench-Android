@@ -23,7 +23,7 @@ public class GetAStatusResponse {
     private String content;
     private String time;
     private int likeCount;
-    private boolean iflike;
+    private int iflike;
     private int userID;
     private String username;
     private List<CommentListBean> commentList;
@@ -76,11 +76,11 @@ public class GetAStatusResponse {
         this.likeCount = likeCount;
     }
 
-    public boolean isIflike() {
+    public int getIflike() {
         return iflike;
     }
 
-    public void setIflike(boolean iflike) {
+    public void setIflike(int iflike) {
         this.iflike = iflike;
     }
 

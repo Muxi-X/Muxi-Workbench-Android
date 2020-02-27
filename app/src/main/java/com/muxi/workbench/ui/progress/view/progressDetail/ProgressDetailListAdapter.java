@@ -1,10 +1,17 @@
 package com.muxi.workbench.ui.progress.view.progressDetail;
 
+import android.annotation.SuppressLint;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,7 +35,7 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
 
     private List<Comment> mCommentList;
 
-    private int uid = UserWrapper.getInstance().getUser().getUid();
+    private String mUsername = "";
 
     private ProgressDetailListener mProgressDetailListener;
 
@@ -46,11 +53,12 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
 
     }
 
-    public ProgressDetailListAdapter(Context context, Progress progress, List<Comment> commentList, ProgressDetailListener progressDetailListener) {
+    public ProgressDetailListAdapter(Context context, Progress progress, List<Comment> commentList, ProgressDetailListener progressDetailListener, String username) {
         this.mContext = context;
         this.mProgress = progress;
         this.mCommentList = commentList;
         this.mProgressDetailListener = progressDetailListener;
+        this.mUsername = username;
     }
 
     @NonNull
@@ -63,6 +71,7 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
         }
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
@@ -70,11 +79,11 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
 
             ContentViewHolder mholder = (ContentViewHolder)holder;
 
-            if ( uid == mProgress.getUid() ) {
+            if ( mUsername.equals( mProgress.getUsername() ) ) {
                 mholder.mEditTv.setClickable(true);
                 mholder.mEditIv.setClickable(true);
                 mholder.mEditIv.setImageResource(R.drawable.editing_icon);
-                mholder.mEditTv.setText("评论");
+                mholder.mEditTv.setText("编辑");
                 mholder.mEditTv.setVisibility(View.VISIBLE);
                 mholder.mEditIv.setVisibility(View.VISIBLE);
                 mholder.mEditIv.setOnClickListener(v -> mProgressDetailListener.onEditClick());
@@ -95,20 +104,18 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
             if ( mProgress.getLikeCount() == 0 ) {
                 mholder.mLikeTv.setText("赞");
             } else {
-                mholder.mLikeTv.setText(mProgress.getLikeCount());
+                mholder.mLikeTv.setText(String.valueOf(mProgress.getLikeCount()));
             }
 
             if ( mProgress.getCommentCount() == 0 ) {
                 mholder.mCommentTv.setText("评论");
             } else {
-                mholder.mCommentTv.setText(mProgress.getCommentCount());
+                mholder.mCommentTv.setText(String.valueOf(mProgress.getCommentCount()));
             }
 
-            mholder.mTitleTv.setText(mProgress.getTitle());
             mholder.mAvatarSdv.setImageURI(mProgress.getAvatar());
             mholder.mUsernameTv.setText(mProgress.getUsername());
             mholder.mTimeTv.setText(mProgress.getTime());
-            mholder.mContentWv.loadData(mProgress.getContent(),"text/html","UTF-8");
             mholder.mCommentIv.setImageResource(R.drawable.comment_icon);
 
             mholder.mLikeTv.setOnClickListener(v -> mProgressDetailListener.onLikeClick());
@@ -118,12 +125,43 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
             mholder.mCommentIv.setOnClickListener(v -> mProgressDetailListener.onCommentClick());
             mholder.mCommentTv.setOnClickListener(v -> mProgressDetailListener.onCommentClick());
 
+
+            mholder.mContentWv.loadUrl("file:///android_asset/ProgressDetail.html");
+            mholder.mContentWv.getSettings().setJavaScriptEnabled(true);
+            /**
+             * 监听WebView的加载状态    分别为 ： 加载的 前 中 后期
+             * */
+            mholder.mContentWv.setWebViewClient(new WebViewClient() {
+                @Override
+                public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                    super.onPageStarted(view, url, favicon);
+                }
+
+                @Override
+                public void onPageFinished(WebView view, String url) {
+                    super.onPageFinished(view, url);
+                    view.loadUrl("javascript:loadContent('" + mProgress.getContent() + " ');");
+                }
+
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    Uri uri = Uri.parse(url);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    try {
+                        view.getContext().startActivity(intent);
+                    } catch (ActivityNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    return true;
+                }
+            });
+
         } else if ( holder instanceof CommentViewHolder) {
 
             CommentViewHolder mholder = (CommentViewHolder)holder;
             Comment comment = mCommentList.get(position-1);
 
-            if ( uid == comment.getUid()) {
+            if ( mUsername.equals(comment.getUsername())) {
                 mholder.mDeleteTv.setVisibility(View.VISIBLE);
                 mholder.mDeleteTv.setText("删除");
                 mholder.mDeleteTv.setClickable(true);
@@ -156,8 +194,20 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
         else return 1;
     }
 
-    public void refresh (Progress progress, List<Comment> commentList) {
+    public void refreshProgressLike(int iflike) {
+        mProgress.setIfLike(iflike);
+        notifyItemChanged(0);
+    }
+
+    public void refreshComment(List<Comment> commentList) {
+        mCommentList.clear();
+        mCommentList.addAll(commentList);
+        notifyDataSetChanged();
+    }
+
+    public void refresh (Progress progress, List<Comment> commentList, String username) {
         mProgress = progress;
+        mUsername = username;
         mCommentList = commentList;
         notifyDataSetChanged();
     }
@@ -174,7 +224,6 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
         TextView mCommentTv;
         ImageView mEditIv;
         TextView mEditTv;
-        TextView mTitleTv;
 
         public ContentViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -188,7 +237,9 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
             mCommentTv = itemView.findViewById(R.id.tv_comment_progressdetail_content_item);
             mEditIv = itemView.findViewById(R.id.iv_edit_progressdetail_content_item);
             mEditTv = itemView.findViewById(R.id.tv_edit_progressdetail_content_item);
-            mTitleTv = itemView.findViewById(R.id.tv_title_progressdetail_content_item);
+
+
+
         }
     }
 

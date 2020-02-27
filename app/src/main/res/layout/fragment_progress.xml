@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.muxi.workbench.ui.progress.view.progressLIst.ProgressTitleBar
+    <com.muxi.workbench.ui.progress.view.progressList.ProgressTitleBar
         android:id="@+id/ptb_progress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

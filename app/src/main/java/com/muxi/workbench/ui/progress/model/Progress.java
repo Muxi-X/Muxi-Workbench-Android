@@ -15,7 +15,6 @@ public class Progress {
     private boolean isSticky;
 
     public Progress() {
-
     }
 
     public Progress(int sid, int uid, String avatar, String username, String time, String title, String content, int ifLike, int commentCount, int likeCount) {
@@ -133,4 +132,5 @@ public class Progress {
     public void setSticky(boolean sticky) {
         isSticky = sticky;
     }
+
 }

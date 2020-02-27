@@ -47,12 +47,13 @@ public class ProgressListPresenter implements ProgressContract.Presenter {
 
         List<Integer> StickyProgressSidList = new ArrayList<>();
         List<Integer> UserListToShow = new ArrayList<>();
+        List<Progress> AllStickyProgressList = new ArrayList<>();
 
         mProgressListRepository.getAllStickyProgress(new ProgressListDataSource.LoadStickyProgressCallback() {
             @Override
             public void onStickyProgressLoaded(List<Progress> StickyProgressList) {
                 if (ifForceUpdate)
-                    ProgressListToShow.addAll(StickyProgressList);
+                    AllStickyProgressList.addAll(StickyProgressList);
                 for (int i = 0; i < StickyProgressList.size(); i++)
                     StickyProgressSidList.add(StickyProgressList.get(i).getSid());
             }
@@ -90,14 +91,25 @@ public class ProgressListPresenter implements ProgressContract.Presenter {
 
                 ProgressListToShow.clear();
 
-                for (int j=0 ; j < progressList.size() ; j++ ) {
-                    Progress progress = progressList.get(j);
-                    if ( StickyProgressSidList.contains(progress.getSid()))
-                        continue;
-                    if ( UserListToShow.size() == 1 )
-                        ProgressListToShow.add(progress);
-                    else if ( UserListToShow.contains(progress.getUid()) )
-                        ProgressListToShow.add(progress);
+                if (UserListToShow.size() == 1) {
+                    ProgressListToShow.addAll(AllStickyProgressList);
+                    for ( int i = 0 ; i < progressList.size() ; i++ ) {
+                        Progress progress = progressList.get(i);
+                        if ( !StickyProgressSidList.contains(progress.getSid()) )
+                            ProgressListToShow.add(progressList.get(i));
+                    }
+                } else {
+
+                    for ( int i = 0 ; i < AllStickyProgressList.size() ; i++ ) {
+                        if ( UserListToShow.contains(AllStickyProgressList.get(i).getUid()) )
+                            ProgressListToShow.add(AllStickyProgressList.get(i));
+                    }
+
+                    for ( int i = 0 ; i < progressList.size() ; i++ ) {
+                        Progress progress = progressList.get(i);
+                        if ( UserListToShow.contains(progress.getUid()) && !StickyProgressSidList.contains(progress.getSid()) )
+                            ProgressListToShow.add(progressList.get(i));
+                    }
                 }
 
                 if ( ifForceUpdate || page == 1 ) {
@@ -119,11 +131,6 @@ public class ProgressListPresenter implements ProgressContract.Presenter {
     @Override
     public void addNewProgress() {
         mProgressView.showAddNewProgress();
-    }
-
-    @Override
-    public void openProgressDetails(@NonNull Progress progress) {
-        mProgressView.showProgressDetail(progress.getSid());
     }
 
     @Override
@@ -229,5 +236,20 @@ public class ProgressListPresenter implements ProgressContract.Presenter {
     public void cancelStickyProgress(int position, Progress progress) {
         mProgressListRepository.deleteStickyProgress(progress.getSid());
         mProgressView.moveDeleteStickyProgress(position);
+    }
+
+    @Override
+    public void loadProgress(int position, int sid, String avatar, String username, int uid) {
+        mProgressListRepository.getProgress(sid, avatar, username, uid, new ProgressListDataSource.LoadProgressCallback() {
+            @Override
+            public void onProgressLoaded(Progress progress) {
+                mProgressView.refreshProgress(position, progress);
+            }
+
+            @Override
+            public void onDataNotAvailable() {
+                mProgressView.showError();
+            }
+        });
     }
 }

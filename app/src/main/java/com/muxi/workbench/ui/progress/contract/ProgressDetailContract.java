@@ -11,17 +11,15 @@ public interface ProgressDetailContract {
 
         void setPresenter(Presenter mPresenter);
 
-        void refreshLike();
+        void refreshLike(int iflike);
 
         void showEditCommentView();
 
-        void showNewComment();
+        void clearCommentContent();
 
-        void showDeleteComment();
+        void showProgressDetail(Progress progress, List<Comment> commentList, String username);
 
-        void showEditProgress();
-
-        void showProgressDetail(Progress progress, List<Comment> commentList);
+        void showError();
 
     }
 
@@ -31,7 +29,7 @@ public interface ProgressDetailContract {
 
         void setLikeProgress();
 
-        void submitComment();
+        void submitComment(int sid, String comment);
 
         void deleteComment();
 
