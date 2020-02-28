@@ -196,6 +196,10 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
 
     public void refreshProgressLike(int iflike) {
         mProgress.setIfLike(iflike);
+        if ( iflike == 1 )
+            mProgress.setLikeCount(mProgress.getLikeCount()+1);
+        else
+            mProgress.setLikeCount(mProgress.getLikeCount()-1);
         notifyItemChanged(0);
     }
 

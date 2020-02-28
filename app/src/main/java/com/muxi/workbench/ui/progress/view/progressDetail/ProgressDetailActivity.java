@@ -1,6 +1,5 @@
 package com.muxi.workbench.ui.progress.view.progressDetail;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -12,7 +11,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -35,14 +33,18 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
     private RecyclerView mProgressDetailRv;
     private CommentSendView mCommentSendView;
     private String mAvatar = " ", mUsername = " ", mTitle = " ";
-    private boolean mIfComment;
-    private int mPosition; //当前进度在ProgressList页的位置
-    private int mSid;
+    private boolean mIfComment = false;
+    private Progress mProgress = new Progress(); // 当前进度
+    private int mPosition = -1; //当前进度在ProgressList页的位置
+    private int mSid = -1;
 
     ProgressDetailListAdapter.ProgressDetailListener mProgressDetailListener = new ProgressDetailListAdapter.ProgressDetailListener() {
         @Override
         public void onLikeClick() {
-            mPresenter.setLikeProgress();
+            if ( mProgress.getIfLike() == 1 )
+                mPresenter.setLikeProgress(0);
+            else
+                mPresenter.setLikeProgress(1);
         }
 
         @Override
@@ -90,48 +92,26 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
         return intent;
     }
 
-
-    @Override
-    public void onResume() {
-        Log.e("TTTTT", this.hashCode()+" onResume()");
-        super.onResume();
-    }
-
-    @Override
-    public void onStart() {
-        Log.e("TTTTT", this.hashCode()+" onStart()");
-        super.onStart();
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        Log.e("TTTTT", this.hashCode()+" onSaveInstanceState()");
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onStop() {
-        Log.e("TTTTT", this.hashCode()+" onStop()");
-        super.onStop();
-    }
-
-    @Override
-    public void onPause() {
-        Log.e("TTTTT", this.hashCode()+" onPause()");
-        super.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        Log.e("TTTTT", this.hashCode()+" onDestroy()");
-        super.onDestroy();
+    /**
+     *
+     * @param packageContext   跳转来的页面
+     * @param progress         当前要显示的进度
+     * @param ifComment        是否要评论
+     * @param position         进度在列表页的位置，等待传回做数据更新
+     * @return
+     */
+    public static Intent newIntent(Context packageContext,Progress progress, boolean ifComment, int position) {
+        Intent intent = new Intent(packageContext, ProgressDetailActivity.class);
+        intent.putExtra("progress", progress);
+        intent.putExtra("ifComment", ifComment);
+        intent.putExtra("position", position);
+        return intent;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e("TTTTT", this.hashCode()+" onCreate()");
         setContentView(R.layout.activity_progress_detail);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
@@ -160,7 +140,6 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("TTTTT", ProgressDetailActivity.this.hashCode()+ "  is clicked to return");
                 Intent backIntent = new Intent();
                 backIntent.putExtra("position", mPosition);
                 backIntent.putExtra("sid", mSid);
@@ -190,20 +169,6 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
         if ( mIfComment )
             showEditCommentView();
     }
-/*
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if ( item.getItemId() == android.R.id.home) {
-            Intent backIntent = new Intent();
-            backIntent.putExtra("position", mPosition);
-            backIntent.putExtra("sid", mSid);
-            backIntent.putExtra("avatar", mAvatar);
-            backIntent.putExtra("username", mUsername);
-            setResult(RESULT_OK, backIntent);
-            finish();
-        }
-        return super.onOptionsItemSelected(item);
-    }*/
 
     @Override
     public void setPresenter(ProgressDetailContract.Presenter presenter) {
@@ -229,6 +194,7 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
 
     @Override
     public void showProgressDetail(Progress progress, List<Comment> commentList, String username) {
+        mProgress = progress;
         mAdapter.refresh(progress, commentList, username);
     }
 

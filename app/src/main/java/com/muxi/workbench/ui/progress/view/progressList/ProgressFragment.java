@@ -56,7 +56,6 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
                     .newIntent(getContext(), clickedProgress.getSid(), clickedProgress.getUsername(),
                             clickedProgress.getAvatar(), false, clickedProgress.getTitle(), position);
             startActivityForResult(toDetailIntent, 1);
-            startActivity(toDetailIntent);
         }
 
         @Override
@@ -89,7 +88,6 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
                         .newIntent(getContext(), commentProgress.getSid(), commentProgress.getUsername(),
                         commentProgress.getAvatar(), false, commentProgress.getTitle(), position);
             startActivityForResult(toDetailIntent, 1);
-            startActivity(toDetailIntent);
         }
 
         @Override

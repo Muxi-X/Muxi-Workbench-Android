@@ -37,7 +37,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="14dp"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="14dp"
         android:textColor="#DE000000"
         android:textSize="14sp"
@@ -71,7 +71,7 @@
         android:layout_height="18dp"
         android:layout_marginStart="37dp"
         android:layout_marginTop="6dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="10dp"
         android:clickable="true"
         android:src="@drawable/like_none"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -100,7 +100,9 @@
         app:layout_constraintBottom_toBottomOf="@+id/iv_like_progress_item"
         app:layout_constraintEnd_toStartOf="@+id/iv_edit_progress_item"
         app:layout_constraintStart_toStartOf="@+id/tv_like_progress_item"
-        app:layout_constraintTop_toTopOf="@+id/iv_like_progress_item" />
+        app:layout_constraintTop_toTopOf="@+id/iv_like_progress_item"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginVertical="20dp"/>
 
     <TextView
         android:id="@+id/tv_comment_progress_item"

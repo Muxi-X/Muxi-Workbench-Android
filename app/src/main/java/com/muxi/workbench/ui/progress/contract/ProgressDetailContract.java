@@ -27,7 +27,7 @@ public interface ProgressDetailContract {
 
         void start(int sid, String avatar, String username);
 
-        void setLikeProgress();
+        void setLikeProgress(int iflike);
 
         void submitComment(int sid, String comment);
 

@@ -36,9 +36,18 @@ public class ProgressDetailPresenter implements ProgressDetailContract.Presenter
     }
 
     @Override
-    public void setLikeProgress() {
-        //mProgressDetailRepository.setLikeProgress(mSid);
-        //mProgressDetailView.refreshLike();
+    public void setLikeProgress(int iflike) {
+        mProgressDetailRepository.setLikeProgress(mSid, iflike == 1, new ProgressDetailDataSource.SetLikeProgressCallback() {
+            @Override
+            public void onSuccessfulSet() {
+                mProgressDetailView.refreshLike(iflike);
+            }
+
+            @Override
+            public void onFail() {
+                mProgressDetailView.showError();
+            }
+        });
     }
 
     @Override
