@@ -12,6 +12,7 @@ import com.muxi.workbench.ui.progress.model.net.GetGroupUserListResponse;
 import com.muxi.workbench.ui.progress.model.net.GetStatusListResponse;
 import com.muxi.workbench.ui.progress.model.net.IfLikeStatusBean;
 import com.muxi.workbench.ui.progress.model.net.LikeStatusResponse;
+import com.muxi.workbench.ui.project.model.Project;
 
 import io.reactivex.Observable;
 import retrofit2.Response;
@@ -59,4 +60,8 @@ public interface RetrofitApi {
 
     @GET("http://work.muxi-tech.xyz/api/v1.0/message/list/")
     Observable<NotificationsResponse> getNotifications(@Header("token") String token, @Query("page") int page);
+
+
+    @GET("user/{uid}/project/list/")
+    Observable<Project>getProject(@Header("token") String token,@Path("uid")int uid,@Query("page")int page);
 }

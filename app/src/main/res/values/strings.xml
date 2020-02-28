@@ -22,6 +22,8 @@
     <string name="notification">通 知</string>
     <string name="allread">全部已读</string>
     <string name="get_it">已读</string>
+    <string name="def_project_name">默认项目</string>
+    <string name="project">项目</string>
 
     <array name="progress_titlebar_screening">
         <item>全部</item>

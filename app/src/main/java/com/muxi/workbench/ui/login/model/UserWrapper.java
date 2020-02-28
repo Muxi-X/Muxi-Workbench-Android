@@ -1,5 +1,7 @@
 package com.muxi.workbench.ui.login.model;
 
+import androidx.annotation.Nullable;
+
 import com.alibaba.fastjson.JSONObject;
 import com.muxi.workbench.commonUtils.SPUtils;
 
@@ -28,26 +30,38 @@ public class UserWrapper {
         return instance;
     }
 
+
+
+    public int getUid(){
+        if (user==null)
+            return -1;
+        return user.getUid();
+
+    }
+
     /**
      *
-     *
+     * 注意可能为空，小心NPE
      * @return 存储的user，如果没有则return null,
      * 表示还没有登录
      *
      */
+    @Nullable
     public User getUser(){
         return user;
 
     }
+
     public void setUser(User user){
         this.user=user;
         String json=JSONObject.toJSONString(user);
         spUtils.put("user",json,false);
     }
 
+
     public String getToken(){
         if (user==null)
-            throw new NullPointerException("user=null");
+            return "null_no_user";
         return user.getToken();
     }
 

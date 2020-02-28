@@ -24,7 +24,7 @@ import java.util.List;
 
 public class ProgressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private int uid = UserWrapper.getInstance().getUser().getUid();
+    private int uid = UserWrapper.getInstance().getUid();
     private List<Progress> ProgressList;
     private Context mContext;
     private ProgressItemListener mItemListener;

@@ -4,4 +4,8 @@
     <color name="colorPrimaryDark">#ffffff</color>
     <color name="colorAccent">#4E92E3</color>
     <color name="titleColor">#0F80DA</color>
+
+
+    <color name="projectNameColor">#25282B</color>
+
 </resources>

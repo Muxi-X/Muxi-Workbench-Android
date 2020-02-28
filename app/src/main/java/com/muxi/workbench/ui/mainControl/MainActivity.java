@@ -11,7 +11,7 @@ import com.muxi.workbench.ui.home.view.HomeFragment;
 import com.muxi.workbench.ui.mine.MineFragment;
 import com.muxi.workbench.ui.notifications.NotificationsFragment;
 import com.muxi.workbench.ui.progress.view.progressList.ProgressFragment;
-import com.muxi.workbench.ui.project.ProjectFragment;
+import com.muxi.workbench.ui.project.view.ProjectFragment;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
