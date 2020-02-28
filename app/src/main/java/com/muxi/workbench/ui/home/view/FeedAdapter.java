@@ -1,6 +1,5 @@
 package com.muxi.workbench.ui.home.view;
 
-import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -19,30 +19,17 @@ import java.util.List;
 
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    public static final int TYPE_NORMAL = 0;
-    public static final int TYPE_FOOTER = 1;
+    private static final int TYPE_NORMAL = 0;
+    private static final int TYPE_FOOTER = 1;
 
-    private Context mContext;
-    private LayoutInflater mLayoutInflater;
     private List<FeedBean.DataListBean> mDataList;
     private ItemListener mListener;
     private HomeContract.Presenter mPresenter;
-    private View mFooter;
 
-    public FeedAdapter(FeedBean feedBean, HomeContract.Presenter presenter, ItemListener listener) {
-
-        // TODO: 11/15/19 初始化mBean
-
+    FeedAdapter(FeedBean feedBean, HomeContract.Presenter presenter, ItemListener listener) {
         mPresenter = presenter;
         mDataList = feedBean.getDataList();
         mListener = listener;
-
-    }
-
-    public void setFooter(View FooterView, boolean ifShow) {
-        if (ifShow)
-            mFooter = FooterView;
-        else mFooter = null;
     }
 
     @Override
@@ -54,10 +41,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == 1 && mFooter != null)
-            return new VHFooter(mFooter);
-
-        mLayoutInflater = LayoutInflater.from(parent.getContext());
+        LayoutInflater mLayoutInflater = LayoutInflater.from(parent.getContext());
         return new VH(mLayoutInflater.inflate(R.layout.item_home_rv, parent, false));
     }
 
@@ -69,7 +53,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         FeedBean.DataListBean mData = mDataList.get(position);
         FeedBean.DataListBean.UserBean mUser = mData.getUser();
         FeedBean.DataListBean.SourceBean mSource = mData.getSource();
-        StringBuilder stringBuilder = new StringBuilder();
         VH vh = (VH) holder;
 
         //设置分割线
@@ -78,57 +61,48 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         vh.mSplitView.setTextDate(mData.getTimeday());
         vh.mSplitView.setTextSign(mData.getTimehm());
 
-        vh.mTime.setText(mData.getTimehm());
-
         vh.mHeadShot.setImageURI(mUser.getAvatar_url());
-        vh.mHeadShot.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mListener.onNameClick();
-            }
-        });
-
-        vh.mContent.setText(mSource.getObject_name());
         vh.mName.setText(mData.getUser().getName());
-
-
+        vh.mProjectName.setText(mSource.getObject_name());
         vh.mTime.setText(mData.getTimehm());
+        vh.mStatus.setText(getObjectNameFromId(mData.getAction(),
+                mSource.getKind_id(), mSource.getProject_name()));
 
 
-        stringBuilder.append(mData.getAction());
-        switch (mSource.getKind_id()) {
+        vh.mHeadShot.setOnClickListener(view -> mListener.onNameClick());
+        vh.mContent.setOnClickListener(view -> {
+            mListener.onFileClick(mSource.getObject_id(), mUser.getName(),
+                    mUser.getAvatar_url(), mSource.getObject_name());
+        });
+    }
+
+    private String getObjectNameFromId(String action, int kind_id, String projectName) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(action);
+        switch (kind_id) {
             case 1:
                 stringBuilder.append("了团队");
                 break;
-
             case 2:
                 stringBuilder.append("了项目");
                 break;
-
             case 3:
                 stringBuilder.append("了文档");
                 break;
-
             case 4:
                 stringBuilder.append("了文件");
                 break;
-
             case 5:
-                stringBuilder.append("了进度");
-                break;
-
             case 6:
                 stringBuilder.append("了进度");
                 break;
-
             default:
                 break;
         }
-        if (!mSource.getProject_name().contains("noname"))
-            stringBuilder.append(mSource.getProject_name());
-        vh.mStatus.setText(stringBuilder);
+        if (!projectName.contains("noname"))
+            stringBuilder.append(projectName);
 
-
+        return stringBuilder.toString();
     }
 
     @Override
@@ -140,41 +114,19 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private class VH extends RecyclerView.ViewHolder {
 
         SimpleDraweeView mHeadShot;
-        TextView mName, mStatus, mContent, mTime;
+        TextView mName, mStatus, mProjectName, mTime;
         SplitView mSplitView;
+        ConstraintLayout mContent;
 
         private VH(@NonNull View itemView) {
             super(itemView);
             mSplitView = itemView.findViewById(R.id.split_bar);
             mHeadShot = itemView.findViewById(R.id.head_shot);
+            mContent = itemView.findViewById(R.id.item_content);
             mName = itemView.findViewById(R.id.item_name);
             mStatus = itemView.findViewById(R.id.item_status);
-            mContent = itemView.findViewById(R.id.item_content);
+            mProjectName = itemView.findViewById(R.id.item_project_name);
             mTime = itemView.findViewById(R.id.item_time);
-
-
-            mContent.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mListener.onFileClick();
-
-                }
-            });
-            mStatus.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mListener.onNameClick();
-                }
-            });
-
-            mName.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mListener.onNameClick();
-                }
-            });
-
-
         }
     }
 
@@ -184,31 +136,28 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         private VHFooter(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.footer_text);
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mPresenter.loadMore();
-                }
-            });
+            textView.setOnClickListener(view -> mPresenter.loadMore());
         }
     }
 
 
-    public void replaceData(FeedBean feedBean) {
+    void replaceData(FeedBean feedBean) {
         Log.e("TAG", "feedAdapter replaceData");
         mDataList = feedBean.getDataList();
         notifyDataSetChanged();
     }
 
-    public void addData(FeedBean feedBean) {
+    void addData(FeedBean feedBean) {
         mDataList.addAll(feedBean.getDataList());
         notifyDataSetChanged();
     }
 
+
     interface ItemListener {
+
         void onNameClick();
 
-        void onFileClick();
+        void onFileClick(int sid, String username, String avatar, String title);
     }
 
 }
