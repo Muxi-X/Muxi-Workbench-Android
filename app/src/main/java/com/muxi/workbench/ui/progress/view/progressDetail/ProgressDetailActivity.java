@@ -24,6 +24,7 @@ import com.muxi.workbench.ui.progress.presenter.ProgressDetailPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ProgressDetailActivity extends AppCompatActivity implements ProgressDetailContract.View, DialogFragmentDataCallback  {
 
@@ -136,7 +137,7 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
         mToolbar = findViewById(R.id.tb_progressdetail);
         mToolbar.setTitle(mTitle);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);//添加默认的返回图标
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);//添加默认的返回图标
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

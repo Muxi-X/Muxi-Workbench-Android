@@ -59,7 +59,7 @@ public class Progress implements Parcelable {
         this.ifLike = parcel.readInt();
         this.commentCount = parcel.readInt();
         this.likeCount = parcel.readInt();
-        this.isSticky = parcel.readBoolean();
+        this.isSticky =  parcel.readByte() != 0;
     }
 
     public int getSid() {
@@ -167,7 +167,7 @@ public class Progress implements Parcelable {
         dest.writeInt(ifLike);
         dest.writeInt(commentCount);
         dest.writeInt(likeCount);
-        dest.writeBoolean(isSticky);
+        dest.writeByte((byte) (isSticky ? 1 : 0));
     }
 
     public static final Creator<Progress> CREATOR = new Creator<Progress>() {
