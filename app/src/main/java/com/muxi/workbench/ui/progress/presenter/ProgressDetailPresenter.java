@@ -5,7 +5,6 @@ import com.muxi.workbench.ui.progress.model.Comment;
 import com.muxi.workbench.ui.progress.model.Progress;
 import com.muxi.workbench.ui.progress.model.net.GetAStatusResponse;
 import com.muxi.workbench.ui.progress.model.progressDetail.ProgressDetailDataSource;
-import com.muxi.workbench.ui.progress.model.progressDetail.ProgressDetailRemoteDataSource;
 import com.muxi.workbench.ui.progress.model.progressDetail.ProgressDetailRepository;
 
 import java.util.ArrayList;
@@ -37,13 +36,34 @@ public class ProgressDetailPresenter implements ProgressDetailContract.Presenter
     }
 
     @Override
-    public void setLikeProgress() {
-        //mProgressDetailRepository.setLikeProgress();
-        //mProgressDetailView.refreshLike();
+    public void setLikeProgress(int iflike) {
+        mProgressDetailRepository.setLikeProgress(mSid, iflike == 1, new ProgressDetailDataSource.SetLikeProgressCallback() {
+            @Override
+            public void onSuccessfulSet() {
+                mProgressDetailView.refreshLike(iflike);
+            }
+
+            @Override
+            public void onFail() {
+                mProgressDetailView.showError();
+            }
+        });
     }
 
     @Override
-    public void submitComment() {
+    public void submitComment(int sid, String comment) {
+        mProgressDetailRepository.commentProgress(sid, comment, new ProgressDetailDataSource.CommentProgressCallback() {
+            @Override
+            public void onSuccessfulComment() {
+                loadProgressAndCommentList();
+                mProgressDetailView.clearCommentContent();
+            }
+
+            @Override
+            public void onFail() {
+                mProgressDetailView.showError();
+            }
+        });
 
     }
 
@@ -54,23 +74,23 @@ public class ProgressDetailPresenter implements ProgressDetailContract.Presenter
 
     @Override
     public void loadProgressAndCommentList() {
-        mProgressDetailRepository.getProgressDetail(mSid, new ProgressDetailDataSource.loadProgressCallback() {
+        mProgressDetailRepository.getProgressDetail(mSid, new ProgressDetailDataSource.LoadProgressCallback() {
             @Override
             public void onSuccessGet(GetAStatusResponse getAStatusResponse) {
-                Progress progress = new Progress(mSid, getAStatusResponse.getAuthor_id(), mAvatar,
-                        mUsername, getAStatusResponse.getTime(), getAStatusResponse.getTitle(), getAStatusResponse.getContent(),
-                        (getAStatusResponse.isIflike() == true )? 1: 0 , getAStatusResponse.getCommentList().size(), getAStatusResponse.getLikeCount());
+                Progress progress = new Progress(mSid, getAStatusResponse.getAuthor_id(), mAvatar, mUsername,
+                        getAStatusResponse.getTime(), getAStatusResponse.getTitle(), getAStatusResponse.getContent(),
+                        getAStatusResponse.getIflike(), getAStatusResponse.getCommentList().size(), getAStatusResponse.getLikeCount());
                 List<Comment> commentList = new ArrayList<>();
                 for ( int i = 0 ; i < getAStatusResponse.getCommentList().size() ; i++ ) {
-              //      commentList.add(new Comment(getAStatusResponse.getCommentList().get(i)));
+                    GetAStatusResponse.CommentListBean temp = getAStatusResponse.getCommentList().get(i);
+                    commentList.add(new Comment(temp.getCid(), temp.getUsername(), temp.getAvatar(), temp.getTime(), temp.getContent()));
                 }
-                //int uid, int cid, String username, String avatar, String time, String content
-             //   mProgressDetailView.showProgressDetail(progress,);
+                mProgressDetailView.showProgressDetail(progress, commentList, getAStatusResponse.getUsername());
             }
 
             @Override
             public void onFail() {
-
+                mProgressDetailView.showError();
             }
         });
     }

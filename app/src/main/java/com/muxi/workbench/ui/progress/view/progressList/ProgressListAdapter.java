@@ -1,4 +1,4 @@
-package com.muxi.workbench.ui.progress.view.progressLIst;
+package com.muxi.workbench.ui.progress.view.progressList;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -58,30 +58,33 @@ public class ProgressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         if (holder instanceof MyViewHolder) {
 
             MyViewHolder mholder = (MyViewHolder)holder;
-
             Progress progress = ProgressList.get(position);
 
             String Acontent = Jsoup.parse(progress.getContent()).body().wholeText();
-
-            while ( Acontent.length() > 0 && Acontent.charAt(0) == '\n' )
-                Acontent = Acontent.substring(1);
-            while ( Acontent.length() > 0 && Acontent.charAt(Acontent.length() -1) == '\n' )
-                Acontent = Acontent.substring(0,Acontent.length()-1);
-
+            StringBuffer contentBuffer = new StringBuffer();
+            contentBuffer.append(Acontent);
+            while ( contentBuffer.length() > 0 && contentBuffer.charAt(0) == '\n' )
+                contentBuffer.deleteCharAt(0);
+            while ( contentBuffer.length() > 0 && contentBuffer.charAt(contentBuffer.length() -1) == '\n' )
+                contentBuffer.deleteCharAt(contentBuffer.length()-1);
+            for ( int i = 1 ; i < contentBuffer.length(); i++ ) {
+                if ( contentBuffer.charAt(i) == '\n' && contentBuffer.charAt(i-1)=='\n' )
+                    contentBuffer.deleteCharAt(i);
+            }
+            boolean hasPic = false;
             if (progress.getContent().contains("img"))
-                Acontent = Acontent.concat("\n[图片]");
+                hasPic = true;
 
-
-            if (Acontent.length() > 150 ) {
-                Acontent = Acontent.substring(0,150);
+            if (contentBuffer.length() > 150 ) {
+                contentBuffer.substring(0,150);
                 mholder.moreContentTv.setVisibility(View.VISIBLE);
             } else {
                 int count = 0;
-                for ( int i = 0 ; i < Acontent.length() ; i++ ) {
-                    if ( Acontent.charAt(i) == '\n' )
+                for ( int i = 0 ; i < contentBuffer.length() ; i++ ) {
+                    if ( contentBuffer.charAt(i) == '\n' )
                         count++;
                     if ( count > 8 ) {
-                        Acontent = Acontent.substring(0,i);
+                        contentBuffer.substring(0,i);
                         mholder.moreContentTv.setVisibility(View.VISIBLE);
                         break;
                     }
@@ -89,9 +92,15 @@ public class ProgressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 if ( count < 8 )
                     mholder.moreContentTv.setVisibility(View.GONE);
             }
+            if ( hasPic ) {
+                if ( contentBuffer.length() == 0 )
+                    contentBuffer.append("[图片]");
+                else
+                    contentBuffer.append("\n[图片]");
+            }
             mholder.usernameTv.setText(progress.getUsername());
             mholder.timeTv.setText(progress.getTime());
-            mholder.contentTv.setText(Acontent);
+            mholder.contentTv.setText(contentBuffer);
             mholder.avatarSdv.setImageURI(progress.getAvatar());
 
             if ( progress.getIfLike() == 1 )
@@ -123,13 +132,13 @@ public class ProgressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 mholder.editTv.setOnClickListener(v -> mItemListener.onEditClick(ProgressList.get(position)));
             }
 
-            mholder.itemView.setOnClickListener(v -> mItemListener.onItemClick(ProgressList.get(position)));
+            mholder.itemView.setOnClickListener(v -> mItemListener.onItemClick(ProgressList.get(position), position));
             mholder.avatarSdv.setOnClickListener(v -> mItemListener.onUserClick(ProgressList.get(position).getUid()));
             mholder.usernameTv.setOnClickListener(v -> mItemListener.onUserClick(ProgressList.get(position).getUid()));
             mholder.likeIv.setOnClickListener(v -> mItemListener.onLikeClick(ProgressList.get(position), position));
             mholder.likeTv.setOnClickListener(v -> mItemListener.onLikeClick(ProgressList.get(position), position));
-            mholder.commentIv.setOnClickListener(v -> mItemListener.onCommentClick(ProgressList.get(position)));
-            mholder.commentTv.setOnClickListener(v -> mItemListener.onCommentClick(ProgressList.get(position)));
+            mholder.commentIv.setOnClickListener(v -> mItemListener.onCommentClick(ProgressList.get(position), position));
+            mholder.commentTv.setOnClickListener(v -> mItemListener.onCommentClick(ProgressList.get(position), position));
             mholder.expandIv.setOnClickListener(v -> showPopupMenu(mholder.expandIv, mContext, uid == progress.getUid(), position, progress) );
 
         } else if (holder instanceof MoreViewHolder) {
@@ -189,15 +198,27 @@ public class ProgressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         notifyItemRangeInserted(last, progresses.size());
     }
 
-    public void notifyProgress(int position, int iflike) {
+    public void notifyProgressLike(int position, int iflike) {
         ProgressList.get(position).setIfLike(iflike);
         ProgressList.get(position).setLikeCount(ProgressList.get(position).getLikeCount()+(iflike==1?1:-1));
         notifyItemChanged(position);
     }
 
+    public void notifyProgress(int position, Progress progress) {
+        if ( position != -1) {
+            ProgressList.set(position, progress);
+            notifyItemChanged(position);
+        }
+    }
+
     public void replaceData(List<Progress> progresslist) {
-        ProgressList = progresslist;
-        notifyDataSetChanged();
+        if ( progresslist != null ) {
+            int t = ProgressList.size();
+            ProgressList.clear();
+            notifyItemRangeRemoved(0, t);
+            ProgressList.addAll(progresslist);
+            notifyItemRangeInserted(0, progresslist.size());
+        }
     }
 
     public void moveProgress(int position, int operator) {
@@ -210,18 +231,21 @@ public class ProgressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         } else {
             Progress temp = ProgressList.get(position);
             ProgressList.remove(position);
+            notifyItemRangeRemoved(position,1);
             temp.setSticky(false);
             for ( int i = position ; i < ProgressList.size() ; i++ ) {
                 if ( !ProgressList.get(i).isSticky() ) {
                     if ( ProgressList.get(i).getSid() < temp.getSid() ) {
                         ProgressList.add(i,temp);
+                        notifyItemInserted(i);
                         break;
                     }
                 }
             }
-            if ( ProgressList.get(ProgressList.size()-1).getSid()-1 == temp.getSid() )
+            if ( ProgressList.get(ProgressList.size()-1).getSid()-1 == temp.getSid() ) {
                 ProgressList.add(temp);
-            notifyItemRangeChanged(position,ProgressList.size()-position);
+                notifyItemInserted(ProgressList.size());
+            }
         }
     }
 
@@ -234,11 +258,11 @@ public class ProgressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public interface ProgressItemListener {
-        void onItemClick(Progress clickedProgress);
+        void onItemClick(Progress clickedProgress, int position);
         void onMoreClick();
         void onUserClick(int uid);
         void onLikeClick(Progress likeProgress, int position);
-        void onCommentClick(Progress commentProgress);
+        void onCommentClick(Progress commentProgress, int position);
         void onEditClick(Progress editProgress);
     }
 

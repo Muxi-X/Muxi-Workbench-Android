@@ -4,7 +4,7 @@ import com.muxi.workbench.ui.progress.model.net.GetAStatusResponse;
 
 public interface ProgressDetailDataSource {
 
-    interface loadProgressCallback {
+    interface LoadProgressCallback {
 
         void onSuccessGet(GetAStatusResponse getAStatusResponse);
 
@@ -33,7 +33,7 @@ public interface ProgressDetailDataSource {
         void onFail();
     }
 
-    void getProgressDetail(int sid, loadProgressCallback callback);
+    void getProgressDetail(int sid, LoadProgressCallback callback);
 
     void setLikeProgress(int sid, boolean iflike, SetLikeProgressCallback callback);
 

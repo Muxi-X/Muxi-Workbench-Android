@@ -8,6 +8,13 @@ import java.util.List;
 
 public interface ProgressListDataSource {
 
+    interface LoadProgressCallback {
+
+        void onProgressLoaded(Progress progress);
+
+        void onDataNotAvailable();
+    }
+
     interface LoadProgressListCallback {
 
         void onProgressListLoaded(List<Progress> progressList);
@@ -61,4 +68,6 @@ public interface ProgressListDataSource {
     void deleteStickyProgress(@NonNull int sid);
 
     void getGroupUserList(int gid, GetGroupUserListCallback callback);
+
+    void getProgress(int sid, String avatar, String username, int uid, LoadProgressCallback callback);
 }

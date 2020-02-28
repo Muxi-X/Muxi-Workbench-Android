@@ -1,5 +1,6 @@
-package com.muxi.workbench.ui.progress.view.progressLIst;
+package com.muxi.workbench.ui.progress.view.progressList;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,10 +11,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -21,7 +22,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.muxi.workbench.R;
 import com.muxi.workbench.commonUtils.AppExecutors;
 import com.muxi.workbench.commonUtils.MyRefreshLayout;
-import com.muxi.workbench.ui.login.model.UserWrapper;
 import com.muxi.workbench.ui.progress.contract.ProgressContract;
 import com.muxi.workbench.ui.progress.ProgressFilterType;
 import com.muxi.workbench.ui.progress.model.Progress;
@@ -29,11 +29,13 @@ import com.muxi.workbench.ui.progress.model.progressList.ProgressListRemoteAndLo
 import com.muxi.workbench.ui.progress.model.progressList.ProgressListRepository;
 import com.muxi.workbench.ui.progress.model.StickyProgressDatabase;
 import com.muxi.workbench.ui.progress.presenter.ProgressListPresenter;
-import com.muxi.workbench.ui.progress.view.progressDetail.ProgressDetailFragment;
-import com.muxi.workbench.ui.progress.view.progressLIst.ProgressListAdapter.ProgressItemListener;
+import com.muxi.workbench.ui.progress.view.progressDetail.ProgressDetailActivity;
+import com.muxi.workbench.ui.progress.view.progressList.ProgressListAdapter.ProgressItemListener;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.app.Activity.RESULT_OK;
 
 public class ProgressFragment extends Fragment implements ProgressContract.View {
 
@@ -49,8 +51,11 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
 
     ProgressItemListener mItemListener = new ProgressItemListener() {
         @Override
-        public void onItemClick(Progress clickedProgress) {
-            mPresenter.openProgressDetails(clickedProgress);
+        public void onItemClick(Progress clickedProgress, int position) {
+            Intent toDetailIntent = ProgressDetailActivity
+                    .newIntent(getContext(), clickedProgress.getSid(), clickedProgress.getUsername(),
+                            clickedProgress.getAvatar(), false, clickedProgress.getTitle(), position);
+            startActivityForResult(toDetailIntent, 1);
         }
 
         @Override
@@ -72,23 +77,17 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
         }
 
         @Override
-        public void onCommentClick(Progress commentProgress) {
-            Fragment newFragment = new ProgressDetailFragment();
-            Bundle status = new Bundle();
-            if (commentProgress.getCommentCount() == 0) {
-                ///todo 去往详情页 获取评论焦点
-                status.putInt("ifComment", 1);
-            } else {
-                status.putInt("ifComment", 1);
-            }
-            status.putInt("sid", commentProgress.getSid());
-            status.putString("avatar", commentProgress.getAvatar());
-            status.putString("username", commentProgress.getUsername());
-            newFragment.setArguments(status);
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.viewpage, newFragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
+        public void onCommentClick(Progress commentProgress, int position) {
+            Intent toDetailIntent = null;
+            if (commentProgress.getCommentCount() == 0)
+                toDetailIntent = ProgressDetailActivity
+                        .newIntent(getContext(), commentProgress.getSid(), commentProgress.getUsername(),
+                        commentProgress.getAvatar(), true, commentProgress.getTitle(), position);
+            else
+                toDetailIntent = ProgressDetailActivity
+                        .newIntent(getContext(), commentProgress.getSid(), commentProgress.getUsername(),
+                        commentProgress.getAvatar(), false, commentProgress.getTitle(), position);
+            startActivityForResult(toDetailIntent, 1);
         }
 
         @Override
@@ -193,12 +192,27 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
             ///TODO  to Progress-editing Fragment
         });
 
-        Log.e("user", "acount : " + UserWrapper.getInstance().getUser().getAccount());
-
-        Log.e("user", "urole : " + UserWrapper.getInstance().getUser().getUrole());
-
-
         return root;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case 1:
+                if ( resultCode == RESULT_OK )
+                    mPresenter.loadProgress(data.getIntExtra("position", -1),
+                            data.getIntExtra("sid", -1),
+                            data.getStringExtra("avatar"),
+                            data.getStringExtra("username"),
+                            data.getIntExtra("uid", -1));
+
+                break;
+        }
+    }
+
+    @Override
+    public void refreshProgress(int position, Progress progress) {
+        mAdapter.notifyProgress(position, progress);
     }
 
     @Override
@@ -209,6 +223,9 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
     @Override
     public void showProgressList(List<Progress> progressList) {
         mAdapter.replaceData(progressList);
+        mProgressListRv.scrollToPosition(0);
+        LinearLayoutManager mLayoutManager = (LinearLayoutManager) mProgressListRv.getLayoutManager();
+        mLayoutManager.scrollToPositionWithOffset(0, 0);
         mProgressSrl.setRefreshing(false);
     }
 
@@ -217,14 +234,10 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
         Toast.makeText(getContext(), "去评论", Toast.LENGTH_LONG).show();
     }
 
-    @Override
-    public void showProgressDetail(int sid) {
-        Toast.makeText(getContext(), "去详情页", Toast.LENGTH_LONG).show();
-    }
 
     @Override
     public void refreshLikeProgress(int position, int iflike) {
-        mAdapter.notifyProgress(position, iflike);
+        mAdapter.notifyProgressLike(position, iflike);
     }
 
     @Override

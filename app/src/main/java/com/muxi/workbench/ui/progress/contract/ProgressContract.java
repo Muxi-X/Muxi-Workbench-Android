@@ -15,13 +15,13 @@ public interface ProgressContract {
 
         void showProgressList(List<Progress> progressList);
 
-        void showProgressDetail(int sid);
-
         void showAddNewProgress();
 
         void showUserInfo(int uid);
 
         void refreshLikeProgress(int position, int iflike);
+
+        void refreshProgress(int position, Progress progress);
 
         void showDeleteProgress(int position);
 
@@ -45,8 +45,6 @@ public interface ProgressContract {
 
         void addNewProgress();
 
-        void openProgressDetails(@NonNull Progress progress);
-
         void openUserInfo(@NonNull int uid);
 
         void likeProgress(int sid, int position);
@@ -64,6 +62,8 @@ public interface ProgressContract {
         void deleteProgress(int position, int sid);
 
         void cancelStickyProgress(int position, Progress progress);
+
+        void loadProgress(int position, int sid, String avatar, String username, int uid);
 
     }
 
