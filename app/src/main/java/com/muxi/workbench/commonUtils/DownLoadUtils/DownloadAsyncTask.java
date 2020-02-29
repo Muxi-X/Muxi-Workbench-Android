@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
@@ -68,29 +71,31 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Boolean> {
         File file=new File(mContext.get().getExternalFilesDir(null),fileName);
 
         begin=file.length();
-        long realLength=checkRemoteFile(url);
-
-        //表示文件已经改变,或者文件被删除，都要重新下载
-        if (!file.exists()||total!=realLength){
-            begin=0;
-            total=0;
-            if (file.exists())
-                file.delete();
-        }
+    //    long realLength=checkRemoteFile(url);
 
 
-
-        if (begin!=0){
-            mCallback.get().onProgressUpdate((int)(((double)begin/total)*100));
-        }
-        Log.i(TAG, "doInBackground: begin"+begin);
         Request request;
         OkHttpClient client;
         Response response = null;
-        Log.i(TAG, "doInBackground: file path"+file.getPath());
-        Log.i(TAG, "doInBackground: file.length()"+file.length());
         InputStream in = null;
         FileOutputStream out = null;
+        if (begin!=0){
+            mCallback.get().onProgressUpdate((int)(((double)begin/total)*100));
+        }
+        URL url1;
+        try {
+             url1=new URL(url);
+            URLConnection connection=url1.openConnection();
+            connection.connect();
+
+
+
+
+        Log.i(TAG, "doInBackground: begin"+begin);
+
+        Log.i(TAG, "doInBackground: file path"+file.getPath());
+        Log.i(TAG, "doInBackground: file.length()"+file.length());
+
         if (total==0){
              request = new Request.Builder()
                     .url(url)
@@ -103,16 +108,17 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Boolean> {
                     .build();
         }
 
-        client= NetUtil.getInstance().getClient();
-        try {
-             response=client.newCall(request).execute();
-             if (response.code()!= HttpURLConnection.HTTP_PARTIAL){
-                 throw new Exception("服务端不支持断点续传");
-             }
+        //client= NetUtil.getInstance().getClient();
 
-             total=response.body().contentLength();
+          //   response=client.newCall(request).execute();
+         //    if (response.code()!= HttpURLConnection.HTTP_PARTIAL){
+         //        throw new Exception("服务端不支持断点续传");
+          //   }
+
+           //  total=response.body().contentLength();
+            total=connection.getContentLength();
              out=new FileOutputStream(file,true);
-             in=response.body().byteStream();
+             in=url1.openStream();
              byte[]bytes=new byte[1024*16];
              int n=in.read(bytes);
              while (n!=-1){
