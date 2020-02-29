@@ -1,11 +1,18 @@
 package com.muxi.workbench.ui.project.presenter;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+
+import androidx.core.app.ActivityCompat;
+
 import com.muxi.workbench.ui.project.ProjectMainContract;
 import com.muxi.workbench.ui.project.model.Project;
 import com.muxi.workbench.ui.project.model.Repository.ProjectDataSource;
 import com.muxi.workbench.ui.project.ProjectMainContract.Presenter;
 import com.muxi.workbench.ui.project.ProjectMainContract.View;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.reactivex.Observer;
@@ -21,6 +28,8 @@ public class ProjectPresenter implements Presenter {
     private ProjectDataSource mDataSource;
     private ListCompositeDisposable mDisposableList;
     private AtomicBoolean hasStarted = new AtomicBoolean(false);
+
+
 
     public ProjectPresenter(View view){
         mView=view;
@@ -97,4 +106,6 @@ public class ProjectPresenter implements Presenter {
             mDisposableList.dispose();
         mView=null;
     }
+
+
 }

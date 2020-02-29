@@ -24,6 +24,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         mProject.setList(new ArrayList<>());
     }
 
+    public OnItemClickListener<Project.ListBean>listener;
 
     public void setProject(Project project){
         mProject=project;
@@ -34,12 +35,16 @@ public class ProjectListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         notifyDataSetChanged();
     }
 
+    public void setItemClickListener(OnItemClickListener<Project.ListBean> listener){
+        this.listener=listener;
+    }
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view= LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_project_list,parent,false);
+
 
 
         return new MyViewHolder(view);
@@ -49,6 +54,12 @@ public class ProjectListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         MyViewHolder myViewHolder=(MyViewHolder) holder;
         myViewHolder.proName.setText(mProject.getList().get(position).getProjectName());
+
+        myViewHolder.itemView.setOnClickListener(v -> {
+            if (listener!=null)
+                listener.onclick(mProject.getList().get(position),position);
+        });
+
     }
 
     @Override
@@ -59,15 +70,20 @@ public class ProjectListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
 
 
+    interface OnItemClickListener<T>{
+        void onclick(T t,int position);
+
+    }
 
     class MyViewHolder extends RecyclerView.ViewHolder{
 
         SimpleDraweeView image;
         TextView proName;
         TextView proDes;
-
+        View itemView;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
+            this.itemView=itemView;
             proName=itemView.findViewById(R.id.project_name);
         }
     }

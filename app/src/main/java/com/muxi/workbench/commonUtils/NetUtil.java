@@ -14,12 +14,12 @@ public class NetUtil {
     private NetUtil() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor()
                 .setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+        client= new OkHttpClient.Builder()
                 .addInterceptor(interceptor)
                 .build();
 
         api = new Retrofit.Builder()
-                .client(okHttpClient)
+                .client(client)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl("http://work.muxi-tech.xyz/api/v1.0/")

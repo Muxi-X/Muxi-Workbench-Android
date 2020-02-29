@@ -30,7 +30,11 @@ public final class SPUtils {
     private static final Map<String, SPUtils> SP_UTILS_MAP = new HashMap<>();
     private              SharedPreferences    sp;
 
+
     public static final String SP_CONFIG="sp_config";
+    public static final String SP_DOWNLOAD="sp_file_download";
+
+
     /**
      * Return the single {@link SPUtils} instance
      *
