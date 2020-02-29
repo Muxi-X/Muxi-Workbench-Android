@@ -67,8 +67,8 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
         }
 
         @Override
-        public void onDeleteCommentClick() {
-            mPresenter.deleteComment();
+        public void onDeleteCommentClick(int cid, int position) {
+            mPresenter.deleteComment(mSid, cid, position);
         }
     };
 
@@ -217,5 +217,10 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
     @Override
     public void submitComment(String comment) {
         mPresenter.submitComment(mSid, comment);
+    }
+
+    @Override
+    public void deleteComment(int position) {
+        mAdapter.deleteComment(position);
     }
 }

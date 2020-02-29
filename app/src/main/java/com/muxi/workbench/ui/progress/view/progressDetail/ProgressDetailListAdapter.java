@@ -49,7 +49,7 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
 
         void onUserClick(); //进度和评论的用户头像和用户名的点击监听
 
-        void onDeleteCommentClick(); //个人评论的删除的点击监听
+        void onDeleteCommentClick(int cid, int position); //个人评论的删除的点击监听
 
     }
 
@@ -165,7 +165,7 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
                 mholder.mDeleteTv.setVisibility(View.VISIBLE);
                 mholder.mDeleteTv.setText("删除");
                 mholder.mDeleteTv.setClickable(true);
-                mholder.mDeleteTv.setOnClickListener(v -> mProgressDetailListener.onDeleteCommentClick());
+                mholder.mDeleteTv.setOnClickListener(v -> mProgressDetailListener.onDeleteCommentClick(comment.getCid(), position-1));
             } else {
                 mholder.mDeleteTv.setVisibility(View.INVISIBLE);
                 mholder.mDeleteTv.setClickable(true);
@@ -203,10 +203,15 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
         notifyItemChanged(0);
     }
 
-    public void refreshComment(List<Comment> commentList) {
-        mCommentList.clear();
-        mCommentList.addAll(commentList);
-        notifyDataSetChanged();
+    /*public void addComment(Comment comment) {
+        mCommentList.add(comment);
+        notifyItemInserted(mCommentList.size());
+    }*/
+
+    public void deleteComment(int position) {
+        mCommentList.remove(position);
+        notifyItemChanged(0);
+        notifyItemRemoved(position+1);
     }
 
     public void refresh (Progress progress, List<Comment> commentList, String username) {
