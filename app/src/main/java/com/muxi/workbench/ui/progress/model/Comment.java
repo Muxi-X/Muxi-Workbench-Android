@@ -18,14 +18,6 @@ public class Comment {
         this.content = content;
     }
 
-    //public int getUid() {
-    //    return uid;
-    //}
-
-    //public void setUid(int uid) {
-    //    this.uid = uid;
-    //}
-
     public int getCid() {
         return cid;
     }

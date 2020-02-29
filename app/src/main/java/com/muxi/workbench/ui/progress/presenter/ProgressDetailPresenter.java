@@ -36,9 +36,18 @@ public class ProgressDetailPresenter implements ProgressDetailContract.Presenter
     }
 
     @Override
-    public void setLikeProgress() {
-        //mProgressDetailRepository.setLikeProgress(mSid);
-        //mProgressDetailView.refreshLike();
+    public void setLikeProgress(int iflike) {
+        mProgressDetailRepository.setLikeProgress(mSid, iflike == 1, new ProgressDetailDataSource.SetLikeProgressCallback() {
+            @Override
+            public void onSuccessfulSet() {
+                mProgressDetailView.refreshLike(iflike);
+            }
+
+            @Override
+            public void onFail() {
+                mProgressDetailView.showError();
+            }
+        });
     }
 
     @Override
@@ -59,8 +68,18 @@ public class ProgressDetailPresenter implements ProgressDetailContract.Presenter
     }
 
     @Override
-    public void deleteComment() {
+    public void deleteComment(int sid, int cid, int position) {
+        mProgressDetailRepository.deleteProgressComment(sid, cid, new ProgressDetailDataSource.DeleteCommentCallback() {
+            @Override
+            public void onSuccessfulDelete() {
+                mProgressDetailView.deleteComment(position);
+            }
 
+            @Override
+            public void onFail() {
+                mProgressDetailView.showError();
+            }
+        });
     }
 
     @Override

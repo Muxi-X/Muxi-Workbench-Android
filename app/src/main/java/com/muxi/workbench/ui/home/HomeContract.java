@@ -16,10 +16,6 @@ public interface HomeContract {
 
         void setLoadingIndicator(boolean loadingIndicator, boolean isSucceed);
 
-        void showPerson();
-
-        void showFile();
-
         void refreshData();
 
         void showLoadMoreSign(boolean isSuccess);

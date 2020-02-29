@@ -37,6 +37,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:id="@+id/item_content"
             android:layout_weight="4">
 
 
@@ -54,7 +55,7 @@
                 fresco:layout_constraintVertical_bias="0.121" />
 
             <TextView
-                android:id="@+id/item_content"
+                android:id="@+id/item_project_name"
                 style="@style/TextStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

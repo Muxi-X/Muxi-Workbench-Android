@@ -1,9 +1,9 @@
 package com.muxi.workbench.ui.home.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
@@ -16,7 +16,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.muxi.workbench.R;
 import com.muxi.workbench.commonUtils.MyRefreshLayout;
@@ -24,6 +23,7 @@ import com.muxi.workbench.ui.home.HomeContract;
 import com.muxi.workbench.ui.home.HomePresenter;
 import com.muxi.workbench.ui.home.model.FeedBean;
 import com.muxi.workbench.ui.home.model.FeedRepository;
+import com.muxi.workbench.ui.progress.view.progressDetail.ProgressDetailActivity;
 
 public class HomeFragment extends Fragment implements HomeContract.View {
     private Toolbar toolbar;
@@ -31,11 +31,25 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     private FeedRepository mFeedRepository;
     private HomeContract.Presenter mPresenter;
     private FeedAdapter mAdapter;
-    private FeedBean mBean = new FeedBean();
     private ViewStub viewStub;
     private MyRefreshLayout mSwipeRefreshLayout;
     private Button mRetry;
+    private FeedAdapter.ItemListener listener = new FeedAdapter.ItemListener() {
+        @Override
+        public void onNameClick() {
+            //跳转到个人界面
+            Toast.makeText(getContext(), "应该跳转到个人界面", Toast.LENGTH_SHORT).show();
+        }
 
+        @Override
+        public void onFileClick(int sid, String username, String avatar, String title) {
+            Intent intent = ProgressDetailActivity.newIntent(getActivity(), sid, username, avatar,
+                    false, title, -1);
+
+            startActivity(intent);
+        }
+
+    };
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,48 +79,21 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         toolbar = root.findViewById(R.id.home_toolbar);
         recyclerView = root.findViewById(R.id.home_rcv);
-        Log.e("Fragment left cycle", ":onCreateView");
 
         viewStub = root.findViewById(R.id.home_view_stub);
         mSwipeRefreshLayout = root.findViewById(R.id.swipe_refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(
-                new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        refreshData();
-                    }
-                }
-        );
+        mSwipeRefreshLayout.setOnRefreshListener(this::refreshData);
 
-        mSwipeRefreshLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mSwipeRefreshLayout.isRefreshing()) {
-                    mSwipeRefreshLayout.setRefreshing(false);
-                    Toast.makeText(getContext(), "手动停止", Toast.LENGTH_SHORT).show();
-                }
+        mSwipeRefreshLayout.setOnClickListener(view -> {
+            if (mSwipeRefreshLayout.isRefreshing()) {
+                mSwipeRefreshLayout.setRefreshing(false);
             }
         });
 
-        mSwipeRefreshLayout.setOnLoadMoreListener(new MyRefreshLayout.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                mPresenter.loadMore();
-                mSwipeRefreshLayout.setLoading(false);
-            }
+        mSwipeRefreshLayout.setOnLoadMoreListener(() -> {
+            mPresenter.loadMore();
+            mSwipeRefreshLayout.setLoading(false);
         });
-
-//        mSwipeRefreshLayout.setFooterCallback(new MyRefreshLayout.FooterCallBack() {
-//            @Override
-//            public void addFooterView(View footerView) {
-//                mAdapter.setFooter(footerView, true);
-//            }
-//
-//            @Override
-//            public void removeFooterView(View footerView) {
-//                mAdapter.setFooter(footerView, false);
-//            }
-//        });
 
         initToolbar();
         initRv();
@@ -117,15 +104,12 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     private void initRv() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-
-
     }
 
     public void initAdapter(FeedBean mBean) {
         Log.e("TAG", "Home initAdapter");
         mAdapter = new FeedAdapter(mBean, mPresenter, listener);
         recyclerView.setAdapter(mAdapter);
-//        mAdapter.setFooter(LayoutInflater.from(this.getContext()).inflate(R.layout.item_home_footer, recyclerView, false));
     }
 
     private void initToolbar() {
@@ -145,21 +129,6 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         });
     }
 
-    FeedAdapter.ItemListener listener = new FeedAdapter.ItemListener() {
-        @Override
-        public void onNameClick() {
-            //跳转到个人界面
-            Toast.makeText(getContext(), "应该跳转到个人界面", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onFileClick() {
-            //跳转到相应文档
-            Toast.makeText(getContext(), "应该跳转到相应文档", Toast.LENGTH_SHORT).show();
-        }
-    };
-
-
     @Override
     public void setPresenter(HomeContract.Presenter presenter) {
         mPresenter = presenter;
@@ -172,8 +141,6 @@ public class HomeFragment extends Fragment implements HomeContract.View {
 
     @Override
     public void showAllData(FeedBean feedBean) {
-        Log.e("TAG", "View show all data");
-        Log.e("TAG", "feedbean" + feedBean.toString());
         mAdapter.replaceData(feedBean);
     }
 
@@ -189,17 +156,12 @@ public class HomeFragment extends Fragment implements HomeContract.View {
             viewStub.setVisibility(View.VISIBLE);
         } finally {
             if (mRetry != null) {
-                mRetry.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mPresenter.loadAllData(true);
-                        Toast.makeText(getContext(), "i'm trying!", Toast.LENGTH_SHORT).show();
-                    }
+                mRetry.setOnClickListener(view1 -> {
+                    mPresenter.loadAllData(true);
+                    Toast.makeText(getContext(), "i'm trying!", Toast.LENGTH_SHORT).show();
                 });
-
             }
         }
-
     }
 
 
@@ -208,22 +170,11 @@ public class HomeFragment extends Fragment implements HomeContract.View {
 
         mSwipeRefreshLayout.setRefreshing(loadingIndicator);
 
-        if (isSucceed) {
-//            Toast.makeText(getContext(), "刷新成功", Toast.LENGTH_SHORT).show();
-        } else {
+        if (!isSucceed) {
             Toast.makeText(getContext(), "刷新失败", Toast.LENGTH_SHORT).show();
         }
     }
 
-    @Override
-    public void showPerson() {
-
-    }
-
-    @Override
-    public void showFile() {
-
-    }
 
     @Override
     public void refreshData() {
