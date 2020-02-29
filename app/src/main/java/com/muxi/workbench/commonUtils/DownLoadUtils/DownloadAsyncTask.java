@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.muxi.workbench.commonUtils.NetUtil;
+import com.muxi.workbench.commonUtils.RetrofitApi;
 import com.muxi.workbench.commonUtils.SPUtils;
 
 import java.io.File;
@@ -24,7 +25,12 @@ import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.HttpException;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DownloadAsyncTask extends AsyncTask<String,Integer,Integer> {
 
@@ -33,12 +39,14 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Integer> {
     private static final Integer PAUSE=0;
     private static final Integer ERROR=-1;
     private static final String DOWNEXT="WBdata";
-    private String fileName;
     private WeakReference<DownloadCallback> mCallback;
     private WeakReference<Context>mContext;
     private SPUtils spUtils;
     private String url;
-
+    private File file;
+    private static OkHttpClient client= new OkHttpClient.Builder()
+            .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.HEADERS))
+            .build();
 
 
     public DownloadAsyncTask(DownloadCallback callback,Context context){
@@ -69,19 +77,21 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Integer> {
     @Override
     protected Integer doInBackground(String... strings) {
 
+
+
         url=strings[0];
-        fileName=changeFileExt(getFileNameFromUrl(url),DOWNEXT);
-        File file=new File(mContext.get().getExternalFilesDir(null),fileName);
+        String fileName = changeFileExt(getFileNameFromUrl(url), DOWNEXT);
+        file=new File(mContext.get().getExternalFilesDir(null), fileName);
         long begin=0;
 
 
-        URL Url;
-        HttpURLConnection connection = null;
+
         //主要用来验证是否过期，与服务器的文件大小作比较
         long length = spUtils.getLong(fileName,-1L);
 
         InputStream in = null;
         FileOutputStream out = null;
+        Response response=null;
         try {
 
             long serversLength=getRemoteFileLength(url);
@@ -104,18 +114,18 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Integer> {
             }
 
             Log.i(TAG, "doInBackground:  begin length"+begin);
+            Request request=new Request.Builder()
+                    .addHeader("Connection","close")
+                    .addHeader("Range", "bytes=" +begin  + "-"+length)
+                    .url(url)
+                    .build();
 
-            Url=new URL(url);
+            response=client.newCall(request).execute();
 
-            connection=(HttpURLConnection)Url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("Range", "bytes=" + begin + "-"+length );
-            connection.setRequestProperty("Connection","close");
 
             out=new FileOutputStream(file,true);
-            in=Url.openStream();
-            Log.i(TAG, "doInBackground: network     "+connection.getResponseCode());
-            Log.i(TAG, "doInBackground: network   "+connection.getHeaderField("content-length"));
+            in=response.body().byteStream();
+
             byte[]bytes=new byte[1024*8];
             int n=in.read(bytes);
             while (n!=-1){
@@ -144,9 +154,8 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Integer> {
                 out.close();
                 if (in!=null)
                 in.close();
-                if (connection!=null){
-                    connection.disconnect();
-                }
+                response.close();
+
             }catch (IOException e) {
                 e.printStackTrace();
             }
@@ -167,50 +176,26 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Integer> {
     protected void onPreExecute() {
 
     }
-    private long getRemoteFileLength2(String url) throws IOException {
-
-        URL Url;
-        HttpURLConnection connection = null;
-        Url=new URL(url);
-        InputStream in = null;
-
-        connection=(HttpURLConnection)Url.openConnection();
-        connection.setRequestMethod("GET");
-        connection.setRequestProperty("Range", "bytes=" + 100000 + "-"+200000 );
-        connection.setRequestProperty("Connection","close");
-        Log.i(TAG, "doInBackground: network     "+connection.getResponseCode());
-        Log.i(TAG, "doInBackground: network   "+connection.getHeaderField("content-length"));
-        in=Url.openStream();
-        byte[]bytes=new byte[1024];
-        int n=in.read(bytes);
-        int begin=0;
-        while (n!=-1){
-            begin+=n;
-            n=in.read(bytes);
-
-        }
-        Log.i(TAG, "getRemoteFileLength: "+begin);
-
-        in.close();
-        connection.disconnect();
-        return 0;
-    }
 
     private long getRemoteFileLength(String url) throws IOException {
+
+
         Request request=new Request.Builder()
                 .addHeader("Connection","close")
-                .addHeader("Range", "bytes=" +100000  + "-"+200000)
+                .head()
                 .url(url)
                 .build();
 
-        Response response=NetUtil.getInstance().getClient()
-                .newCall(request).execute();
+        Log.i(TAG, "getRemoteFileLength:  time"+System.currentTimeMillis());
+
+        Response response=client.newCall(request).execute();
         String length=response.header("content-length");
 
         InputStream in=response.body().byteStream();
         byte[]bytes=new byte[1024];
         int n=in.read(bytes);
         int begin=0;
+        Log.i(TAG, "getRemoteFileLength: "+System.currentTimeMillis());
         while (n!=-1){
             begin+=n;
             n=in.read(bytes);
@@ -233,6 +218,7 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Integer> {
     protected void onPostExecute(Integer aBoolean) {
         if (aBoolean.equals(SUCCESS)){
             String name=getFileNameFromUrl(url);
+            file.renameTo(new File(mContext.get().getExternalFilesDir(null),name));
         }
         DownloadCallback callback=mCallback.get();
         if (callback!=null){

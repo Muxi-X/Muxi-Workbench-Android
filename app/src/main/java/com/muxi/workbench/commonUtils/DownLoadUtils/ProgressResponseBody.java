@@ -18,9 +18,8 @@ public class ProgressResponseBody extends ResponseBody {
 
     private Buffer mSink;
 
-    public ProgressResponseBody(ResponseBody responseBody,Buffer sink){
+    public ProgressResponseBody(ResponseBody responseBody){
         this.responseBody=responseBody;
-        mSink=sink;
     }
 
     @Override
@@ -47,7 +46,7 @@ public class ProgressResponseBody extends ResponseBody {
 
             @Override
             public long read(Buffer sink, long byteCount) throws IOException {
-                long bytesRead = super.read(mSink, byteCount);
+                long bytesRead = super.read(sink, byteCount);
                 // read() returns the number of bytes read, or -1 if this source is exhausted.
                 totalBytesRead += bytesRead != -1 ? bytesRead : 0;
                 Log.i("OKHTTP", "read: "+bytesRead);

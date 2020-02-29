@@ -1,6 +1,9 @@
 package com.muxi.workbench.commonUtils;
 
+import com.muxi.workbench.commonUtils.DownLoadUtils.ProgressResponseBody;
+
 import okhttp3.OkHttpClient;
+import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;

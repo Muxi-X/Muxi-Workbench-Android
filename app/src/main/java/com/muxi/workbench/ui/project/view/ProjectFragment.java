@@ -54,7 +54,7 @@ public class ProjectFragment extends Fragment implements ProjectMainContract.Vie
                 if (isPermissionAllowed||isPermissionAllow()) {
                     if (task==null||task.isCancelled()) {
                         task = new DownloadAsyncTask(defaultCallbac, getContext());
-                        task.execute("http://ossccnubox2.muxixyz.com/release/latest/ccnubox.apk");
+                        task.execute("http://ossccnubox2.muxixyz.com/linux%E7%AC%AC%E4%B8%80%E8%AE%B2.mp4");
                     }else {
                         task.cancel(true);
                     }
