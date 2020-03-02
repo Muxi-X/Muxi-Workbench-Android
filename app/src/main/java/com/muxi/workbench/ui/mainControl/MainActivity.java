@@ -1,5 +1,8 @@
 package com.muxi.workbench.ui.mainControl;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -14,6 +17,7 @@ import com.muxi.workbench.ui.progress.view.progressList.ProgressFragment;
 import com.muxi.workbench.ui.project.view.ProjectFragment;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -27,7 +31,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
     public ViewPager viewPager;
     public BottomNavigationView navigationView;
-
+    public static final String CHANNEL_ID="WORKBENCH";
+    public static final String CHANNEL_NAME="DownloadService";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
                             View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
         addMainFragment();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createNotificationChannel();
+        }
 
     }
 
@@ -48,5 +56,12 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void createNotificationChannel(){
+        NotificationChannel channel=new NotificationChannel(CHANNEL_ID,CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW);
+        NotificationManager manager=(NotificationManager)getSystemService((Context.NOTIFICATION_SERVICE));
+        manager.createNotificationChannel(channel);
+    }
 
 }

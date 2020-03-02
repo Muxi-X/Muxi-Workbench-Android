@@ -4,40 +4,29 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.muxi.workbench.commonUtils.NetUtil;
-import com.muxi.workbench.commonUtils.RetrofitApi;
 import com.muxi.workbench.commonUtils.SPUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.util.concurrent.TimeUnit;
 
-import javax.net.ssl.HttpsURLConnection;
-
-import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.HttpException;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
-public class DownloadAsyncTask extends AsyncTask<String,Integer,Integer> {
+import com.muxi.workbench.commonUtils.DownLoadUtils.DownloadAsyncTask.Status;
+public class DownloadAsyncTask extends AsyncTask<String, Integer,Status> {
+
+
+    public enum Status{
+        SUCCESS,PAUSE,ERROR
+    }
 
     private static final String TAG="DownloadAsyncTaskTAG";
-    private static final Integer SUCCESS=1;
-    private static final Integer PAUSE=0;
-    private static final Integer ERROR=-1;
     private static final String DOWNEXT="WBdata";
     private WeakReference<DownloadCallback> mCallback;
     private WeakReference<Context>mContext;
@@ -45,17 +34,23 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Integer> {
     private String url;
     private File file;
     private static OkHttpClient client= new OkHttpClient.Builder()
+            .connectTimeout(Integer.MAX_VALUE, TimeUnit.MILLISECONDS)
+            .readTimeout(Integer.MAX_VALUE,TimeUnit.MILLISECONDS)
+            .writeTimeout(Integer.MAX_VALUE,TimeUnit.MILLISECONDS)
             .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.HEADERS))
             .build();
 
 
-    public DownloadAsyncTask(DownloadCallback callback,Context context){
+    public DownloadAsyncTask(String url,DownloadCallback callback,Context context){
         this.mCallback=new WeakReference<>(callback);
         mContext=new WeakReference<>(context);
         spUtils=SPUtils.getInstance(SPUtils.SP_DOWNLOAD);
-
+        this.url=url;
     }
 
+    public String getUrl(){
+        return url;
+    }
     public String getFileNameFromUrl(String url) {
         if (url.lastIndexOf('/') + 1 >= url.length())
             return String.valueOf(System.currentTimeMillis()) ;
@@ -75,11 +70,10 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Integer> {
 
 
     @Override
-    protected Integer doInBackground(String... strings) {
+    protected Status doInBackground(String... strings) {
 
 
 
-        url=strings[0];
         String fileName = changeFileExt(getFileNameFromUrl(url), DOWNEXT);
         file=new File(mContext.get().getExternalFilesDir(null), fileName);
         long begin=0;
@@ -112,6 +106,10 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Integer> {
             if (begin!=0){
                 mCallback.get().onProgressUpdate((int)(((double)begin/length)*100));
             }
+            //其实已经下载完成
+            if (begin==length){
+                return Status.SUCCESS;
+            }
 
             Log.i(TAG, "doInBackground:  begin length"+begin);
             Request request=new Request.Builder()
@@ -128,17 +126,29 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Integer> {
 
             byte[]bytes=new byte[1024*8];
             int n=in.read(bytes);
+            long lastTime=System.currentTimeMillis();
+            int a=0;
             while (n!=-1){
                 out.write(bytes,0,n);
                 begin+=n;
                 n=in.read(bytes);
-                mCallback.get().onProgressUpdate((int)(((double)begin/length)*100));
-                Log.i(TAG, "doInBackground: now  "+begin);
+                long now=System.currentTimeMillis();
+                if (now-lastTime>=500) {
+                    mCallback.get().onProgressUpdate((int) (((double) begin / length) * 100));
+                    lastTime=now;
+                    a++;
+                }
+                if (a>6){
+                    throw new IOException("test");
+                }
                 if (this.isCancelled()){
                     spUtils.put(fileName,length);
                     break;
                 }
 
+            }
+            if (!this.isCancelled()){
+                mCallback.get().onProgressUpdate(100);
             }
 
         } catch (IOException e) {
@@ -146,7 +156,7 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Integer> {
             mCallback.get().onError(e);
             e.printStackTrace();
 
-            return ERROR;
+            return Status.ERROR;
         }finally {
 
             try {
@@ -164,9 +174,9 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Integer> {
 
 
         if (this.isCancelled())
-            return PAUSE;
+            return Status.PAUSE;
         else
-            return SUCCESS;
+            return Status.SUCCESS;
     }
 
 
@@ -174,7 +184,7 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Integer> {
 
     @Override
     protected void onPreExecute() {
-
+        mCallback.get().preExecute();
     }
 
     private long getRemoteFileLength(String url) throws IOException {
@@ -204,7 +214,7 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Integer> {
         Log.i(TAG, "getRemoteFileLength: "+begin);
         Log.i(TAG, "getRemoteFileLength: len  "+length);
         response.close();
-        return Long.valueOf(length==null?"-1":length);
+        return Long.parseLong(length==null?"-1":length);
 
 
     }
@@ -212,17 +222,17 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Integer> {
     /**
      *
      * doInBackground结束后调用，如果cancel，则不会调用
-     * @param aBoolean
+     * @param
      */
     @Override
-    protected void onPostExecute(Integer aBoolean) {
-        if (aBoolean.equals(SUCCESS)){
+    protected void onPostExecute(Status status) {
+        if (status==Status.SUCCESS){
             String name=getFileNameFromUrl(url);
             file.renameTo(new File(mContext.get().getExternalFilesDir(null),name));
         }
         DownloadCallback callback=mCallback.get();
         if (callback!=null){
-            callback.onPostExecute(aBoolean);
+            callback.onPostExecute(status);
         }
     }
 
@@ -232,23 +242,22 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Integer> {
     }
 
     @Override
-    protected void onCancelled(Integer aBoolean) {
+    protected void onCancelled(Status status) {
         //记录暂停信息
 
         DownloadCallback callback=mCallback.get();
         if (callback!=null){
-            callback.onCancel(aBoolean);
+            callback.onCancel(status);
         }
     }
 
-    interface DownloadCallback {
+    public interface DownloadCallback {
 
         void preExecute();
-        void onPostExecute(Integer result);
-        void onCancel(Integer result);
+        void onPostExecute(Status result);
         void onProgressUpdate(Integer integer);
         void onError(Exception e);
-
+        void onCancel(Status status);
     }
 
     public static class DefaultCallback implements DownloadCallback {
@@ -260,14 +269,10 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Integer> {
         }
 
         @Override
-        public void onPostExecute(Integer result) {
+        public void onPostExecute(Status result) {
             Log.i(TAG, "AfterTaskfinish: result"+result);
         }
 
-        @Override
-        public void onCancel(Integer result) {
-            Log.i(TAG, "task Canceled: "+result);
-        }
 
         @Override
         public void onProgressUpdate(Integer integer) {
@@ -277,6 +282,11 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Integer> {
         @Override
         public void onError(Exception e) {
             Log.i(TAG, "onError: ");
+        }
+
+        @Override
+        public void onCancel(Status status) {
+
         }
     }
 

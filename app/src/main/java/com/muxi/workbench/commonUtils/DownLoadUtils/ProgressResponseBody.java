@@ -47,10 +47,8 @@ public class ProgressResponseBody extends ResponseBody {
             @Override
             public long read(Buffer sink, long byteCount) throws IOException {
                 long bytesRead = super.read(sink, byteCount);
-                // read() returns the number of bytes read, or -1 if this source is exhausted.
                 totalBytesRead += bytesRead != -1 ? bytesRead : 0;
                 Log.i("OKHTTP", "read: "+bytesRead);
-               // progressListener.update(totalBytesRead, responseBody.contentLength(), bytesRead == -1);
                 return bytesRead;
             }
         };
