@@ -127,7 +127,6 @@ public class DownloadAsyncTask extends AsyncTask<String, Integer,Status> {
             byte[]bytes=new byte[1024*8];
             int n=in.read(bytes);
             long lastTime=System.currentTimeMillis();
-            int a=0;
             while (n!=-1){
                 out.write(bytes,0,n);
                 begin+=n;
@@ -136,11 +135,8 @@ public class DownloadAsyncTask extends AsyncTask<String, Integer,Status> {
                 if (now-lastTime>=500) {
                     mCallback.get().onProgressUpdate((int) (((double) begin / length) * 100));
                     lastTime=now;
-                    a++;
                 }
-                if (a>6){
-                    throw new IOException("test");
-                }
+
                 if (this.isCancelled()){
                     spUtils.put(fileName,length);
                     break;
@@ -173,10 +169,7 @@ public class DownloadAsyncTask extends AsyncTask<String, Integer,Status> {
         }
 
 
-        if (this.isCancelled())
-            return Status.PAUSE;
-        else
-            return Status.SUCCESS;
+        return Status.SUCCESS;
     }
 
 
