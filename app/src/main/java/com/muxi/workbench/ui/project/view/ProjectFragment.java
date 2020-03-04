@@ -13,16 +13,30 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
 import com.muxi.workbench.R;
+import com.muxi.workbench.commonUtils.DownLoadUtils.DownloadAsyncTask;
+import com.muxi.workbench.commonUtils.NetUtil;
+import com.muxi.workbench.ui.login.model.UserWrapper;
 import com.muxi.workbench.ui.project.ProjectMainContract;
+
+import com.muxi.workbench.ui.project.model.bean.Folder;
+import com.muxi.workbench.ui.project.model.bean.FolderTree;
 import com.muxi.workbench.ui.project.model.bean.Project;
 import com.muxi.workbench.ui.project.presenter.ProjectPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
 
 public class ProjectFragment extends Fragment implements ProjectMainContract.View {
 
@@ -47,6 +61,13 @@ public class ProjectFragment extends Fragment implements ProjectMainContract.Vie
         mAdapter.setItemClickListener(new ProjectListAdapter.OnItemClickListener<Project.ListBean>() {
             @Override
             public void onclick(Project.ListBean listBean, int position) {
+                FragmentManager manager=getActivity().getSupportFragmentManager();
+                ProjectDetailFragment fragment=ProjectDetailFragment.newInstance(listBean.getProjectID());
+                manager.beginTransaction()
+                        .addToBackStack("tag")
+                        .remove(getParentFragment())
+                        .add(R.id.main_container,fragment)
+                        .commit();
 
             }
         });
@@ -99,6 +120,7 @@ public class ProjectFragment extends Fragment implements ProjectMainContract.Vie
     public void showProject(Project project) {
         mAdapter.setProject(project);
         mAdapter.notifyDataSetChanged();
+
     }
 
 

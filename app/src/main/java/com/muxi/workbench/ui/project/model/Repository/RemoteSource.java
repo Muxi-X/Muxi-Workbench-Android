@@ -2,11 +2,15 @@ package com.muxi.workbench.ui.project.model.Repository;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.muxi.workbench.commonUtils.NetUtil;
 import com.muxi.workbench.commonUtils.RetrofitApi;
 import com.muxi.workbench.ui.login.model.UserWrapper;
 import com.muxi.workbench.ui.project.model.bean.Folder;
+import com.muxi.workbench.ui.project.model.bean.FolderTree;
 import com.muxi.workbench.ui.project.model.bean.Project;
+
+import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -21,34 +25,34 @@ public class RemoteSource {
 
     private UserWrapper mUser;
     private RetrofitApi mRetrofitApi;
-    public RemoteSource(){
-        mUser=UserWrapper.getInstance();
-        mRetrofitApi=NetUtil.getInstance().getApi();
+
+    public RemoteSource() {
+        mUser = UserWrapper.getInstance();
+        mRetrofitApi = NetUtil.getInstance().getApi();
     }
 
 
     /**
      * 一个分页12个
      * 但是一般项目需要全部显示,而且数量不会太多
+     *
      * @param page=1时加载全部(最多到5，也是为了一定的限制)，否则加载制定的页面
      * @return
      */
-    public Single<Project> getProject(int page){
-        return Observable.range(page,3)
+    public Single<Project> getProject(int page) {
+        return Observable.range(page, 3)
                 .concatMap(new Function<Integer, ObservableSource<Project>>() {
                     @Override
                     public ObservableSource<Project> apply(Integer i) throws Exception {
-                        Log.i("test", "apply: "+i);
-                        return mRetrofitApi.getProject(mUser.getToken(),mUser.getUid(),i);
+                        Log.i("test", "apply: " + i);
+                        return mRetrofitApi.getProject(mUser.getUid(), i);
                     }
                 }).takeUntil(new Predicate<Project>() {
                     @Override
                     public boolean test(Project project) throws Exception {
-                        if (page!=1){
+                        if (page != 1) {
                             return true;
-                        }
-                        else
-                        {
+                        } else {
                             return !project.isHasNext();
                         }
                     }
@@ -63,8 +67,6 @@ public class RemoteSource {
                 .subscribeOn(Schedulers.io());
     }
 
-    public Observable<Folder>getFolder(int pId){
-        return
-    }
+
 
 }

@@ -64,7 +64,6 @@ public class ProjectListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemCount() {
-        Log.i("project", "getItemCount: "+(mProject.getList()==null?0:mProject.getList().size()));
         return mProject.getList()==null?0:mProject.getList().size();
     }
 

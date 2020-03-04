@@ -15,10 +15,9 @@ import io.reactivex.schedulers.Schedulers;
 public class RemoteDataSource {
 
     public static void getAllFeedFromRemote(FeedRepository.LoadStatusBeanCallback callback, int page) {
-        String token = UserWrapper.getInstance().getToken();
 
         final Disposable[] mDisposable = new Disposable[1];
-        NetUtil.getInstance().getApi().getFeed(token, page)
+        NetUtil.getInstance().getApi().getFeed(page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<FeedBean>() {

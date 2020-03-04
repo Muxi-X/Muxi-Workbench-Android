@@ -1,5 +1,6 @@
 package com.muxi.workbench.commonUtils;
 
+import com.google.gson.Gson;
 import com.muxi.workbench.commonUtils.DownLoadUtils.ProgressResponseBody;
 
 import okhttp3.OkHttpClient;
@@ -13,8 +14,10 @@ public class NetUtil {
 
     private OkHttpClient client;
     private RetrofitApi api;
+    private Gson gson;
 
     private NetUtil() {
+        gson=new Gson();
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor()
                 .setLevel(HttpLoggingInterceptor.Level.BODY);
         client= new OkHttpClient.Builder()
@@ -25,12 +28,15 @@ public class NetUtil {
         api = new Retrofit.Builder()
                 .client(client)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .baseUrl("http://work.muxi-tech.xyz/api/v1.0/")
                 .build()
                 .create(RetrofitApi.class);
     }
 
+    public Gson getGson(){
+        return gson;
+    }
     public static NetUtil getInstance() {
         return NetUtilHolder.INSTANCE;
     }

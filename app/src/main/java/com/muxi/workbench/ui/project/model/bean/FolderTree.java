@@ -21,7 +21,7 @@ public class FolderTree {
     private boolean selected;
     private boolean finalSelected;
     private List<Integer> router;
-    private List<ChildBeanX> child;
+    private List<ChildBean> child;
 
     public boolean isFolder() {
         return folder;
@@ -71,15 +71,15 @@ public class FolderTree {
         this.router = router;
     }
 
-    public List<ChildBeanX> getChild() {
+    public List<ChildBean> getChild() {
         return child;
     }
 
-    public void setChild(List<ChildBeanX> child) {
+    public void setChild(List<ChildBean> child) {
         this.child = child;
     }
 
-    public static class ChildBeanX {
+    public static class ChildBean {
         /**
          * folder : true
          * id : 19
@@ -87,7 +87,7 @@ public class FolderTree {
          * child : [{"folder":false,"id":"37","name":"gojek_driver_app_android_assignment (1).pdf","router":[0,"19","37"]}]
          * router : [0,"19"]
          */
-
+        public int androidRoute=0;
         private boolean folder;
         private String id;
         private String name;
@@ -134,50 +134,6 @@ public class FolderTree {
             this.router = router;
         }
 
-        public static class ChildBean {
-            /**
-             * folder : false
-             * id : 37
-             * name : gojek_driver_app_android_assignment (1).pdf
-             * router : [0,"19","37"]
-             */
 
-            private boolean folder;
-            private String id;
-            private String name;
-            private List<Integer> router;
-
-            public boolean isFolder() {
-                return folder;
-            }
-
-            public void setFolder(boolean folder) {
-                this.folder = folder;
-            }
-
-            public String getId() {
-                return id;
-            }
-
-            public void setId(String id) {
-                this.id = id;
-            }
-
-            public String getName() {
-                return name;
-            }
-
-            public void setName(String name) {
-                this.name = name;
-            }
-
-            public List<Integer> getRouter() {
-                return router;
-            }
-
-            public void setRouter(List<Integer> router) {
-                this.router = router;
-            }
-        }
     }
 }

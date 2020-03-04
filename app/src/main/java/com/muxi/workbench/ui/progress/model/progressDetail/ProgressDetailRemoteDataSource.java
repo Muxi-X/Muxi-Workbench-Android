@@ -37,7 +37,7 @@ public class ProgressDetailRemoteDataSource implements ProgressDetailDataSource 
     public void getProgressDetail(int sid, LoadProgressCallback callback) {
 
 
-        NetUtil.getInstance().getApi().getAStatus(token, sid)
+        NetUtil.getInstance().getApi().getAStatus( sid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GetAStatusResponse>() {
@@ -65,7 +65,7 @@ public class ProgressDetailRemoteDataSource implements ProgressDetailDataSource 
 
     @Override
     public void setLikeProgress(int sid, boolean iflike, SetLikeProgressCallback callback) {
-        NetUtil.getInstance().getApi().ifLikeStatus(token, sid, new IfLikeStatusBean(iflike == true ? 1 : 0) )
+        NetUtil.getInstance().getApi().ifLikeStatus( sid, new IfLikeStatusBean(iflike == true ? 1 : 0) )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<LikeStatusResponse>() {
@@ -94,7 +94,7 @@ public class ProgressDetailRemoteDataSource implements ProgressDetailDataSource 
 
     @Override
     public void commentProgress(int sid, String comment, CommentProgressCallback callback) {
-        NetUtil.getInstance().getApi().commentStatus(token,sid, new CommentStautsBean(comment))
+        NetUtil.getInstance().getApi().commentStatus(sid, new CommentStautsBean(comment))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Response<Void>>() {
@@ -123,7 +123,7 @@ public class ProgressDetailRemoteDataSource implements ProgressDetailDataSource 
 
     @Override
     public void deleteProgressComment(int sid, int cid, DeleteCommentCallback callback) {
-        NetUtil.getInstance().getApi().deleteComment(token, sid, cid)
+        NetUtil.getInstance().getApi().deleteComment( sid, cid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Response<Void>>() {
