@@ -19,6 +19,7 @@ public class NetUtil {
                 .setLevel(HttpLoggingInterceptor.Level.BODY);
         client= new OkHttpClient.Builder()
                 .addInterceptor(interceptor)
+                .addInterceptor(new AddTokenInterceptor("work.muxi-tech.xyz"))
                 .build();
 
         api = new Retrofit.Builder()

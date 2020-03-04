@@ -12,9 +12,10 @@ import com.muxi.workbench.ui.progress.model.net.GetGroupUserListResponse;
 import com.muxi.workbench.ui.progress.model.net.GetStatusListResponse;
 import com.muxi.workbench.ui.progress.model.net.IfLikeStatusBean;
 import com.muxi.workbench.ui.progress.model.net.LikeStatusResponse;
-import com.muxi.workbench.ui.project.model.Project;
+import com.muxi.workbench.ui.project.model.bean.Project;
 
 import io.reactivex.Observable;
+import okhttp3.ResponseBody;
 import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -64,4 +65,10 @@ public interface RetrofitApi {
 
     @GET("user/{uid}/project/list/")
     Observable<Project>getProject(@Header("token") String token,@Path("uid")int uid,@Query("page")int page);
+
+    @GET("folder/doctree/{id}/")
+    Observable<ResponseBody>getDoctree(@Header("token")String token,@Path("id")int id);
+
+    @GET("folder/filetree/{id}/")
+    Observable<ResponseBody>getFiletree(@Header("token")String token,@Path("id")int id);
 }

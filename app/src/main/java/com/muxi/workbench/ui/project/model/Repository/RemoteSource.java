@@ -5,16 +5,14 @@ import android.util.Log;
 import com.muxi.workbench.commonUtils.NetUtil;
 import com.muxi.workbench.commonUtils.RetrofitApi;
 import com.muxi.workbench.ui.login.model.UserWrapper;
-import com.muxi.workbench.ui.project.model.Project;
-
-import java.util.ArrayList;
+import com.muxi.workbench.ui.project.model.bean.Folder;
+import com.muxi.workbench.ui.project.model.bean.Project;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Single;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
-import io.reactivex.functions.Function3;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 
@@ -63,9 +61,10 @@ public class RemoteSource {
                     }
                 }).last(new Project())
                 .subscribeOn(Schedulers.io());
-
-
     }
 
+    public Observable<Folder>getFolder(int pId){
+        return
+    }
 
 }

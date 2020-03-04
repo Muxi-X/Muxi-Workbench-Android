@@ -1,6 +1,6 @@
 package com.muxi.workbench.ui.project;
 
-import com.muxi.workbench.ui.project.model.Project;
+import com.muxi.workbench.ui.project.model.bean.Project;
 
 public interface ProjectMainContract {
 

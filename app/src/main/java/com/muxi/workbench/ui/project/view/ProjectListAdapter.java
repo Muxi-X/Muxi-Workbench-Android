@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.muxi.workbench.R;
-import com.muxi.workbench.ui.project.model.Project;
+import com.muxi.workbench.ui.project.model.bean.Project;
 
 import java.util.ArrayList;
 

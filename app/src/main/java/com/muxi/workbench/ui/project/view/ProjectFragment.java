@@ -1,42 +1,28 @@
 package com.muxi.workbench.ui.project.view;
 
 import android.Manifest;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.muxi.workbench.R;
-import com.muxi.workbench.commonUtils.DownLoadUtils.DownloadAsyncTask;
-import com.muxi.workbench.services.DownloadService;
-import com.muxi.workbench.ui.mainControl.MainActivity;
 import com.muxi.workbench.ui.project.ProjectMainContract;
-import com.muxi.workbench.ui.project.model.Project;
+import com.muxi.workbench.ui.project.model.bean.Project;
 import com.muxi.workbench.ui.project.presenter.ProjectPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class ProjectFragment extends Fragment implements ProjectMainContract.View {
 
@@ -50,9 +36,6 @@ public class ProjectFragment extends Fragment implements ProjectMainContract.Vie
     private List<String> showRequests=new ArrayList<>();
     private String[]permissions=new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE};
     private boolean isPermissionAllowed=false;
-    DownloadAsyncTask.DefaultCallback defaultCallbac;
-    DownloadAsyncTask task;
-    private int tag=0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,36 +43,11 @@ public class ProjectFragment extends Fragment implements ProjectMainContract.Vie
         mPresenter=new ProjectPresenter(this);
         mAdapter=new ProjectListAdapter();
 
-        defaultCallbac=new DownloadAsyncTask.DefaultCallback();
 
         mAdapter.setItemClickListener(new ProjectListAdapter.OnItemClickListener<Project.ListBean>() {
             @Override
             public void onclick(Project.ListBean listBean, int position) {
-                if (isPermissionAllowed||isPermissionAllow()) {
-                    Intent intent=new Intent(getActivity(), DownloadService.class);
-                    if (tag==0) {
-                        intent.putExtra("URL", "http://ossccnubox2.muxixyz.com/linux%E7%AC%AC%E4%B8%80%E8%AE%B2.mp4");
-                        tag++;
-                    }else if (tag==1){
-                        intent.putExtra("URL","http://ossccnubox2.muxixyz.com/release/latest/ccnubox.apk");
-                        tag++;
-                    }
-                    else {
-                        return;
-                    }
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        getContext().startForegroundService(intent);
-                    }else {
-                        getContext().startService(intent);
-                    }
-                }else {
-                    isPermissionAllow();
-                    if (getActivity()==null)
-                        return;
-                    ActivityCompat.requestPermissions(getActivity(),
-                            showRequests.toArray(new String[showRequests.size()]),
-                            1);
-                }
+
             }
         });
     }
