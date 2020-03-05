@@ -54,7 +54,7 @@ public class ProgressListRemoteAndLocalDataSource implements ProgressListDataSou
 
         List<Progress> progressList = new ArrayList<>();
 
-        NetUtil.getInstance().getApi().getStatusList(token, page)
+        NetUtil.getInstance().getApi().getStatusList(page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe( new Observer<GetStatusListResponse>() {
@@ -90,7 +90,7 @@ public class ProgressListRemoteAndLocalDataSource implements ProgressListDataSou
         @Override
         public void ifLikeProgress(int sid, boolean iflike, SetLikeProgressCallback callback) {
 
-            NetUtil.getInstance().getApi().ifLikeStatus(token, sid, new IfLikeStatusBean(iflike?1:0))
+            NetUtil.getInstance().getApi().ifLikeStatus(sid, new IfLikeStatusBean(iflike?1:0))
                     .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<LikeStatusResponse>() {
@@ -124,7 +124,7 @@ public class ProgressListRemoteAndLocalDataSource implements ProgressListDataSou
 
     @Override
     public void deleteProgress(@NonNull int sid, DeleteProgressCallback callback) {
-        NetUtil.getInstance().getApi().deleteStatus(token, sid)
+        NetUtil.getInstance().getApi().deleteStatus(sid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Response<Void>>() {
@@ -202,7 +202,7 @@ public class ProgressListRemoteAndLocalDataSource implements ProgressListDataSou
     @Override
     public void getGroupUserList(int gid, GetGroupUserListCallback callback) {
         List<Integer> UserList = new ArrayList<>();
-        NetUtil.getInstance().getApi().getGroupUserList(token, gid)
+        NetUtil.getInstance().getApi().getGroupUserList( gid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GetGroupUserListResponse>() {
@@ -233,7 +233,7 @@ public class ProgressListRemoteAndLocalDataSource implements ProgressListDataSou
     @Override
     public void getProgress(int sid, String avatar, String username, int uid, LoadProgressCallback callback) {
         Progress progress = new Progress();
-        NetUtil.getInstance().getApi().getAStatus(token, sid)
+        NetUtil.getInstance().getApi().getAStatus( sid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GetAStatusResponse>() {

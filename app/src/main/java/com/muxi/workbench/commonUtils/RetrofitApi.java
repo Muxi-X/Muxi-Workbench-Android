@@ -12,9 +12,11 @@ import com.muxi.workbench.ui.progress.model.net.GetGroupUserListResponse;
 import com.muxi.workbench.ui.progress.model.net.GetStatusListResponse;
 import com.muxi.workbench.ui.progress.model.net.IfLikeStatusBean;
 import com.muxi.workbench.ui.progress.model.net.LikeStatusResponse;
-import com.muxi.workbench.ui.project.model.Project;
+import com.muxi.workbench.ui.project.model.bean.Folder;
+import com.muxi.workbench.ui.project.model.bean.Project;
 
 import io.reactivex.Observable;
+import okhttp3.ResponseBody;
 import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -35,33 +37,41 @@ public interface RetrofitApi {
     Observable<LoginResponse2> loginWorkbench(@Body UserBeanTwo userBeanTwo);
 
     @GET("feed/list/{page}/")
-    Observable<FeedBean> getFeed(@Header("token") String token, @Path("page") int page);
+    Observable<FeedBean> getFeed(@Path("page") int page);
 
     @GET("http://work.muxi-tech.xyz/api/v1.0/status/{sid}/")
-    Observable<GetAStatusResponse> getAStatus(@Header("token") String token, @Path("sid") int sid);
+    Observable<GetAStatusResponse> getAStatus( @Path("sid") int sid);
 
     @DELETE("http://work.muxi-tech.xyz/api/v1.0/status/{sid}/")
-    Observable<Response<Void>> deleteStatus(@Header("token") String token, @Path("sid") int sid);
+    Observable<Response<Void>> deleteStatus(@Path("sid") int sid);
 
     @GET("http://work.muxi-tech.xyz/api/v1.0/status/list/{page}/")
-    Observable<GetStatusListResponse> getStatusList(@Header("token") String token, @Path("page") int page);
+    Observable<GetStatusListResponse> getStatusList( @Path("page") int page);
 
     @PUT("http://work.muxi-tech.xyz/api/v1.0/status/{sid}/like/")
-    Observable<LikeStatusResponse> ifLikeStatus(@Header("token") String token, @Path("sid") int sid, @Body IfLikeStatusBean ifLikeStatusBean);
+    Observable<LikeStatusResponse> ifLikeStatus(@Path("sid") int sid, @Body IfLikeStatusBean ifLikeStatusBean);
 
     @POST("http://work.muxi-tech.xyz/api/v1.0/status/{sid}/comments/")
-    Observable<Response<Void>> commentStatus(@Header("token") String token, @Path("sid") int sid, @Body CommentStautsBean commentStautsBean);
+    Observable<Response<Void>> commentStatus( @Path("sid") int sid, @Body CommentStautsBean commentStautsBean);
 
     @GET("http://work.muxi-tech.xyz/api/v1.0/group/{gid}/userList/")
-    Observable<GetGroupUserListResponse> getGroupUserList(@Header("token") String token, @Path("gid") int gid);
+    Observable<GetGroupUserListResponse> getGroupUserList( @Path("gid") int gid);
 
     @DELETE("http://work.muxi-tech.xyz/api/v1.0/status/{sid}/comment/{cid}/")
-    Observable<Response<Void>> deleteComment(@Header("token") String token, @Path("sid") int sid, @Path("cid") int cid);
+    Observable<Response<Void>> deleteComment( @Path("sid") int sid, @Path("cid") int cid);
 
     @GET("http://work.muxi-tech.xyz/api/v1.0/message/list/")
-    Observable<NotificationsResponse> getNotifications(@Header("token") String token, @Query("page") int page);
+    Observable<NotificationsResponse> getNotifications( @Query("page") int page);
 
 
     @GET("user/{uid}/project/list/")
-    Observable<Project>getProject(@Header("token") String token,@Path("uid")int uid,@Query("page")int page);
+    Observable<Project>getProject(@Path("uid")int uid,@Query("page")int page);
+
+    @GET("folder/doctree/{id}/")
+    Observable<Folder>getDoctree(@Path("id")int id);
+
+    @GET("folder/filetree/{id}/")
+    Observable<Folder>getFiletree(@Path("id")int id);
+
+
 }

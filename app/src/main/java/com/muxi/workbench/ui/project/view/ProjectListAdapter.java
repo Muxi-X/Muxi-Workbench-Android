@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.muxi.workbench.R;
-import com.muxi.workbench.ui.project.model.Project;
+import com.muxi.workbench.ui.project.model.bean.Project;
 
 import java.util.ArrayList;
 
@@ -64,7 +64,6 @@ public class ProjectListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemCount() {
-        Log.i("project", "getItemCount: "+(mProject.getList()==null?0:mProject.getList().size()));
         return mProject.getList()==null?0:mProject.getList().size();
     }
 

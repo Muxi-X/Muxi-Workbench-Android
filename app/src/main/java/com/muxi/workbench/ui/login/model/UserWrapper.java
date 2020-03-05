@@ -61,7 +61,7 @@ public class UserWrapper {
 
     public String getToken(){
         if (user==null)
-            return "null_no_user";
+            return "";
         return user.getToken();
     }
 

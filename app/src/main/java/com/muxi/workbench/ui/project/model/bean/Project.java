@@ -1,4 +1,4 @@
-package com.muxi.workbench.ui.project.model;
+package com.muxi.workbench.ui.project.model.bean;
 
 import java.util.List;
 
