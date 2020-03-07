@@ -87,12 +87,15 @@ public class FolderTree {
          * child : [{"folder":false,"id":"37","name":"gojek_driver_app_android_assignment (1).pdf","router":[0,"19","37"]}]
          * router : [0,"19"]
          */
+        private String time;
+        private String creator;
         public int androidRoute=0;
         private boolean folder;
         private String id;
         private String name;
         private List<ChildBean> child;
         private List<Integer> router;
+        private String url;
 
         public boolean isFolder() {
             return folder;
@@ -135,5 +138,28 @@ public class FolderTree {
         }
 
 
+        public String getTime() {
+            return time;
+        }
+
+        public void setTime(String time) {
+            this.time = time;
+        }
+
+        public String getCreator() {
+            return creator;
+        }
+
+        public void setCreator(String creator) {
+            this.creator = creator;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
     }
 }
