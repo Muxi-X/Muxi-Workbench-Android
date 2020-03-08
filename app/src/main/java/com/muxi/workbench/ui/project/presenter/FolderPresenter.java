@@ -1,39 +1,47 @@
 package com.muxi.workbench.ui.project.presenter;
 
+import com.muxi.workbench.commonUtils.NetUtil;
 import com.muxi.workbench.ui.project.FolderContract;
 import com.muxi.workbench.ui.project.model.Repository.DetailDataSource;
+import com.muxi.workbench.ui.project.model.bean.FilesId;
+import com.muxi.workbench.ui.project.model.bean.FilesResponse;
 import com.muxi.workbench.ui.project.model.bean.FolderTree;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
 import io.reactivex.internal.disposables.ListCompositeDisposable;
+
+import com.muxi.workbench.ui.project.model.bean.FolderTree.ChildBean;
 
 public class FolderPresenter implements FolderContract.Presenter {
 
 
-
-    private List<Integer>router;
+    private List<Integer> router;
     private DetailDataSource dataSource;
     private FolderContract.View view;
     private ListCompositeDisposable mDisposableList;
     private DetailDataSource.FolderType type;
-
     private int pid;
-    public FolderPresenter(int pid, FolderContract.View view, DetailDataSource.FolderType type){
-        router=new ArrayList<>();
-        dataSource=new DetailDataSource(pid);
-        mDisposableList=new ListCompositeDisposable();
-        this.type=type;
-        this.view=view;
+
+    public FolderPresenter(int pid, FolderContract.View view, DetailDataSource.FolderType type) {
+        router = new ArrayList<>();
+        dataSource = new DetailDataSource(pid);
+        mDisposableList = new ListCompositeDisposable();
+        this.type = type;
+        this.view = view;
     }
 
     @Override
     public void getAllFolder() {
-        dataSource.getAllFolder(true,type)
+        dataSource.getAllFolder(true, type)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new FolderObserver());
     }
@@ -41,19 +49,26 @@ public class FolderPresenter implements FolderContract.Presenter {
     @Override
     public void getNextFolder(int position) {
         router.add(position);
-        dataSource.getWithRouter(false,type,router)
+        dataSource.getWithRouter(false, type, router)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new FolderObserver());
     }
 
     @Override
     public void getPreviousFolder() {
-        if (router.size()==0){
-            view.finish();
-        }else {
-            router.remove(router.size()-1);
-            dataSource.getWithRouter(false,type,router)
+        if (router.size() == 0) {
+            return;
+        } else {
+            router.remove(router.size() - 1);
+            dataSource.getWithRouter(false, type, router)
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new FolderObserver());
         }
+
+
+    }
+
+    public void startDownloadFile(String url) {
 
 
     }
@@ -65,10 +80,10 @@ public class FolderPresenter implements FolderContract.Presenter {
 
     @Override
     public void destory() {
-        if (mDisposableList!=null){
+        if (mDisposableList != null) {
             mDisposableList.dispose();
         }
-        view=null;
+        view = null;
     }
 
     private class FolderObserver implements Observer<List<FolderTree.ChildBean>> {
@@ -81,7 +96,7 @@ public class FolderPresenter implements FolderContract.Presenter {
 
         @Override
         public void onNext(List<FolderTree.ChildBean> childBeans) {
-            if (childBeans.isEmpty()){
+            if (childBeans.isEmpty()) {
                 view.showEmpty();
                 return;
             }

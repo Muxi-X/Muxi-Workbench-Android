@@ -1,5 +1,6 @@
 package com.muxi.workbench.ui.project.view;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -33,14 +34,16 @@ public class ProjectDetailFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle args=getArguments();
-        if (args==null)
-            return;
-        pid=args.getInt(PID);
         mFragments=new ArrayList<>();
 
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        pid=((ProjectDetailActivity)context).getPid();
+
+    }
 
     @Nullable
     @Override

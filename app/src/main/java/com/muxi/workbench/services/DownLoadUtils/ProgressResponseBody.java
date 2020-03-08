@@ -1,4 +1,4 @@
-package com.muxi.workbench.commonUtils.DownLoadUtils;
+package com.muxi.workbench.services.DownLoadUtils;
 
 import android.util.Log;
 

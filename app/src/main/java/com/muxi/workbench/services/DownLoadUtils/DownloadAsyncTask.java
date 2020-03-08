@@ -1,4 +1,4 @@
-package com.muxi.workbench.commonUtils.DownLoadUtils;
+package com.muxi.workbench.services.DownLoadUtils;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -18,7 +18,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 
-import com.muxi.workbench.commonUtils.DownLoadUtils.DownloadAsyncTask.Status;
+import com.muxi.workbench.services.DownLoadUtils.DownloadAsyncTask.Status;
 public class DownloadAsyncTask extends AsyncTask<String, Integer,Status> {
 
 
@@ -47,27 +47,6 @@ public class DownloadAsyncTask extends AsyncTask<String, Integer,Status> {
         spUtils=SPUtils.getInstance(SPUtils.SP_DOWNLOAD);
         this.url=url;
     }
-
-    public String getUrl(){
-        return url;
-    }
-    public String getFileNameFromUrl(String url) {
-        if (url.lastIndexOf('/') + 1 >= url.length())
-            return String.valueOf(System.currentTimeMillis()) ;
-        else {
-            return url.substring(url.lastIndexOf('/') + 1);
-
-        }
-    }
-    public String changeFileExt(String name,String ext){
-
-        int dot=name.lastIndexOf('.');
-        if (dot==-1)
-            return name+'.'+ext;
-        else
-            return name.substring(0,dot+1)+ext;
-    }
-
 
     @Override
     protected Status doInBackground(String... strings) {
@@ -180,37 +159,6 @@ public class DownloadAsyncTask extends AsyncTask<String, Integer,Status> {
         mCallback.get().preExecute();
     }
 
-    private long getRemoteFileLength(String url) throws IOException {
-
-
-        Request request=new Request.Builder()
-                .addHeader("Connection","close")
-                .head()
-                .url(url)
-                .build();
-
-        Log.i(TAG, "getRemoteFileLength:  time"+System.currentTimeMillis());
-
-        Response response=client.newCall(request).execute();
-        String length=response.header("content-length");
-
-        InputStream in=response.body().byteStream();
-        byte[]bytes=new byte[1024];
-        int n=in.read(bytes);
-        int begin=0;
-        Log.i(TAG, "getRemoteFileLength: "+System.currentTimeMillis());
-        while (n!=-1){
-            begin+=n;
-            n=in.read(bytes);
-
-        }
-        Log.i(TAG, "getRemoteFileLength: "+begin);
-        Log.i(TAG, "getRemoteFileLength: len  "+length);
-        response.close();
-        return Long.parseLong(length==null?"-1":length);
-
-
-    }
 
     /**
      *
@@ -243,6 +191,62 @@ public class DownloadAsyncTask extends AsyncTask<String, Integer,Status> {
             callback.onCancel(status);
         }
     }
+    private long getRemoteFileLength(String url) throws IOException {
+
+
+        Request request=new Request.Builder()
+                .addHeader("Connection","close")
+                .head()
+                .url(url)
+                .build();
+
+        Log.i(TAG, "getRemoteFileLength:  time"+System.currentTimeMillis());
+
+        Response response=client.newCall(request).execute();
+        String length=response.header("content-length");
+
+        InputStream in=response.body().byteStream();
+        byte[]bytes=new byte[1024];
+        int n=in.read(bytes);
+        int begin=0;
+        Log.i(TAG, "getRemoteFileLength: "+System.currentTimeMillis());
+        while (n!=-1){
+            begin+=n;
+            n=in.read(bytes);
+
+        }
+        Log.i(TAG, "getRemoteFileLength: "+begin);
+        Log.i(TAG, "getRemoteFileLength: len  "+length);
+        response.close();
+        return Long.parseLong(length==null?"-1":length);
+
+
+    }
+
+    public String getUrl(){
+        return url;
+    }
+
+    public String getFileNameFromUrl(String url) {
+        if (url.lastIndexOf('/') + 1 >= url.length())
+            return String.valueOf(System.currentTimeMillis()) ;
+        else {
+            return url.substring(url.lastIndexOf('/') + 1);
+
+        }
+    }
+
+    public String changeFileExt(String name,String ext){
+
+        int dot=name.lastIndexOf('.');
+        if (dot==-1)
+            return name+'.'+ext;
+        else
+            return name.substring(0,dot+1)+ext;
+    }
+
+
+
 
     public interface DownloadCallback {
 

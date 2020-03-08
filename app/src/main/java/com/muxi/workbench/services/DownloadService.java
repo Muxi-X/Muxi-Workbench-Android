@@ -16,9 +16,9 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import com.muxi.workbench.R;
-import com.muxi.workbench.commonUtils.DownLoadUtils.DownloadAsyncTask;
+import com.muxi.workbench.services.DownLoadUtils.DownloadAsyncTask;
 import com.muxi.workbench.ui.mainControl.MainActivity;
-import com.muxi.workbench.commonUtils.DownLoadUtils.DownloadAsyncTask.Status;
+import com.muxi.workbench.services.DownLoadUtils.DownloadAsyncTask.Status;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -80,7 +80,7 @@ public class DownloadService extends Service {
             mRemoteViews.setTextViewText(R.id.task_num,"剩余任务："+(mTaskList.size()-1));
             manager.notify(NOTIFICATION_ID,notification);
         }
-        return START_NOT_STICKY;
+        return START_REDELIVER_INTENT;
     }
 
 
