@@ -179,7 +179,7 @@ public class ProjectFolderFragment extends Fragment implements FolderContract.Vi
 
     @Override
     public void showLoading() {
-
+        mAdapter.setEmpty();
     }
 
     @Override
@@ -187,9 +187,5 @@ public class ProjectFolderFragment extends Fragment implements FolderContract.Vi
         mAdapter.setmList(list);
     }
 
-    @Override
-    public void finish() {
-        getActivity().getSupportFragmentManager()
-                .popBackStack();
-    }
+
 }

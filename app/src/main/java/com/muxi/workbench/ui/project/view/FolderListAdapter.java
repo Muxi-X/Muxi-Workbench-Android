@@ -33,6 +33,8 @@ public class FolderListAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHo
 
 
     public void setEmpty(){
+        if (mList.isEmpty())
+            return;
         mList.clear();
         notifyDataSetChanged();
 
@@ -40,7 +42,6 @@ public class FolderListAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void setmList(List<ChildBean> list){
 
         mList.clear();
-        notifyDataSetChanged();
         List<ChildBean>temp=new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             ChildBean childBean= list.get(i);

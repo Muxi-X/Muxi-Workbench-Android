@@ -12,7 +12,6 @@ public interface FolderContract {
         void showError();
         void showLoading();
         void showFolder(List<FolderTree.ChildBean>list);
-        void finish();
 
     }
 

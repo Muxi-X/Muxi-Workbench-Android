@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.muxi.workbench.R;
-import com.muxi.workbench.commonUtils.NetUtil;
 import com.muxi.workbench.ui.project.ProjectMainContract;
 
 import com.muxi.workbench.ui.project.model.bean.Project;
@@ -50,14 +49,8 @@ public class ProjectFragment extends Fragment implements ProjectMainContract.Vie
         mAdapter.setItemClickListener(new ProjectListAdapter.OnItemClickListener<Project.ListBean>() {
             @Override
             public void onclick(Project.ListBean listBean, int position) {
-                FragmentManager manager=getActivity().getSupportFragmentManager();
-                ProjectDetailFragment fragment=ProjectDetailFragment.newInstance(listBean.getProjectID());
-                manager.beginTransaction()
-                        .addToBackStack("tag")
-                        .remove(getParentFragment())
-                        .add(R.id.main_container,fragment)
-                        .commit();
-
+                if (ProjectFragment.this.getActivity()!=null)
+                    ProjectDetailActivity.startActivity(ProjectFragment.this.getActivity(),listBean.getProjectID());
             }
         });
     }

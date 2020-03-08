@@ -57,7 +57,7 @@ public class FolderPresenter implements FolderContract.Presenter {
     @Override
     public void getPreviousFolder() {
         if (router.size() == 0) {
-            view.finish();
+            return;
         } else {
             router.remove(router.size() - 1);
             dataSource.getWithRouter(false, type, router)
