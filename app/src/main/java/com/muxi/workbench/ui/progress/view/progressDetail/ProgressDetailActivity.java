@@ -146,6 +146,7 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
                 backIntent.putExtra("sid", mSid);
                 backIntent.putExtra("avatar", mAvatar);
                 backIntent.putExtra("username", mUsername);
+                backIntent.putExtra("uid",mProgress.getUid());
                 setResult(RESULT_OK, backIntent);
                 finish();
             }
