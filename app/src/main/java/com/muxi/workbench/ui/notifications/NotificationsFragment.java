@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.muxi.workbench.R;
+import com.muxi.workbench.ui.notifications.model.NotificationsRepository;
+import com.muxi.workbench.ui.notifications.model.NotificationsResponse;
 
 public class NotificationsFragment extends Fragment implements NotificationContact.View {
 

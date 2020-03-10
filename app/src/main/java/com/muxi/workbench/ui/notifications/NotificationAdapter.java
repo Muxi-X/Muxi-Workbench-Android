@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.muxi.workbench.R;
+import com.muxi.workbench.ui.notifications.model.NotificationsResponse;
 
 import java.util.ArrayList;
 import java.util.List;

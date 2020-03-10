@@ -1,4 +1,4 @@
-package com.muxi.workbench.ui.notifications;
+package com.muxi.workbench.ui.notifications.model;
 
 public class NotificationsRepository {
 
@@ -11,7 +11,7 @@ public class NotificationsRepository {
         RemoteDataSource.clearNotifications(callback);
     }
 
-    interface LoadNotiResponseCallback {
+    public interface LoadNotiResponseCallback {
 
         void onDataLoaded(NotificationsResponse mBean);
 

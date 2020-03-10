@@ -1,4 +1,4 @@
-package com.muxi.workbench.ui.notifications;
+package com.muxi.workbench.ui.notifications.model;
 
 import java.util.List;
 

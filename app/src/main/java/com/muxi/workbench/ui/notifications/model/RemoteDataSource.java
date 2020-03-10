@@ -1,9 +1,9 @@
-package com.muxi.workbench.ui.notifications;
-
-import android.util.Log;
+package com.muxi.workbench.ui.notifications.model;
 
 import com.muxi.workbench.commonUtils.NetUtil;
 import com.muxi.workbench.ui.login.model.UserWrapper;
+import com.muxi.workbench.ui.notifications.model.NotificationsRepository;
+import com.muxi.workbench.ui.notifications.model.NotificationsResponse;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;

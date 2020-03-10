@@ -12,37 +12,32 @@ import com.muxi.workbench.R;
 public class ProjectDetailActivity extends AppCompatActivity {
 
 
-    private static final String PID="pid";
+    private static final String PID = "pid";
     private int pid;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pid=getIntent().getIntExtra(PID,0);
+        pid = getIntent().getIntExtra(PID, 0);
         setContentView(R.layout.activity_project_folder);
 
         initView();
 
 
-
     }
 
-    public int getPid(){
+    public int getPid() {
         return pid;
     }
-    private void initView(){
+
+    private void initView() {
 
     }
 
 
-    public static void  startActivity(Context context,int pid){
-        Intent intent=new Intent(context,ProjectDetailActivity.class);
-        intent.putExtra(PID,pid);
+    public static void startActivity(Context context, int pid) {
+        Intent intent = new Intent(context, ProjectDetailActivity.class);
+        intent.putExtra(PID, pid);
         context.startActivity(intent);
-
-
     }
-
-
-
-
 }

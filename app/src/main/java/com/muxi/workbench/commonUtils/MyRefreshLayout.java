@@ -102,8 +102,12 @@ public class MyRefreshLayout extends SwipeRefreshLayout {
     }
 
     private boolean canLoadMore() {
-        mListView = (RecyclerView) getChildAt(0); //0 是一个SwipeRefreshLayout自带的一个 显示加载动画的view
-        Log.e("SwipeRefreshLayout--->", mListView.toString());
+        try {
+            mListView = (RecyclerView) getChildAt(0);
+            //RefreshLayout 由两部分组成一个是circle 一个是list， 有时候list切换过快list会还没加载出来
+        } catch (Exception e) {
+            return false;
+        }
 
         //1. 上拉
         boolean condition1 = (mDownY - mUpY) >= mScaledTouchSlop;
@@ -116,7 +120,7 @@ public class MyRefreshLayout extends SwipeRefreshLayout {
         if (mListView != null && mListView.getAdapter() != null) {
             LinearLayoutManager manager = (LinearLayoutManager) mListView.getLayoutManager();
 
-            condition2 = manager.findLastVisibleItemPosition() >= (mListView.getAdapter().getItemCount() -8);
+            condition2 = manager.findLastVisibleItemPosition() >= (mListView.getAdapter().getItemCount() - 8);
 
         }
         if (condition2) {
@@ -133,19 +137,9 @@ public class MyRefreshLayout extends SwipeRefreshLayout {
         return condition1 & condition2 & condition3;
     }
 
-//    public void setFooterCallback(FooterCallBack footerCallback) {
-//        this.mFooterCallback = footerCallback;
-//    }
 
     public void setLoading(boolean loading) {
         isLoading = loading;
-//        if (mFooterCallback != null)
-//            if (isLoading) {
-//                mFooterCallback.addFooterView(mFooter);
-//            } else {
-//                mFooterCallback.removeFooterView(mFooter);
-//            }
-
         mDownY = 0;
         mUpY = 0;
     }

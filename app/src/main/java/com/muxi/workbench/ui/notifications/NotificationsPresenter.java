@@ -1,5 +1,8 @@
 package com.muxi.workbench.ui.notifications;
 
+import com.muxi.workbench.ui.notifications.model.NotificationsRepository;
+import com.muxi.workbench.ui.notifications.model.NotificationsResponse;
+
 public class NotificationsPresenter implements NotificationContact.Presenter {
 
     private NotificationAdapter mAdapter;

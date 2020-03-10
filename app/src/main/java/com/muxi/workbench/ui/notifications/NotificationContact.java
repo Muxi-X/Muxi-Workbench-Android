@@ -1,5 +1,7 @@
 package com.muxi.workbench.ui.notifications;
 
+import com.muxi.workbench.ui.notifications.model.NotificationsResponse;
+
 public interface NotificationContact {
     interface View {
         void setPresenter(Presenter presenter);
