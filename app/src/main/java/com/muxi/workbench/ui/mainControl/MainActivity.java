@@ -1,39 +1,19 @@
 package com.muxi.workbench.ui.mainControl;
 
-import android.app.IntentService;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Messenger;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.muxi.workbench.R;
 import com.muxi.workbench.services.DownloadService;
-import com.muxi.workbench.ui.home.view.HomeFragment;
-import com.muxi.workbench.ui.mine.MineFragment;
-import com.muxi.workbench.ui.notifications.NotificationsFragment;
-import com.muxi.workbench.ui.progress.view.progressList.ProgressFragment;
-import com.muxi.workbench.ui.project.view.ProjectFragment;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 

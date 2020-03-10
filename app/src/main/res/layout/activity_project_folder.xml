@@ -6,8 +6,9 @@
     android:layout_height="match_parent">
 
 
-    <FrameLayout
-        android:id="@+id/project_detail_container"
+    <fragment
+        android:id="@+id/project_detail_fragment"
+        android:name="com.muxi.workbench.ui.project.view.projectFolder.ProjectDetailFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"

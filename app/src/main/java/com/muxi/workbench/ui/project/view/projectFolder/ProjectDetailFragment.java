@@ -1,4 +1,4 @@
-package com.muxi.workbench.ui.project.view;
+package com.muxi.workbench.ui.project.view.projectFolder;
 
 import android.content.Context;
 import android.os.Build;
@@ -15,8 +15,6 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.muxi.workbench.R;
-import com.muxi.workbench.ui.project.FolderContract;
-import com.muxi.workbench.ui.project.presenter.FolderPresenter;
 
 import java.util.ArrayList;
 import java.util.List;

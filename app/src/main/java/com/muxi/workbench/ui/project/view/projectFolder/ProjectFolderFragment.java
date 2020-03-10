@@ -1,4 +1,4 @@
-package com.muxi.workbench.ui.project.view;
+package com.muxi.workbench.ui.project.view.projectFolder;
 
 import android.Manifest;
 import android.content.Intent;
@@ -16,7 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -79,7 +78,11 @@ public class ProjectFolderFragment extends Fragment implements FolderContract.Vi
             if (childBean.isFolder()) {
                 goNextFolder(childBean.androidRoute);
             }else {
-                if (getActivity()!=null&&childBean.getUrl()!=null){
+                if (type== DetailDataSource.FolderType.DOCTREE){
+                    Intent intent=ProjectDocWebView.newIntent(ProjectFolderFragment.this.getActivity(),Integer.parseInt(childBean.getId()),childBean.getName());
+                    startActivity(intent);
+                }
+                else if (getActivity()!=null&&childBean.getUrl()!=null){
                     if (isPermissionAllowed||isPermissionAllow()) {
                         Intent intent=new Intent(getActivity(), DownloadService.class);
                         intent.putExtra(DownloadService.URL,childBean.getUrl());

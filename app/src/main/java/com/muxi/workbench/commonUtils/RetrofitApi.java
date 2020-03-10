@@ -12,6 +12,7 @@ import com.muxi.workbench.ui.progress.model.net.GetGroupUserListResponse;
 import com.muxi.workbench.ui.progress.model.net.GetStatusListResponse;
 import com.muxi.workbench.ui.progress.model.net.IfLikeStatusBean;
 import com.muxi.workbench.ui.progress.model.net.LikeStatusResponse;
+import com.muxi.workbench.ui.project.model.bean.FileContent;
 import com.muxi.workbench.ui.project.model.bean.FilesId;
 import com.muxi.workbench.ui.project.model.bean.FilesResponse;
 import com.muxi.workbench.ui.project.model.bean.Folder;
@@ -82,6 +83,7 @@ public interface RetrofitApi {
     @POST("folder/doc/children/")
     Observable<FilesResponse>getDocDetail(@Body FilesId filesId);
 
-    @POST("folder/doc/children/")
-    Observable<test>getDocDetail2(@Body FilesId filesId);
+
+    @GET("file/doc/{id}")
+    Observable<FileContent>getFileContent(@Path("id")int id);
 }
