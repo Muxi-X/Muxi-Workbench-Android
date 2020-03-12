@@ -22,10 +22,14 @@ import com.muxi.workbench.R;
 import com.muxi.workbench.commonUtils.MyRefreshLayout;
 import com.muxi.workbench.ui.home.HomeContract;
 import com.muxi.workbench.ui.home.HomePresenter;
+import com.muxi.workbench.ui.home.model.BannerBean;
 import com.muxi.workbench.ui.home.model.FeedBean;
 import com.muxi.workbench.ui.home.model.FeedRepository;
 import com.muxi.workbench.ui.progress.view.progressDetail.ProgressDetailActivity;
 import com.muxi.workbench.ui.project.view.projectFolder.ProjectDetailActivity;
+import com.youth.banner.Banner;
+
+import java.util.ArrayList;
 
 public class HomeFragment extends Fragment implements HomeContract.View {
     private Toolbar toolbar;
@@ -36,7 +40,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     private ViewStub viewStub;
     private MyRefreshLayout mSwipeRefreshLayout;
     private Button mRetry;
-    private Context context = this.getContext();
+    private Banner mBanner;
     private FeedAdapter.ItemListener listener = new FeedAdapter.ItemListener() {
         @Override
         public void onNameClick() {
@@ -53,9 +57,12 @@ public class HomeFragment extends Fragment implements HomeContract.View {
 
         @Override
         public void onCliCkToFile(int pid) {
-            ProjectDetailActivity.startActivity(context, pid);
+            try {
+                ProjectDetailActivity.startActivity(HomeFragment.this.getContext(), pid);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-
     };
 
     @Override
@@ -84,6 +91,8 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         toolbar = root.findViewById(R.id.home_toolbar);
+        mBanner = root.findViewById(R.id.home_banner);
+        mBanner.setAdapter(new BannerAdapter(BannerBean.getDefaultBanners()));
         recyclerView = root.findViewById(R.id.home_rcv);
 
         viewStub = root.findViewById(R.id.home_view_stub);
@@ -195,6 +204,4 @@ public class HomeFragment extends Fragment implements HomeContract.View {
             Toast.makeText(getContext(), "加载失败", Toast.LENGTH_SHORT).show();
         }
     }
-
-
 }

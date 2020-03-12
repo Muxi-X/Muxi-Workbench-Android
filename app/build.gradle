@@ -57,5 +57,7 @@ dependencies {
     implementation 'com.alibaba:fastjson:1.1.71.android'
     implementation 'org.jsoup:jsoup:1.12.1'
 
+    implementation 'com.youth.banner:banner:2.0.0-alpha02'
+
 
 }

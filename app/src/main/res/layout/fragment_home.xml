@@ -14,6 +14,12 @@
         android:elevation="1dp"
         app:title="@string/app_name_chinese" />
 
+    <com.youth.banner.Banner
+        android:id="@+id/home_banner"
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="100dp" />
+
     <ViewStub
         android:id="@+id/home_view_stub"
         android:layout_width="match_parent"
