@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.DialogFragment;
 
@@ -87,8 +88,12 @@ public class CommentEditDialogFragment extends DialogFragment {
 
         mSendTv.setClickable(true);
         mSendTv.setOnClickListener(v -> {
-            dialogFragmentDataCallback.submitComment(mCommentEt.getText().toString());
-            dismiss();
+            if (mCommentEt.getText().equals("") || mCommentEt.getText().length() == 0 || mCommentEt.getText() == null) {
+                Toast.makeText(getContext(), "请输入评论", Toast.LENGTH_SHORT).show();
+            } else {
+                dialogFragmentDataCallback.submitComment(mCommentEt.getText().toString());
+                dismiss();
+            }
         });
 
         //获取焦点

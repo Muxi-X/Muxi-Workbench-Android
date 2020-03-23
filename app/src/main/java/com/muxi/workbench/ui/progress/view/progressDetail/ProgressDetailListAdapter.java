@@ -107,10 +107,10 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
                 mholder.mLikeTv.setText(String.valueOf(mProgress.getLikeCount()));
             }
 
-            if ( mProgress.getCommentCount() == 0 ) {
+            if ( mCommentList.size() == 0 ) {
                 mholder.mCommentTv.setText("评论");
             } else {
-                mholder.mCommentTv.setText(String.valueOf(mProgress.getCommentCount()));
+                mholder.mCommentTv.setText(String.valueOf(mCommentList.size()));
             }
 
             mholder.mAvatarSdv.setImageURI(mProgress.getAvatar());
@@ -165,7 +165,13 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
                 mholder.mDeleteTv.setVisibility(View.VISIBLE);
                 mholder.mDeleteTv.setText("删除");
                 mholder.mDeleteTv.setClickable(true);
-                mholder.mDeleteTv.setOnClickListener(v -> mProgressDetailListener.onDeleteCommentClick(comment.getCid(), position-1));
+                mholder.mDeleteTv.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        Log.e("delete comment", position+"");
+                        mProgressDetailListener.onDeleteCommentClick(comment.getCid(), position-1);
+                    }
+                });
             } else {
                 mholder.mDeleteTv.setVisibility(View.INVISIBLE);
                 mholder.mDeleteTv.setClickable(true);
@@ -210,8 +216,7 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
 
     public void deleteComment(int position) {
         mCommentList.remove(position);
-        notifyItemChanged(0);
-        notifyItemRemoved(position+1);
+        notifyDataSetChanged();
     }
 
     public void refresh (Progress progress, List<Comment> commentList, String username) {
