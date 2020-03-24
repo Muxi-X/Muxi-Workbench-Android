@@ -21,6 +21,7 @@ import com.muxi.workbench.ui.progress.model.Progress;
 import com.muxi.workbench.ui.progress.model.progressDetail.ProgressDetailRemoteDataSource;
 import com.muxi.workbench.ui.progress.model.progressDetail.ProgressDetailRepository;
 import com.muxi.workbench.ui.progress.presenter.ProgressDetailPresenter;
+import com.muxi.workbench.ui.progress.view.progressEditor.EditorActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,8 +51,8 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
 
         @Override
         public void onEditClick() {
-            Toast.makeText(ProgressDetailActivity.this, "去编辑进度", Toast.LENGTH_SHORT).show();
-            ///todo 去编辑进度页
+            Intent intent = EditorActivity.newIntent(ProgressDetailActivity.this,false,mProgress.getSid(), mProgress.getTitle() ,mProgress.getContent());
+            startActivity(intent);
         }
 
         @Override
@@ -171,6 +172,8 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
         if ( mIfComment )
             showEditCommentView();
     }
+
+
 
     @Override
     public void setPresenter(ProgressDetailContract.Presenter presenter) {

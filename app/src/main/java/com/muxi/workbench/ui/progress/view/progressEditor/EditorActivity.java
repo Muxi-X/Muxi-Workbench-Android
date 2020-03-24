@@ -1,0 +1,311 @@
+package com.muxi.workbench.ui.progress.view.progressEditor;
+
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.ClipData;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.webkit.JavascriptInterface;
+import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+
+import com.muxi.workbench.R;
+import com.muxi.workbench.ui.login.model.UserWrapper;
+import com.muxi.workbench.ui.progress.contract.ProgressEditorContract;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Objects;
+
+public class EditorActivity extends AppCompatActivity implements ProgressEditorContract.View {
+
+    private Toolbar mToolbar;
+    private WebView mEditWv;
+    private ProgressEditorContract.Presenter mPresenter;
+    private boolean ifNew = true;
+    private String title = "";
+    private String content = "";
+    private int mSid = 0;
+
+    /**
+     * 用于新建的intent创建方法,通过这个方法创建后,mSid=0, title="",content=""
+     * @param context
+     * @param ifNew      是否是新建(true-新建; false-修改)
+     * @return
+     */
+    public static Intent newIntent(Context context, boolean ifNew) {
+        Intent intent = new Intent(context, EditorActivity.class);
+        intent.putExtra("ifNew", ifNew);
+        return intent;
+    }
+
+    /**
+     * 用于修改的intent创建方法
+     * @param context                 开启编辑页的context
+     * @param ifNew                   是否是新建 (true-新建; false-修改)
+     * @param sid                     要编辑的进度id
+     * @param originalProgressTitle   要编辑的进度标题
+     * @param originalProgressContent 要编辑的进度内容
+     * @return
+     */
+    public static Intent newIntent(Context context, boolean ifNew, int sid, String originalProgressTitle, String originalProgressContent) {
+        Intent intent = new Intent(context, EditorActivity.class);
+        intent.putExtra("ifNew", ifNew);
+        intent.putExtra("sid", sid);
+        intent.putExtra("originalProgressContent", originalProgressContent);
+        intent.putExtra("originalProgressTitle", originalProgressTitle);
+        return intent;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.editor_toolbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.editor_send: { //点击发送按钮
+                final String[] progress = new String[2];
+                //需要注意的是，js返回的两个字符串中包含了引号("")所以要做处理再赋值
+                //获取标题
+                mEditWv.evaluateJavascript("javascript:this.getTitle()", new ValueCallback<String>() {
+                    @Override
+                    public void onReceiveValue(String value) {
+                        progress[0] = value.substring(1, value.length()-1);
+                    }
+                });
+                //获取内容
+                mEditWv.evaluateJavascript("javascript:this.getContent()", new ValueCallback<String>() {
+                    @Override
+                    public void onReceiveValue(String value) {
+                        if ( value.equals("\"\"") ){ //当内容没有被修改时传递过来的是空字符串，所以要把原先的内容放进去。
+                            progress[1] = content;
+                        } else
+                            progress[1] = value.substring(1,value.length()-1);
+                    }
+                });
+                //做相应的请求
+                if ( ifNew ) {
+                    mPresenter.newProgress(progress[0], progress[1]);
+                } else {
+                    mPresenter.changeProgress(mSid, progress[0], progress[1]);
+                }
+            }
+            default:
+                break;
+        }
+        return true;
+    }
+
+    @SuppressLint("SetJavaScriptEnabled")
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_editor);
+
+        Intent intent = getIntent();
+        if ( !intent.getBooleanExtra("ifNew", true) ) {
+            title = intent.getStringExtra("originalProgressTitle");
+            content = intent.getStringExtra("originalProgressContent");
+            ifNew = intent.getBooleanExtra("ifNew", true);
+            mSid = intent.getIntExtra("sid", 0);
+        } else {
+            ifNew = intent.getBooleanExtra("ifNew", true);
+            title = "";
+            content = "";
+            mSid = 0;
+        }
+
+        //编辑webview的设置
+        mEditWv = findViewById(R.id.wv_editor);
+        try {//跨域设置
+            Class<?> clazz = mEditWv.getSettings().getClass();
+            Method method = clazz.getMethod(
+                    "setAllowUniversalAccessFromFileURLs", boolean.class);//利用反射机制去修改设置对象
+            if (method != null) {
+                method.invoke(mEditWv.getSettings(), true);//修改设置
+            }
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        mEditWv.loadUrl("file:///android_asset/build/index.html");
+        mEditWv.addJavascriptInterface(new JavascriptIteration(), "android");//js调用android方法设置
+        WebSettings webSettings = mEditWv.getSettings();
+        webSettings.setDomStorageEnabled(true);
+        webSettings.setJavaScriptEnabled(true);
+        mEditWv.setWebContentsDebuggingEnabled(true);
+        mEditWv.setWebChromeClient(new MyWebChromeClient());//设置打开相册
+
+        mToolbar = findViewById(R.id.tb_editor);
+        mToolbar.setTitle("");
+        setSupportActionBar(mToolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);//添加默认的返回图标
+        mToolbar.setNavigationOnClickListener(v -> {
+            finish();
+        });
+
+        //请求读取存储的权限
+        if (ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {//权限没有被允许
+                ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},1);
+        } else
+            Log.e("permission","已获取权限");
+
+    }
+
+    @Override
+    public void setPresenter(ProgressEditorContract.Presenter presenter) {
+        mPresenter = presenter;
+        presenter.start();
+    }
+
+    @Override
+    public void back() {
+        finish();
+    }
+
+    @Override
+    public void showError() {
+        Toast.makeText(this,"出现错误了", Toast.LENGTH_LONG).show();
+    }
+
+    //js调用的方法类
+    class JavascriptIteration {
+        //获取token 用于图片上传的请求
+        @JavascriptInterface
+        public String getToken() {
+            return UserWrapper.getInstance().getToken();
+        }
+        //获取内容
+        @JavascriptInterface
+        public String getEdits() {
+            return content;
+        }
+        //获取标题
+        @JavascriptInterface
+        public String getStatusTitle() {
+            return title;
+        }
+    }
+
+    private ValueCallback<Uri> mUploadMessage;
+    private ValueCallback<Uri[]> mUploadCallbackAboveL;
+    private final static int FILECHOOSER_RESULTCODE = 101;
+    private String TAG = "MyWebChromeClient";
+
+    //用于webview调用相册
+    class MyWebChromeClient extends WebChromeClient {
+
+
+        public void openFileChooser(ValueCallback<Uri> uploadMsg) {
+            Log.d(TAG, "openFileChoose(ValueCallback<Uri> uploadMsg)");
+            mUploadMessage = uploadMsg;
+            Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+            i.addCategory(Intent.CATEGORY_OPENABLE);
+            i.setType("image/*");
+            EditorActivity.this.startActivityForResult(Intent.createChooser(i, "File Chooser"),
+                    FILECHOOSER_RESULTCODE);
+        }
+
+        public void openFileChooser(ValueCallback uploadMsg, String acceptType) {
+            Log.d(TAG, "openFileChoose( ValueCallback uploadMsg, String acceptType )");
+            mUploadMessage = uploadMsg;
+            Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+            i.addCategory(Intent.CATEGORY_OPENABLE);
+            i.setType("image/*");
+            EditorActivity.this.startActivityForResult(
+                    Intent.createChooser(i, "File Browser"),
+                    FILECHOOSER_RESULTCODE);
+        }
+        public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
+            Log.d(TAG, "openFileChoose(ValueCallback<Uri> uploadMsg, String acceptType, String capture)");
+            mUploadMessage = uploadMsg;
+            Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+            i.addCategory(Intent.CATEGORY_OPENABLE);
+            i.setType("image/*");
+            EditorActivity.this.startActivityForResult(Intent.createChooser(i, "File Browser"),
+                    FILECHOOSER_RESULTCODE);
+        }
+        @Override
+        public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+            mUploadCallbackAboveL = filePathCallback;
+            Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+            i.addCategory(Intent.CATEGORY_OPENABLE);
+            i.setType("image/*");
+            EditorActivity.this.startActivityForResult(Intent.createChooser(i, "File Browser"), FILECHOOSER_RESULTCODE);
+            return true;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == FILECHOOSER_RESULTCODE) {
+            if (null == mUploadMessage && null == mUploadCallbackAboveL) return;
+            Uri result = data == null || resultCode != RESULT_OK ? null : data.getData();
+            if (mUploadCallbackAboveL != null) {
+                onActivityResultAboveL(requestCode, resultCode, data);
+            } else if (mUploadMessage != null) {
+                mUploadMessage.onReceiveValue(result);
+                mUploadMessage = null;
+            }
+        }
+    }
+
+    private void onActivityResultAboveL(int requestCode, int resultCode, Intent data) {
+        if (requestCode != FILECHOOSER_RESULTCODE
+                || mUploadCallbackAboveL == null) {
+            return;
+        }
+        Uri[] results = null;
+        if (resultCode == Activity.RESULT_OK) {
+            if (data == null) {
+            } else {
+                String dataString = data.getDataString();
+                ClipData clipData = data.getClipData();
+                if (clipData != null) {
+                    results = new Uri[clipData.getItemCount()];
+                    for (int i = 0; i < clipData.getItemCount(); i++) {
+                        ClipData.Item item = clipData.getItemAt(i);
+                        results[i] = item.getUri();
+                        Log.e(TAG, "onActivityResultAboveL: " + results[i].getPath());
+                    }
+                }
+                if (dataString != null)
+                    results = new Uri[]{Uri.parse(dataString)};
+                Log.e(TAG, "onActivityResultAboveL: " + results.length);
+            }
+        }
+        mUploadCallbackAboveL.onReceiveValue(results);
+        mUploadCallbackAboveL = null;
+        return;
+    }
+
+
+}

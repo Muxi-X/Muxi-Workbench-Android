@@ -12,6 +12,8 @@ import com.muxi.workbench.ui.progress.model.net.GetGroupUserListResponse;
 import com.muxi.workbench.ui.progress.model.net.GetStatusListResponse;
 import com.muxi.workbench.ui.progress.model.net.IfLikeStatusBean;
 import com.muxi.workbench.ui.progress.model.net.LikeStatusResponse;
+import com.muxi.workbench.ui.progress.model.net.PostNewStatusResponse;
+import com.muxi.workbench.ui.progress.model.net.StatusBean;
 import com.muxi.workbench.ui.project.model.bean.FileContent;
 import com.muxi.workbench.ui.project.model.bean.FilesId;
 import com.muxi.workbench.ui.project.model.bean.FilesResponse;
@@ -22,6 +24,7 @@ import io.reactivex.Observable;
 import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.DELETE;
 import retrofit2.http.PUT;
@@ -42,6 +45,12 @@ public interface RetrofitApi {
 
     @GET("http://work.muxi-tech.xyz/api/v1.0/status/{sid}/")
     Observable<GetAStatusResponse> getAStatus( @Path("sid") int sid);
+
+    @PUT("http://work.muxi-tech.xyz/api/v1.0/status/{sid}/")
+    Observable<Response<Void>> editStatus(@Header ("token") String token, @Path("sid") int sid, @Body StatusBean changeStatusBean);
+
+    @POST("http://work.muxi-tech.xyz/api/v1.0/status/new/")
+    Observable<PostNewStatusResponse> newStatus(@Header ("token") String token, @Body StatusBean changeStatusBean);
 
     @DELETE("http://work.muxi-tech.xyz/api/v1.0/status/{sid}/")
     Observable<Response<Void>> deleteStatus(@Path("sid") int sid);
