@@ -125,12 +125,6 @@ public class ProgressListPresenter implements ProgressContract.Presenter {
                 mProgressView.showError();
             }
         });
-
-    }
-
-    @Override
-    public void addNewProgress() {
-        mProgressView.showAddNewProgress();
     }
 
     @Override
@@ -161,25 +155,6 @@ public class ProgressListPresenter implements ProgressContract.Presenter {
                 mProgressView.showError();
             }
         });
-    }
-
-    @Override
-    public int getFiltering() {
-        switch (mCurrentFiltering) {
-            case ALL_PROGRESS:
-                return 0;
-            case DESIGN_PROGRESS:
-                return 5;
-            case ANDROID_PROGRESS:
-                return 3;
-            case BACKEND_PROGRESS:
-                return 4;
-            case PRODUCT_PROGRESS:
-                return 1;
-            case FRONTEND_PROGRESS:
-                return 2;
-        }
-        return 0;
     }
 
     @Override
