@@ -30,6 +30,7 @@ import com.muxi.workbench.ui.progress.model.progressList.ProgressListRepository;
 import com.muxi.workbench.ui.progress.model.StickyProgressDatabase;
 import com.muxi.workbench.ui.progress.presenter.ProgressListPresenter;
 import com.muxi.workbench.ui.progress.view.progressDetail.ProgressDetailActivity;
+import com.muxi.workbench.ui.progress.view.progressEditor.EditorActivity;
 import com.muxi.workbench.ui.progress.view.progressList.ProgressListAdapter.ProgressItemListener;
 
 import java.util.ArrayList;
@@ -92,7 +93,7 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
 
         @Override
         public void onEditClick(Progress editProgress) {
-            Toast.makeText(getContext(), "去编辑进度", Toast.LENGTH_LONG).show();
+            startActivity(EditorActivity.newIntent(getContext(),false, editProgress.getSid(), editProgress.getTitle(), editProgress.getContent()));
         }
     };
 
@@ -189,7 +190,8 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
         });
 
         mProgressTitleBar.setAddListener(v -> {
-            ///TODO  to Progress-editing Fragment
+            Intent intent = EditorActivity.newIntent(getContext(), true);
+            startActivity(intent);
         });
 
         return root;
@@ -230,12 +232,6 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
     }
 
     @Override
-    public void showCommentView() {
-        Toast.makeText(getContext(), "去评论", Toast.LENGTH_LONG).show();
-    }
-
-
-    @Override
     public void refreshLikeProgress(int position, int iflike) {
         mAdapter.notifyProgressLike(position, iflike);
     }
@@ -254,12 +250,6 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
     @Override
     public void showError() {
         Toast.makeText(getContext(), "失败辽", Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void showAddNewProgress() {
-        Toast.makeText(getContext(), "去往新进度编辑页", Toast.LENGTH_LONG).show();
-        ///todo intent to empty edit-fragment
     }
 
     @Override

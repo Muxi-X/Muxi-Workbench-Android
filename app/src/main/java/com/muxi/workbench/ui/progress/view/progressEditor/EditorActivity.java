@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -27,13 +28,25 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 
+import com.google.gson.Gson;
 import com.muxi.workbench.R;
+import com.muxi.workbench.commonUtils.TransCodingUtil;
 import com.muxi.workbench.ui.login.model.UserWrapper;
 import com.muxi.workbench.ui.progress.contract.ProgressEditorContract;
+import com.muxi.workbench.ui.progress.model.progressEditor.ProgressEditorRemoteDataSource;
+import com.muxi.workbench.ui.progress.presenter.ProgressEditorPresenter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.BiFunction;
 
 public class EditorActivity extends AppCompatActivity implements ProgressEditorContract.View {
 
@@ -81,35 +94,67 @@ public class EditorActivity extends AppCompatActivity implements ProgressEditorC
         return true;
     }
 
+    //发送进度前调用js方法获取标题和内容并进行转换
+    private void sendProgress() {
+        //调用js方法会在子线程
+        Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(ObservableEmitter<String> observableEmitter) {
+                mEditWv.evaluateJavascript("javascript:this.getEditor()",value -> {
+                    if ( value == null )  //判断返回的数据是否为空
+                        observableEmitter.onError(new Throwable());
+                    else {
+                        observableEmitter.onNext(value);
+                        observableEmitter.onComplete();
+                    }
+                });
+            }
+        }).subscribe(new Observer<String>() {
+            @Override
+            public void onSubscribe(Disposable disposable) {
+            }
+
+            @Override
+            public void onNext(String strings) {
+                //解析json
+                Gson gson = new Gson();
+                ProgressJsonFromJs progress = gson.fromJson(strings, ProgressJsonFromJs.class);
+                //如果未编辑 content会是空字符
+                if (!content.equals("") && progress.content.equals(""))
+                    progress.content = content;
+                //unicode转换
+                progress.content = progress.content.replaceAll("\\\\u003C", "<");
+                progress.content = progress.content.replaceAll("\\\\n", "\n");
+                //判断标题 内容是否为空
+                if (progress.title == null || progress.title.length() == 0) {
+                    Toast.makeText(EditorActivity.this, "请输入标题", Toast.LENGTH_SHORT).show();
+                } else if (progress.content == null || progress.content.length() == 0) {
+                    Toast.makeText(EditorActivity.this, "请输入进度内容", Toast.LENGTH_SHORT).show();
+                } else {
+                    //请求
+                    if (ifNew) {
+                        mPresenter.newProgress(progress.title, progress.content);
+                    } else {
+                        mPresenter.changeProgress(mSid, progress.title, progress.content);
+                    }
+                }
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                showError();
+            }
+
+            @Override
+            public void onComplete() { }
+        });
+    }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.editor_send: { //点击发送按钮
-                final String[] progress = new String[2];
-                //需要注意的是，js返回的两个字符串中包含了引号("")所以要做处理再赋值
-                //获取标题
-                mEditWv.evaluateJavascript("javascript:this.getTitle()", new ValueCallback<String>() {
-                    @Override
-                    public void onReceiveValue(String value) {
-                        progress[0] = value.substring(1, value.length()-1);
-                    }
-                });
-                //获取内容
-                mEditWv.evaluateJavascript("javascript:this.getContent()", new ValueCallback<String>() {
-                    @Override
-                    public void onReceiveValue(String value) {
-                        if ( value.equals("\"\"") ){ //当内容没有被修改时传递过来的是空字符串，所以要把原先的内容放进去。
-                            progress[1] = content;
-                        } else
-                            progress[1] = value.substring(1,value.length()-1);
-                    }
-                });
-                //做相应的请求
-                if ( ifNew ) {
-                    mPresenter.newProgress(progress[0], progress[1]);
-                } else {
-                    mPresenter.changeProgress(mSid, progress[0], progress[1]);
-                }
+                sendProgress();
             }
             default:
                 break;
@@ -122,6 +167,11 @@ public class EditorActivity extends AppCompatActivity implements ProgressEditorC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
+
+        mPresenter = new ProgressEditorPresenter(this, ProgressEditorRemoteDataSource.getInstance());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) //状态栏设置
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
         Intent intent = getIntent();
         if ( !intent.getBooleanExtra("ifNew", true) ) {
@@ -154,11 +204,11 @@ public class EditorActivity extends AppCompatActivity implements ProgressEditorC
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
-        mEditWv.loadUrl("file:///android_asset/build/index.html");
-        mEditWv.addJavascriptInterface(new JavascriptIteration(), "android");//js调用android方法设置
         WebSettings webSettings = mEditWv.getSettings();
         webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);
+        mEditWv.loadUrl("file:///android_asset/build/index.html");
+        mEditWv.addJavascriptInterface(new JavascriptIteration(), "android");//js调用android方法设置
         mEditWv.setWebContentsDebuggingEnabled(true);
         mEditWv.setWebChromeClient(new MyWebChromeClient());//设置打开相册
 
@@ -172,10 +222,8 @@ public class EditorActivity extends AppCompatActivity implements ProgressEditorC
 
         //请求读取存储的权限
         if (ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {//权限没有被允许
+                != PackageManager.PERMISSION_GRANTED) //权限没有被允许
                 ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},1);
-        } else
-            Log.e("permission","已获取权限");
 
     }
 
@@ -217,14 +265,13 @@ public class EditorActivity extends AppCompatActivity implements ProgressEditorC
     private ValueCallback<Uri> mUploadMessage;
     private ValueCallback<Uri[]> mUploadCallbackAboveL;
     private final static int FILECHOOSER_RESULTCODE = 101;
-    private String TAG = "MyWebChromeClient";
+    private String mTag = "MyWebChromeClient";
 
     //用于webview调用相册
     class MyWebChromeClient extends WebChromeClient {
 
-
         public void openFileChooser(ValueCallback<Uri> uploadMsg) {
-            Log.d(TAG, "openFileChoose(ValueCallback<Uri> uploadMsg)");
+            Log.d(mTag, "openFileChoose(ValueCallback<Uri> uploadMsg)");
             mUploadMessage = uploadMsg;
             Intent i = new Intent(Intent.ACTION_GET_CONTENT);
             i.addCategory(Intent.CATEGORY_OPENABLE);
@@ -234,7 +281,7 @@ public class EditorActivity extends AppCompatActivity implements ProgressEditorC
         }
 
         public void openFileChooser(ValueCallback uploadMsg, String acceptType) {
-            Log.d(TAG, "openFileChoose( ValueCallback uploadMsg, String acceptType )");
+            Log.d(mTag, "openFileChoose( ValueCallback uploadMsg, String acceptType )");
             mUploadMessage = uploadMsg;
             Intent i = new Intent(Intent.ACTION_GET_CONTENT);
             i.addCategory(Intent.CATEGORY_OPENABLE);
@@ -244,7 +291,7 @@ public class EditorActivity extends AppCompatActivity implements ProgressEditorC
                     FILECHOOSER_RESULTCODE);
         }
         public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
-            Log.d(TAG, "openFileChoose(ValueCallback<Uri> uploadMsg, String acceptType, String capture)");
+            Log.d(mTag, "openFileChoose(ValueCallback<Uri> uploadMsg, String acceptType, String capture)");
             mUploadMessage = uploadMsg;
             Intent i = new Intent(Intent.ACTION_GET_CONTENT);
             i.addCategory(Intent.CATEGORY_OPENABLE);
@@ -279,10 +326,8 @@ public class EditorActivity extends AppCompatActivity implements ProgressEditorC
     }
 
     private void onActivityResultAboveL(int requestCode, int resultCode, Intent data) {
-        if (requestCode != FILECHOOSER_RESULTCODE
-                || mUploadCallbackAboveL == null) {
+        if (requestCode != FILECHOOSER_RESULTCODE || mUploadCallbackAboveL == null)
             return;
-        }
         Uri[] results = null;
         if (resultCode == Activity.RESULT_OK) {
             if (data == null) {
@@ -294,12 +339,12 @@ public class EditorActivity extends AppCompatActivity implements ProgressEditorC
                     for (int i = 0; i < clipData.getItemCount(); i++) {
                         ClipData.Item item = clipData.getItemAt(i);
                         results[i] = item.getUri();
-                        Log.e(TAG, "onActivityResultAboveL: " + results[i].getPath());
+                        Log.e(mTag, "onActivityResultAboveL: " + results[i].getPath());
                     }
                 }
                 if (dataString != null)
                     results = new Uri[]{Uri.parse(dataString)};
-                Log.e(TAG, "onActivityResultAboveL: " + results.length);
+                Log.e(mTag, "onActivityResultAboveL: " + results.length);
             }
         }
         mUploadCallbackAboveL.onReceiveValue(results);
