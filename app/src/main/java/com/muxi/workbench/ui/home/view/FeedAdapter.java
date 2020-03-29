@@ -1,5 +1,6 @@
 package com.muxi.workbench.ui.home.view;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,8 +75,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 mListener.onClickToFeed(mSource.getObject_id(), mUser.getName(),
                         mUser.getAvatar_url(), mSource.getObject_name());
             }
+            Log.e("kind=", String.valueOf(mSource.getKind_id()));
             if (mSource.getKind_id() == 3) {
-                mListener.onCliCkToFile(mSource.getProject_id());
+
+                mListener.onCliCkToFile(mSource.getObject_id(), mSource.getObject_name());
             }
         });
     }
@@ -164,7 +167,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         void onClickToFeed(int sid, String username, String avatar, String title);
 
-        void onCliCkToFile(int pid);
+        void onCliCkToFile(int objectId, String docName);
     }
 
 }

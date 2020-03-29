@@ -40,7 +40,7 @@ public class BannerBean {
     public static List<BannerBean> getDefaultBanners() {
         List<BannerBean> banners = new ArrayList<>();
         BannerBean banner = new BannerBean();
-        banner.setImageRes(R.drawable.logo_icon);
+        banner.setImageRes(R.drawable.banner);
         banners.add(banner);
         return banners;
     }

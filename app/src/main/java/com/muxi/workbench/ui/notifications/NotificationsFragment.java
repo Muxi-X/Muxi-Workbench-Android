@@ -1,5 +1,6 @@
 package com.muxi.workbench.ui.notifications;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.muxi.workbench.R;
 import com.muxi.workbench.ui.notifications.model.NotificationsRepository;
 import com.muxi.workbench.ui.notifications.model.NotificationsResponse;
+import com.muxi.workbench.ui.project.view.projectFolder.ProjectDocWebView;
 
 public class NotificationsFragment extends Fragment implements NotificationContact.View {
 
@@ -26,6 +28,7 @@ public class NotificationsFragment extends Fragment implements NotificationConta
     private NotificationsRepository repository;
     private ImageView emptyIv;
     private NotificationAdapter mAdapter;
+    private NotificationAdapter.OnItemClickListener mListener;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,6 +55,10 @@ public class NotificationsFragment extends Fragment implements NotificationConta
         });
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
+        mListener = (objectId, docName) -> {
+            Intent intent = ProjectDocWebView.newIntent(getContext(), objectId, docName);
+            startActivity(intent);
+        };
         return root;
     }
 
@@ -73,7 +80,7 @@ public class NotificationsFragment extends Fragment implements NotificationConta
 
     @Override
     public void initAdapter(NotificationsResponse response) {
-        mAdapter = new NotificationAdapter(mPresenter, response);
+        mAdapter = new NotificationAdapter(mPresenter, response, mListener);
         recyclerView.setAdapter(mAdapter);
     }
 

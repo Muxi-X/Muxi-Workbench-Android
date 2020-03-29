@@ -20,10 +20,15 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     private NotificationContact.Presenter mPresenter;
     private List<NotificationsResponse.ListBean> listBeans = new ArrayList<>();
     private List<Boolean> readedList = new ArrayList<>();
+    private OnItemClickListener mListener;
 
-    public NotificationAdapter(NotificationContact.Presenter presenter, NotificationsResponse response) {
+    public NotificationAdapter(NotificationContact.Presenter presenter,
+                               NotificationsResponse response,
+                               OnItemClickListener listener) {
         mPresenter = presenter;
         listBeans = response.getList();
+        setReadedList(listBeans);
+        mListener = listener;
     }
 
     @NonNull
@@ -37,10 +42,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     @Override
     public void onBindViewHolder(@NonNull NotificationVH holder, int position) {
         NotificationsResponse.ListBean bean = listBeans.get(position);
-        if (readedList.size() > 0)
-            readedList.set(position, bean.isReaded());
 
-        if (bean.isReaded()) {
+
+        if (readedList.get(position)) {
             holder.mNode.setVisibility(View.GONE);
             holder.mReaded.setVisibility(View.VISIBLE);
         } else {
@@ -52,8 +56,12 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.read(bean.getSourceID());
-                readedList.set(position, true);
+                if (!readedList.get(position)) {
+                    mPresenter.read(bean.getSourceID());
+                    readedList.set(position, true);
+                }
+                mListener.onClick(bean.getSourceID(), "");
+
             }
         });
 
@@ -73,13 +81,23 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     }
 
     public void setListBeans(NotificationsResponse notificationsResponse) {
-        listBeans = notificationsResponse.getList();
+        listBeans.clear();
+        listBeans.addAll(notificationsResponse.getList());
+        setReadedList(listBeans);
         notifyDataSetChanged();
     }
 
     public void clearAll() {
         listBeans.clear();
         notifyDataSetChanged();
+    }
+
+    private void setReadedList(List<NotificationsResponse.ListBean> listBeans) {
+        if (readedList.size() > 0) readedList.clear();
+
+        for (NotificationsResponse.ListBean bean : listBeans) {
+            readedList.add(bean.isReaded());
+        }
     }
 
     class NotificationVH extends RecyclerView.ViewHolder {
@@ -94,5 +112,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             mReaded = itemView.findViewById(R.id.get_it);
             mNode = itemView.findViewById(R.id.item_notification_node);
         }
+    }
+
+    interface OnItemClickListener {
+        void onClick(int objectId, String docName);
     }
 }

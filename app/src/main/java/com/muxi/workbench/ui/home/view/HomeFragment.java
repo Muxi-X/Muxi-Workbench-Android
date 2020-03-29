@@ -26,7 +26,9 @@ import com.muxi.workbench.ui.home.model.BannerBean;
 import com.muxi.workbench.ui.home.model.FeedBean;
 import com.muxi.workbench.ui.home.model.FeedRepository;
 import com.muxi.workbench.ui.progress.view.progressDetail.ProgressDetailActivity;
+import com.muxi.workbench.ui.progress.view.progressEditor.EditorActivity;
 import com.muxi.workbench.ui.project.view.projectFolder.ProjectDetailActivity;
+import com.muxi.workbench.ui.project.view.projectFolder.ProjectDocWebView;
 import com.youth.banner.Banner;
 
 import java.util.ArrayList;
@@ -56,9 +58,10 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         }
 
         @Override
-        public void onCliCkToFile(int pid) {
+        public void onCliCkToFile(int objectId, String docName) {
             try {
-                ProjectDetailActivity.startActivity(HomeFragment.this.getContext(), pid);
+                Intent intent = ProjectDocWebView.newIntent(HomeFragment.this.getContext(), objectId, docName);
+                startActivity(intent);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -74,17 +77,17 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         Log.e("Fragment left cycle", ":onCreate");
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.e("Fragment left cycle", ":onStart");
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.e("Fragment left cycle", ":onResume");
-    }
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        Log.e("Fragment left cycle", ":onStart");
+//    }
+//
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        Log.e("Fragment left cycle", ":onResume");
+//    }
 
     @Nullable
     @Override
@@ -134,7 +137,8 @@ public class HomeFragment extends Fragment implements HomeContract.View {
                     //todo: scan code
                     break;
                 case R.id.home_add:
-                    //todo: add progress
+                    Intent addProgressIntent = EditorActivity.newIntent(this.getContext(), false);
+                    startActivity(addProgressIntent);
                     break;
                 default:
                     break;

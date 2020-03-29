@@ -38,6 +38,4 @@
             android:layout_height="match_parent"
             android:background="#FFFAFAFA" />
     </com.muxi.workbench.commonUtils.MyRefreshLayout>
-
-
 </LinearLayout>

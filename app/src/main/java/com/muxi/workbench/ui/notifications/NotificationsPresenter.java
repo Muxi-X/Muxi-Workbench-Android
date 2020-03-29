@@ -58,7 +58,6 @@ public class NotificationsPresenter implements NotificationContact.Presenter {
         mRepository.clearAllNotifications(new NotificationsRepository.LoadNotiResponseCallback() {
             @Override
             public void onDataLoaded(NotificationsResponse mBean) {
-
             }
 
             @Override
