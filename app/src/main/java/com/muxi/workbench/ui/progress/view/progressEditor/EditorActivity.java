@@ -30,7 +30,6 @@ import androidx.core.content.ContextCompat;
 
 import com.google.gson.Gson;
 import com.muxi.workbench.R;
-import com.muxi.workbench.commonUtils.TransCodingUtil;
 import com.muxi.workbench.ui.login.model.UserWrapper;
 import com.muxi.workbench.ui.progress.contract.ProgressEditorContract;
 import com.muxi.workbench.ui.progress.model.progressEditor.ProgressEditorRemoteDataSource;
@@ -38,7 +37,6 @@ import com.muxi.workbench.ui.progress.presenter.ProgressEditorPresenter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 import io.reactivex.Observable;
@@ -46,7 +44,6 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.BiFunction;
 
 public class EditorActivity extends AppCompatActivity implements ProgressEditorContract.View {
 

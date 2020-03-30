@@ -137,7 +137,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
                     //todo: scan code
                     break;
                 case R.id.home_add:
-                    Intent addProgressIntent = EditorActivity.newIntent(this.getContext(), false);
+                    Intent addProgressIntent = EditorActivity.newIntent(this.getContext(), true);
                     startActivity(addProgressIntent);
                     break;
                 default:
