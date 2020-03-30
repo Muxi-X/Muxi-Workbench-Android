@@ -1,5 +1,6 @@
 package com.muxi.workbench.ui.progress.view.progressDetail;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -52,7 +53,7 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
         @Override
         public void onEditClick() {
             Intent intent = EditorActivity.newIntent(ProgressDetailActivity.this,false,mProgress.getSid(), mProgress.getTitle() ,mProgress.getContent());
-            startActivity(intent);
+            startActivityForResult(intent, 2);
         }
 
         @Override
@@ -153,7 +154,6 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
             }
         });
 
-
         mCommentSendView = findViewById(R.id.csv_progressdetail);
         mCommentSendView.setBackgroundColor(Color.parseColor("#ffffff"));
         mCommentSendView.setElevation(35);
@@ -173,7 +173,17 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
             showEditCommentView();
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 2:
+                if (resultCode == RESULT_OK) {
+                    mPresenter.loadProgressAndCommentList();
+                }
+                break;
+        }
+    }
 
     @Override
     public void setPresenter(ProgressDetailContract.Presenter presenter) {

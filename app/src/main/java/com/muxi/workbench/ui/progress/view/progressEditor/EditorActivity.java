@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -27,8 +28,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-
-import com.google.gson.Gson;
 import com.muxi.workbench.R;
 import com.muxi.workbench.ui.login.model.UserWrapper;
 import com.muxi.workbench.ui.progress.contract.ProgressEditorContract;
@@ -44,6 +43,7 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.BiFunction;
 
 public class EditorActivity extends AppCompatActivity implements ProgressEditorContract.View {
 
@@ -94,56 +94,75 @@ public class EditorActivity extends AppCompatActivity implements ProgressEditorC
     //发送进度前调用js方法获取标题和内容并进行转换
     private void sendProgress() {
         //调用js方法会在子线程
-        Observable.create(new ObservableOnSubscribe<String>() {
+        Observable<String> observableTitle = Observable.create(new ObservableOnSubscribe<String>() {
             @Override
-            public void subscribe(ObservableEmitter<String> observableEmitter) {
-                mEditWv.evaluateJavascript("javascript:this.getEditor()",value -> {
-                    if ( value == null )  //判断返回的数据是否为空
-                        observableEmitter.onError(new Throwable());
+            public void subscribe(ObservableEmitter<String> observableEmitter) throws Exception {
+                mEditWv.evaluateJavascript("javascript:this.getTitle()",value -> {
+                    if ( value == null )
+                        observableEmitter.onError(new Throwable("title is null"));
                     else {
-                        observableEmitter.onNext(value);
+                        observableEmitter.onNext(value.substring(1,value.length()-1));
                         observableEmitter.onComplete();
                     }
                 });
             }
-        }).subscribe(new Observer<String>() {
+        });
+        Observable<String[]> observableContent = Observable.create(new ObservableOnSubscribe<String[]>() {
+            @Override
+            public void subscribe(ObservableEmitter<String[]> observableEmitter) throws Exception {
+                mEditWv.evaluateJavascript("javascript:this.getContent()",value -> {
+                    if ( value == null )
+                        observableEmitter.onError(new Throwable("content is null"));
+                    else {
+                        observableEmitter.onNext(new String[]{value.substring(1,value.length()-1)});
+                        observableEmitter.onComplete();
+                    }
+                });
+            }
+        });
+        Observable.zip(observableTitle, observableContent, new BiFunction<String, String[], String[]>() {
+            @Override
+            public String[] apply(String s, String[] strings) throws Exception {
+                return new String[]{s,strings[0]};
+            }
+        }).subscribe(new Observer<String[]>() {
             @Override
             public void onSubscribe(Disposable disposable) {
             }
 
             @Override
-            public void onNext(String strings) {
-                //解析json
-                Gson gson = new Gson();
-                ProgressJsonFromJs progress = gson.fromJson(strings, ProgressJsonFromJs.class);
+            public void onNext(String[] strings) {
                 //如果未编辑 content会是空字符
-                if (!content.equals("") && progress.content.equals(""))
-                    progress.content = content;
+                if ( !content.equals("") && strings[1].equals("") )
+                    strings[1] = content;
                 //unicode转换
-                progress.content = progress.content.replaceAll("\\\\u003C", "<");
-                progress.content = progress.content.replaceAll("\\\\n", "\n");
+                strings[1] = strings[1].replaceAll("\\\\u003C", "<");
+                strings[1] = strings[1].replaceAll("\\\\n", "\n");
                 //判断标题 内容是否为空
-                if (progress.title == null || progress.title.length() == 0) {
+                if ( strings[0].equals("") ) {
                     Toast.makeText(EditorActivity.this, "请输入标题", Toast.LENGTH_SHORT).show();
-                } else if (progress.content == null || progress.content.length() == 0) {
+                } else if ( strings[1].equals("") ) {
                     Toast.makeText(EditorActivity.this, "请输入进度内容", Toast.LENGTH_SHORT).show();
                 } else {
                     //请求
                     if (ifNew) {
-                        mPresenter.newProgress(progress.title, progress.content);
+                        mPresenter.newProgress(strings[0], strings[1]);
                     } else {
-                        mPresenter.changeProgress(mSid, progress.title, progress.content);
+                        mPresenter.changeProgress(mSid, strings[0], strings[1]);
                     }
                 }
             }
 
             @Override
             public void onError(Throwable throwable) {
+                Log.e("getProgressError", Objects.requireNonNull(throwable.getMessage()));
                 showError();
             }
 
             @Override
-            public void onComplete() { }
+            public void onComplete() {
+
+            }
         });
     }
 
@@ -165,6 +184,9 @@ public class EditorActivity extends AppCompatActivity implements ProgressEditorC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
 
+        Log.e("editor","oncreate");
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
         mPresenter = new ProgressEditorPresenter(this, ProgressEditorRemoteDataSource.getInstance());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) //状态栏设置
@@ -183,31 +205,7 @@ public class EditorActivity extends AppCompatActivity implements ProgressEditorC
             mSid = 0;
         }
 
-        //编辑webview的设置
-        mEditWv = findViewById(R.id.wv_editor);
-        try {//跨域设置
-            Class<?> clazz = mEditWv.getSettings().getClass();
-            Method method = clazz.getMethod(
-                    "setAllowUniversalAccessFromFileURLs", boolean.class);//利用反射机制去修改设置对象
-            if (method != null) {
-                method.invoke(mEditWv.getSettings(), true);//修改设置
-            }
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        WebSettings webSettings = mEditWv.getSettings();
-        webSettings.setDomStorageEnabled(true);
-        webSettings.setJavaScriptEnabled(true);
-        mEditWv.loadUrl("file:///android_asset/build/index.html");
-        mEditWv.addJavascriptInterface(new JavascriptIteration(), "android");//js调用android方法设置
-        mEditWv.setWebContentsDebuggingEnabled(true);
-        mEditWv.setWebChromeClient(new MyWebChromeClient());//设置打开相册
+        setWebView();
 
         mToolbar = findViewById(R.id.tb_editor);
         mToolbar.setTitle("");
@@ -224,6 +222,38 @@ public class EditorActivity extends AppCompatActivity implements ProgressEditorC
 
     }
 
+    private void setWebView() {
+        mEditWv = findViewById(R.id.wv_editor);
+        mEditWv.post(new Runnable() {
+            @Override
+            public void run() {
+                try {//跨域设置
+                    Class<?> clazz = mEditWv.getSettings().getClass();
+                    Method method = clazz.getMethod(
+                            "setAllowUniversalAccessFromFileURLs", boolean.class);//利用反射机制去修改设置对象
+                    if (method != null) {
+                        method.invoke(mEditWv.getSettings(), true);//修改设置
+                    }
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+                WebSettings webSettings = mEditWv.getSettings();
+                webSettings.setDomStorageEnabled(true);
+                webSettings.setJavaScriptEnabled(true);
+                mEditWv.loadUrl("file:///android_asset/build/index.html");
+                mEditWv.addJavascriptInterface(new JavascriptIteration(), "android");//js调用android方法设置
+                mEditWv.setWebContentsDebuggingEnabled(true);
+                mEditWv.setWebChromeClient(new MyWebChromeClient());//设置打开相册
+            }
+        });
+    }
+
     @Override
     public void setPresenter(ProgressEditorContract.Presenter presenter) {
         mPresenter = presenter;
@@ -232,6 +262,7 @@ public class EditorActivity extends AppCompatActivity implements ProgressEditorC
 
     @Override
     public void back() {
+        setResult(RESULT_OK, new Intent());
         finish();
     }
 
