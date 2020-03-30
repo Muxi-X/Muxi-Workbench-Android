@@ -1,6 +1,5 @@
 package com.muxi.workbench.ui.home.view;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,11 +26,8 @@ import com.muxi.workbench.ui.home.model.FeedBean;
 import com.muxi.workbench.ui.home.model.FeedRepository;
 import com.muxi.workbench.ui.progress.view.progressDetail.ProgressDetailActivity;
 import com.muxi.workbench.ui.progress.view.progressEditor.EditorActivity;
-import com.muxi.workbench.ui.project.view.projectFolder.ProjectDetailActivity;
 import com.muxi.workbench.ui.project.view.projectFolder.ProjectDocWebView;
 import com.youth.banner.Banner;
-
-import java.util.ArrayList;
 
 public class HomeFragment extends Fragment implements HomeContract.View {
     private Toolbar toolbar;
@@ -138,13 +134,21 @@ public class HomeFragment extends Fragment implements HomeContract.View {
                     break;
                 case R.id.home_add:
                     Intent addProgressIntent = EditorActivity.newIntent(this.getContext(), true);
-                    startActivity(addProgressIntent);
+                    startActivityForResult(addProgressIntent, 2);
                     break;
                 default:
                     break;
             }
             return true;
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == 2)
+            if (resultCode == EditorActivity.RESULT_OK) {
+                mPresenter.refresh();
+            }
     }
 
     @Override
