@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyPairGenerator;
@@ -49,8 +50,7 @@ public class Encryption {
 
     private static final String SP_ENCRYPTION="encryption";
     private static final String SP_IV="ase_iv";
-    private Cipher mEncryptCipher=null;
-    private Cipher mDecryptCipher=null;
+
     private KeyHelperBelowApi23 keyHelper;
     private SPUtils spUtils;
     private KeyStore mKeyStore;
@@ -64,45 +64,54 @@ public class Encryption {
 
 
 
-    public synchronized String encryptAES(String content) throws  Exception {
-        if (mEncryptCipher==null){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                mEncryptCipher=Cipher.getInstance(AES_MODE);
-                mEncryptCipher.init(Cipher.ENCRYPT_MODE,getSecretAESKeyApi23());
-            }else {
-                if (keyHelper==null) {
-                    keyHelper = new KeyHelperBelowApi23();
-                }
-                mEncryptCipher=Cipher.getInstance(AES_MODE);
-                mEncryptCipher.init(Cipher.ENCRYPT_MODE,keyHelper.getAESKey());
-
+    public synchronized String encryptAES(String content) throws Exception {
+        Cipher encrypt=null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            encrypt= Cipher.getInstance(AES_MODE);
+            encrypt.init(Cipher.ENCRYPT_MODE,getSecretAESKeyApi23());
+        }else {
+            if (keyHelper==null) {
+                keyHelper = new KeyHelperBelowApi23();
             }
+            encrypt= Cipher.getInstance(AES_MODE);
+            encrypt.init(Cipher.ENCRYPT_MODE,keyHelper.getAESKey());
+
         }
-        spUtils.put(SP_IV,Base64.encodeToString(mEncryptCipher.getIV(),Base64.DEFAULT));
-        byte[]encryptedBytes=mEncryptCipher.doFinal(content.getBytes());
-        return Base64.encodeToString(encryptedBytes,Base64.DEFAULT);
+        byte[]iv=encrypt.getIV();
+        byte[]encryptedBytes=encrypt.doFinal(content.getBytes());
+        ByteBuffer byteBuffer=ByteBuffer.allocate(1+iv.length+encryptedBytes.length);
+        byteBuffer.put((byte)iv.length);
+        byteBuffer.put(iv);
+        byteBuffer.put(encryptedBytes);
+        return Base64.encodeToString(byteBuffer.array(), Base64.DEFAULT);
 
     }
 
 
-    public synchronized String decryptAES(String content)throws  Exception{
-        byte[]decodeBytes=Base64.decode(content,Base64.DEFAULT);
-        if (mDecryptCipher==null){
-            mDecryptCipher=Cipher.getInstance(AES_MODE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                mDecryptCipher.init(Cipher.DECRYPT_MODE,getSecretAESKeyApi23(),new GCMParameterSpec(128,getIv()));
-            }else {
-                if (keyHelper==null){
-                    keyHelper=new KeyHelperBelowApi23();
-                }
-                mDecryptCipher.init(Cipher.DECRYPT_MODE,keyHelper.getAESKey(),new GCMParameterSpec(128,getIv()));
-            }
+    public synchronized String decryptAES(String content)throws Exception {
+        byte[]decodeBytes= Base64.decode(content, Base64.DEFAULT);
+        ByteBuffer byteBuffer = ByteBuffer.wrap(decodeBytes);
+        int ivLength=byteBuffer.get();
+        byte []iv=new byte[ivLength];
+        byteBuffer.get(iv);
+        byte[]cipherText=new byte[byteBuffer.remaining()];
+        byteBuffer.get(cipherText);
+        Cipher decrypt;
+        decrypt= Cipher.getInstance(AES_MODE);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            decrypt.init(Cipher.DECRYPT_MODE,getSecretAESKeyApi23(),new GCMParameterSpec(128,iv));
+        }else {
+            if (keyHelper==null){
+                keyHelper=new KeyHelperBelowApi23();
+            }
+            decrypt.init(Cipher.DECRYPT_MODE,keyHelper.getAESKey(),new GCMParameterSpec(128,iv));
         }
 
-        return new String(mDecryptCipher.doFinal(decodeBytes));
-    }
 
+
+        return new String(decrypt.doFinal(cipherText));
+    }
 
     private byte[] getIv(){
         String ivd=spUtils.getString(SP_IV);
