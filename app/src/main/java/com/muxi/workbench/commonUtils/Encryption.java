@@ -53,7 +53,7 @@ public class Encryption {
     private Cipher mDecryptCipher=null;
     private KeyHelperBelowApi23 keyHelper;
     private SPUtils spUtils;
-
+    private KeyStore mKeyStore;
 
 
     public Encryption(){
@@ -68,16 +68,17 @@ public class Encryption {
         if (mEncryptCipher==null){
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 mEncryptCipher=Cipher.getInstance(AES_MODE);
-                mEncryptCipher.init(Cipher.ENCRYPT_MODE,getSecretAESKeyApi23(),new IvParameterSpec(getIv()));
+                mEncryptCipher.init(Cipher.ENCRYPT_MODE,getSecretAESKeyApi23());
             }else {
                 if (keyHelper==null) {
                     keyHelper = new KeyHelperBelowApi23();
                 }
                 mEncryptCipher=Cipher.getInstance(AES_MODE);
-                mEncryptCipher.init(Cipher.ENCRYPT_MODE,keyHelper.getAESKey(),new IvParameterSpec(getIv()));
+                mEncryptCipher.init(Cipher.ENCRYPT_MODE,keyHelper.getAESKey());
 
             }
         }
+        spUtils.put(SP_IV,Base64.encodeToString(mEncryptCipher.getIV(),Base64.DEFAULT));
         byte[]encryptedBytes=mEncryptCipher.doFinal(content.getBytes());
         return Base64.encodeToString(encryptedBytes,Base64.DEFAULT);
 
@@ -125,8 +126,12 @@ public class Encryption {
      * @throws NoSuchAlgorithmException
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
-    private SecretKey getSecretAESKeyApi23() throws NoSuchProviderException, NoSuchAlgorithmException, InvalidAlgorithmParameterException {
-
+    private SecretKey getSecretAESKeyApi23() throws Exception {
+        mKeyStore=KeyStore.getInstance(KEYSTORE_PROVIDER);
+        mKeyStore.load(null);
+        if (mKeyStore.containsAlias(KEYSTORE_ALIAS)){
+            return ((KeyStore.SecretKeyEntry)mKeyStore.getEntry(KEYSTORE_ALIAS,null)).getSecretKey();
+        }
         final KeyGenerator keyGenerator=KeyGenerator
                 .getInstance(KeyProperties.KEY_ALGORITHM_AES,KEYSTORE_PROVIDER);
 
@@ -161,7 +166,9 @@ public class Encryption {
         public KeyHelperBelowApi23() throws Exception {
             keyStore=KeyStore.getInstance(KEYSTORE_PROVIDER);
             keyStore.load(null);
-            generateRSAKey();
+            if (!keyStore.containsAlias(KEYSTORE_ALIAS)) {
+                generateRSAKey();
+            }
         }
 
         private void generateRSAKey() throws NoSuchProviderException, NoSuchAlgorithmException, InvalidAlgorithmParameterException {
