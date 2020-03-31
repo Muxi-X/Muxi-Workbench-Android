@@ -43,9 +43,9 @@ import javax.security.auth.x500.X500Principal;
 public class Encryption {
 
     private static final String KEYSTORE_PROVIDER ="AndroidKeyStore";
-    private static final String AES_MODE = "AES/CBC/PKCS7Padding";
+    private static final String AES_MODE = "AES/GCM/NoPadding";
     private static final String RSA_MODE = "RSA/ECB/PKCS1Padding";
-    private static final String KEYSTORE_ALIAS = "info_alias";
+    private static final String KEYSTORE_ALIAS = "AES_GCM_alias";
 
     private static final String SP_ENCRYPTION="encryption";
     private static final String SP_IV="ase_iv";
@@ -90,12 +90,12 @@ public class Encryption {
         if (mDecryptCipher==null){
             mDecryptCipher=Cipher.getInstance(AES_MODE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                mDecryptCipher.init(Cipher.DECRYPT_MODE,getSecretAESKeyApi23(),new IvParameterSpec(getIv()));
+                mDecryptCipher.init(Cipher.DECRYPT_MODE,getSecretAESKeyApi23(),new GCMParameterSpec(128,getIv()));
             }else {
                 if (keyHelper==null){
                     keyHelper=new KeyHelperBelowApi23();
                 }
-                mDecryptCipher.init(Cipher.DECRYPT_MODE,keyHelper.getAESKey(),new IvParameterSpec(getIv()));
+                mDecryptCipher.init(Cipher.DECRYPT_MODE,keyHelper.getAESKey(),new GCMParameterSpec(128,getIv()));
             }
 
         }
@@ -137,8 +137,8 @@ public class Encryption {
 
         keyGenerator.init(new KeyGenParameterSpec.Builder(KEYSTORE_ALIAS,
                 KeyProperties.PURPOSE_ENCRYPT|KeyProperties.PURPOSE_DECRYPT)
-                        .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
-                        .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
+                        .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+                        .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
                         .build());
 
         return keyGenerator.generateKey();
