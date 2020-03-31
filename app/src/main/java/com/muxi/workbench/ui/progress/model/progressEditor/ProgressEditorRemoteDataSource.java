@@ -1,6 +1,6 @@
 package com.muxi.workbench.ui.progress.model.progressEditor;
 
-import com.muxi.workbench.commonUtils.NetUtil;
+import com.muxi.workbench.commonUtils.net.NetUtil;
 import com.muxi.workbench.ui.login.model.UserWrapper;
 import com.muxi.workbench.ui.progress.model.net.PostNewStatusResponse;
 import com.muxi.workbench.ui.progress.model.net.StatusBean;
