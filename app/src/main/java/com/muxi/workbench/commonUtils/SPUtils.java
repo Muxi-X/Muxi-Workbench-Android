@@ -35,6 +35,7 @@ public final class SPUtils {
     public static final String SP_DOWNLOAD="sp_file_download";
 
 
+
     /**
      * Return the single {@link SPUtils} instance
      *

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.facebook.common.util.Hex;
 import com.muxi.workbench.commonUtils.SPUtils;
 
 import java.io.File;

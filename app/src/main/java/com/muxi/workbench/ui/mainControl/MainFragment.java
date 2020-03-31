@@ -1,6 +1,7 @@
 package com.muxi.workbench.ui.mainControl;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +27,12 @@ public class MainFragment extends Fragment {
 
     public ViewPager viewPager;
     public BottomNavigationView navigationView;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.i("fragment", "onCreate:  mainfragment");
+    }
 
     @Nullable
     @Override

@@ -1,8 +1,8 @@
 package com.muxi.workbench.ui.project.model.Repository;
 
 import com.google.gson.Gson;
-import com.muxi.workbench.commonUtils.NetUtil;
-import com.muxi.workbench.commonUtils.RetrofitApi;
+import com.muxi.workbench.commonUtils.net.NetUtil;
+import com.muxi.workbench.commonUtils.net.RetrofitApi;
 import com.muxi.workbench.ui.login.model.UserWrapper;
 import com.muxi.workbench.ui.project.model.bean.Folder;
 import com.muxi.workbench.ui.project.model.bean.FolderTree;

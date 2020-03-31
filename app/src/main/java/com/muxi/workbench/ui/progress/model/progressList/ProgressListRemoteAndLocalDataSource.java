@@ -3,7 +3,7 @@ package com.muxi.workbench.ui.progress.model.progressList;
 import androidx.annotation.NonNull;
 
 import com.muxi.workbench.commonUtils.AppExecutors;
-import com.muxi.workbench.commonUtils.NetUtil;
+import com.muxi.workbench.commonUtils.net.NetUtil;
 import com.muxi.workbench.ui.login.model.UserWrapper;
 import com.muxi.workbench.ui.progress.model.Progress;
 import com.muxi.workbench.ui.progress.model.StickyProgress;

@@ -2,10 +2,7 @@ package com.muxi.workbench.ui.home.model;
 
 import android.util.Log;
 
-import com.muxi.workbench.commonUtils.NetUtil;
-import com.muxi.workbench.ui.home.model.FeedBean;
-import com.muxi.workbench.ui.home.model.FeedRepository;
-import com.muxi.workbench.ui.login.model.UserWrapper;
+import com.muxi.workbench.commonUtils.net.NetUtil;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;

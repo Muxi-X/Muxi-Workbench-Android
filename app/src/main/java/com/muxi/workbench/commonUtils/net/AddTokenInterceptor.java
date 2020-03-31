@@ -1,4 +1,4 @@
-package com.muxi.workbench.commonUtils;
+package com.muxi.workbench.commonUtils.net;
 
 import com.muxi.workbench.ui.login.model.UserWrapper;
 

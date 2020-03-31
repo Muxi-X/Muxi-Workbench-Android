@@ -4,7 +4,7 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.widget.Toast;
 
-import com.muxi.workbench.commonUtils.NetUtil;
+import com.muxi.workbench.commonUtils.net.NetUtil;
 import com.muxi.workbench.ui.login.model.netcall.LoginResponse1;
 import com.muxi.workbench.ui.login.model.netcall.LoginResponse2;
 import com.muxi.workbench.ui.login.model.User;

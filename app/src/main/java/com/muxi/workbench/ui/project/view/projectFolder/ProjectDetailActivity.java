@@ -3,6 +3,7 @@ package com.muxi.workbench.ui.project.view.projectFolder;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,7 +24,6 @@ public class ProjectDetailActivity extends AppCompatActivity {
         initView();
 
 
-
     }
 
     public int getPid(){
@@ -42,7 +42,9 @@ public class ProjectDetailActivity extends AppCompatActivity {
 
     }
 
-
-
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i("activity", "onDestroy: ");
+    }
 }

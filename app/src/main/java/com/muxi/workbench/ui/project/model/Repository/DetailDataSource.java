@@ -2,7 +2,7 @@ package com.muxi.workbench.ui.project.model.Repository;
 
 import android.text.TextUtils;
 
-import com.muxi.workbench.commonUtils.NetUtil;
+import com.muxi.workbench.commonUtils.net.NetUtil;
 import com.muxi.workbench.ui.project.model.bean.FilesId;
 import com.muxi.workbench.ui.project.model.bean.FilesResponse;
 import com.muxi.workbench.ui.project.model.bean.FolderTree;

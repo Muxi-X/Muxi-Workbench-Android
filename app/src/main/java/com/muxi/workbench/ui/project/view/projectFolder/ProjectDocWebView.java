@@ -1,6 +1,5 @@
 package com.muxi.workbench.ui.project.view.projectFolder;
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -8,7 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.webkit.ValueCallback;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -19,7 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.muxi.workbench.R;
-import com.muxi.workbench.commonUtils.NetUtil;
+import com.muxi.workbench.commonUtils.net.NetUtil;
 import com.muxi.workbench.ui.project.model.bean.FileContent;
 
 import io.reactivex.Observer;

@@ -1,8 +1,6 @@
 package com.muxi.workbench.ui.notifications;
 
-import android.util.Log;
-
-import com.muxi.workbench.commonUtils.NetUtil;
+import com.muxi.workbench.commonUtils.net.NetUtil;
 import com.muxi.workbench.ui.login.model.UserWrapper;
 
 import io.reactivex.Observer;

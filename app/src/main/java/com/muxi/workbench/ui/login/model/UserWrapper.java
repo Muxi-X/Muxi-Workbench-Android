@@ -3,6 +3,7 @@ package com.muxi.workbench.ui.login.model;
 import androidx.annotation.Nullable;
 
 import com.alibaba.fastjson.JSONObject;
+import com.muxi.workbench.commonUtils.Encryption;
 import com.muxi.workbench.commonUtils.SPUtils;
 
 public class UserWrapper {
@@ -13,15 +14,23 @@ public class UserWrapper {
     private SPUtils spUtils;
     //这里我选了饿汉式单例,关于饿汉式和懒汉式的选择可以查看知乎上这一回答https://www.zhihu.com/question/60307849
     private static UserWrapper instance=new UserWrapper();
-
+    private Encryption encryption;
     private UserWrapper(){
         spUtils=SPUtils.getInstance(SPUtils.SP_CONFIG);
+        encryption=new Encryption();
         String userJson= spUtils.getString("user","");
         if (userJson.length()==0){
             user=null;
         }
         else {
-            user = JSONObject.parseObject(userJson, User.class);
+            try {
+                userJson=encryption.decryptAES(userJson);
+            } catch (Exception e) {
+                e.printStackTrace();
+                userJson="";
+            }
+            if (userJson.length()!=0)
+                user = JSONObject.parseObject(userJson, User.class);
         }
 
     }
@@ -55,6 +64,12 @@ public class UserWrapper {
     public void setUser(User user){
         this.user=user;
         String json=JSONObject.toJSONString(user);
+        try {
+            json=encryption.encryptAES(json);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
         spUtils.put("user",json,false);
     }
 

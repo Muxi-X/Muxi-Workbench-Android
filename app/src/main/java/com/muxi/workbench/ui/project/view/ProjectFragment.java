@@ -3,6 +3,7 @@ package com.muxi.workbench.ui.project.view;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,6 +54,7 @@ public class ProjectFragment extends Fragment implements ProjectMainContract.Vie
                     ProjectDetailActivity.startActivity(ProjectFragment.this.getActivity(),listBean.getProjectID());
             }
         });
+
     }
 
 
@@ -135,5 +137,6 @@ public class ProjectFragment extends Fragment implements ProjectMainContract.Vie
     public void addProject(Project project) {
         mAdapter.addProject(project);
     }
+
 
 }

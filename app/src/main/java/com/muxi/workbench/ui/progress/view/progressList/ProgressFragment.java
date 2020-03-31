@@ -4,14 +4,12 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
@@ -21,7 +19,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.muxi.workbench.R;
 import com.muxi.workbench.commonUtils.AppExecutors;
-import com.muxi.workbench.commonUtils.MyRefreshLayout;
+import com.muxi.workbench.commonUtils.customView.MyRefreshLayout;
 import com.muxi.workbench.ui.progress.contract.ProgressContract;
 import com.muxi.workbench.ui.progress.ProgressFilterType;
 import com.muxi.workbench.ui.progress.model.Progress;

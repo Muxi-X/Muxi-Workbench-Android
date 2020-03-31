@@ -1,25 +1,16 @@
 package com.muxi.workbench.ui.project.presenter;
 
-import com.muxi.workbench.commonUtils.NetUtil;
 import com.muxi.workbench.ui.project.FolderContract;
 import com.muxi.workbench.ui.project.model.Repository.DetailDataSource;
-import com.muxi.workbench.ui.project.model.bean.FilesId;
-import com.muxi.workbench.ui.project.model.bean.FilesResponse;
 import com.muxi.workbench.ui.project.model.bean.FolderTree;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Function;
 import io.reactivex.internal.disposables.ListCompositeDisposable;
-
-import com.muxi.workbench.ui.project.model.bean.FolderTree.ChildBean;
 
 public class FolderPresenter implements FolderContract.Presenter {
 

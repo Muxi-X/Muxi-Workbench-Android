@@ -1,6 +1,6 @@
 package com.muxi.workbench.ui.progress.model.progressDetail;
 
-import com.muxi.workbench.commonUtils.NetUtil;
+import com.muxi.workbench.commonUtils.net.NetUtil;
 import com.muxi.workbench.ui.login.model.UserWrapper;
 import com.muxi.workbench.ui.progress.model.net.CommentStautsBean;
 import com.muxi.workbench.ui.progress.model.net.IfLikeStatusBean;
