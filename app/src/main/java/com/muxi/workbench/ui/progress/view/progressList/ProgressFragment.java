@@ -28,6 +28,7 @@ import com.muxi.workbench.ui.progress.model.progressList.ProgressListRepository;
 import com.muxi.workbench.ui.progress.model.StickyProgressDatabase;
 import com.muxi.workbench.ui.progress.presenter.ProgressListPresenter;
 import com.muxi.workbench.ui.progress.view.progressDetail.ProgressDetailActivity;
+import com.muxi.workbench.ui.progress.view.progressEditor.EditorActivity;
 import com.muxi.workbench.ui.progress.view.progressList.ProgressListAdapter.ProgressItemListener;
 
 import java.util.ArrayList;
@@ -90,7 +91,7 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
 
         @Override
         public void onEditClick(Progress editProgress) {
-            Toast.makeText(getContext(), "去编辑进度", Toast.LENGTH_LONG).show();
+            startActivityForResult(EditorActivity.newIntent(getContext(),false, editProgress.getSid(), editProgress.getTitle(), editProgress.getContent()), 2);
         }
     };
 
@@ -187,24 +188,38 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
         });
 
         mProgressTitleBar.setAddListener(v -> {
-            ///TODO  to Progress-editing Fragment
+            Intent intent = EditorActivity.newIntent(getContext(), true);
+            startActivityForResult(intent, 2);
         });
 
         return root;
     }
 
+    /**
+     *
+     * @param requestCode       1-进入详情页 2-进入编辑页
+     * @param resultCode
+     * @param data
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case 1:
-                if ( resultCode == RESULT_OK )
+            case 1: {
+                if ( resultCode == RESULT_OK ) {
                     mPresenter.loadProgress(data.getIntExtra("position", -1),
                             data.getIntExtra("sid", -1),
                             data.getStringExtra("avatar"),
                             data.getStringExtra("username"),
                             data.getIntExtra("uid", -1));
-
+                }
                 break;
+            }
+            case 2: {
+                if (resultCode == RESULT_OK) {
+                    mPresenter.loadProgressList(true);
+                }
+                break;
+            }
         }
     }
 
@@ -228,12 +243,6 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
     }
 
     @Override
-    public void showCommentView() {
-        Toast.makeText(getContext(), "去评论", Toast.LENGTH_LONG).show();
-    }
-
-
-    @Override
     public void refreshLikeProgress(int position, int iflike) {
         mAdapter.notifyProgressLike(position, iflike);
     }
@@ -252,12 +261,6 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
     @Override
     public void showError() {
         Toast.makeText(getContext(), "失败辽", Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void showAddNewProgress() {
-        Toast.makeText(getContext(), "去往新进度编辑页", Toast.LENGTH_LONG).show();
-        ///todo intent to empty edit-fragment
     }
 
     @Override

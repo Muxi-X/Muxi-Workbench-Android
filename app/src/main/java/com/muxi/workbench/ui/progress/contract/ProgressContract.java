@@ -15,8 +15,6 @@ public interface ProgressContract {
 
         void showProgressList(List<Progress> progressList);
 
-        void showAddNewProgress();
-
         void showUserInfo(int uid);
 
         void refreshLikeProgress(int position, int iflike);
@@ -26,8 +24,6 @@ public interface ProgressContract {
         void showDeleteProgress(int position);
 
         void showMoreProgress(List<Progress> progresses);
-
-        void showCommentView();
 
         void showError();
 
@@ -43,8 +39,6 @@ public interface ProgressContract {
 
         void loadProgressList(boolean ifForceUpdate);
 
-        void addNewProgress();
-
         void openUserInfo(@NonNull int uid);
 
         void likeProgress(int sid, int position);
@@ -52,8 +46,6 @@ public interface ProgressContract {
         void cancelLikeProgress(int sid, int position);
 
         void setProgressFilterType(ProgressFilterType requestType);
-
-        int getFiltering();
 
         int getPage();
 

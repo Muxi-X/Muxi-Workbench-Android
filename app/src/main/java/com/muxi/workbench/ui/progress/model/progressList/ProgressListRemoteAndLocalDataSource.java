@@ -119,7 +119,7 @@ public class ProgressListRemoteAndLocalDataSource implements ProgressListDataSou
 
     @Override
     public void refreshProgressList() {
-///todo
+
     }
 
     @Override

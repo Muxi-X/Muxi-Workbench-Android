@@ -5,22 +5,22 @@ import com.muxi.workbench.ui.login.model.netcall.LoginResponse1;
 import com.muxi.workbench.ui.login.model.netcall.LoginResponse2;
 import com.muxi.workbench.ui.login.model.netcall.UserBean;
 import com.muxi.workbench.ui.login.model.netcall.UserBeanTwo;
-import com.muxi.workbench.ui.notifications.NotificationsResponse;
+import com.muxi.workbench.ui.notifications.model.NotificationsResponse;
 import com.muxi.workbench.ui.progress.model.net.CommentStautsBean;
 import com.muxi.workbench.ui.progress.model.net.GetAStatusResponse;
 import com.muxi.workbench.ui.progress.model.net.GetGroupUserListResponse;
 import com.muxi.workbench.ui.progress.model.net.GetStatusListResponse;
 import com.muxi.workbench.ui.progress.model.net.IfLikeStatusBean;
 import com.muxi.workbench.ui.progress.model.net.LikeStatusResponse;
+import com.muxi.workbench.ui.progress.model.net.PostNewStatusResponse;
+import com.muxi.workbench.ui.progress.model.net.StatusBean;
 import com.muxi.workbench.ui.project.model.bean.FileContent;
 import com.muxi.workbench.ui.project.model.bean.FilesId;
 import com.muxi.workbench.ui.project.model.bean.FilesResponse;
 import com.muxi.workbench.ui.project.model.bean.Folder;
 import com.muxi.workbench.ui.project.model.bean.Project;
-import com.muxi.workbench.ui.project.model.bean.test;
 
 import io.reactivex.Observable;
-import okhttp3.ResponseBody;
 import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -45,6 +45,12 @@ public interface RetrofitApi {
 
     @GET("http://work.muxi-tech.xyz/api/v1.0/status/{sid}/")
     Observable<GetAStatusResponse> getAStatus( @Path("sid") int sid);
+
+    @PUT("http://work.muxi-tech.xyz/api/v1.0/status/{sid}/")
+    Observable<Response<Void>> editStatus(@Header ("token") String token, @Path("sid") int sid, @Body StatusBean changeStatusBean);
+
+    @POST("http://work.muxi-tech.xyz/api/v1.0/status/new/")
+    Observable<PostNewStatusResponse> newStatus(@Header ("token") String token, @Body StatusBean changeStatusBean);
 
     @DELETE("http://work.muxi-tech.xyz/api/v1.0/status/{sid}/")
     Observable<Response<Void>> deleteStatus(@Path("sid") int sid);

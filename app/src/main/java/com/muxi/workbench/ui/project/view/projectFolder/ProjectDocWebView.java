@@ -33,16 +33,17 @@ public class ProjectDocWebView extends AppCompatActivity {
     private int id;
     private String fileName;
     private Disposable disposable;
-    public static final String DOCID="file_id";
-    public static final String DOCNAME="file_name";
-    private static final String FILEHTML="file:///android_asset/ProjectDoc.html";
+    public static final String DOCID = "file_id";
+    public static final String DOCNAME = "file_name";
+    private static final String FILEHTML = "file:///android_asset/ProjectDoc.html";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_doc_webview);
         init();
         mWebView.getSettings().setJavaScriptEnabled(true);
-        mWebView.setWebViewClient(new WebViewClient(){
+        mWebView.setWebViewClient(new WebViewClient() {
 
             @Override
             public void onPageFinished(WebView view, String url) {
@@ -61,29 +62,27 @@ public class ProjectDocWebView extends AppCompatActivity {
                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                     startActivity(intent);
                     return true;
-                }
-                else
+                } else
                     return super.shouldOverrideUrlLoading(view, request);
             }
         });
         mWebView.loadUrl(FILEHTML);
 
 
-
     }
 
-    private void init(){
-        mWebView=findViewById(R.id.doc_webview);
-        mToolbar=findViewById(R.id.project_webview_title_bar);
-        id=getIntent().getIntExtra(DOCID,0);
-        fileName=getIntent().getStringExtra(DOCNAME);
+    private void init() {
+        mWebView = findViewById(R.id.doc_webview);
+        mToolbar = findViewById(R.id.project_webview_title_bar);
+        id = getIntent().getIntExtra(DOCID, 0);
+        fileName = getIntent().getStringExtra(DOCNAME);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mToolbar.setTitle(fileName);
         }
 
     }
 
-    private void getContent(){
+    private void getContent() {
         NetUtil.getInstance().getApi()
                 .getFileContent(id)
                 .subscribeOn(Schedulers.io())
@@ -91,18 +90,25 @@ public class ProjectDocWebView extends AppCompatActivity {
                 .subscribe(new Observer<FileContent>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        disposable=d;
+                        disposable = d;
                     }
 
                     @Override
                     public void onNext(FileContent fileContent) {
                         mWebView.loadUrl("javascript:loadContent('" + fileContent.getContent() + " ');");
+                        //从消息界面跳转过来没有文件名，所有在这里添加
+                        if (fileName.equals("")) {
+                           String fileNameFromNet = fileContent.getName();
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                mToolbar.setTitle(fileNameFromNet);
+                            }
+                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        Toast.makeText(ProjectDocWebView.this,"加载失败",Toast.LENGTH_LONG).show();
+                        Toast.makeText(ProjectDocWebView.this, "加载失败", Toast.LENGTH_LONG).show();
                     }
 
                     @Override
@@ -113,13 +119,14 @@ public class ProjectDocWebView extends AppCompatActivity {
 
     }
 
-    public static Intent newIntent(Context context, int id, String name){
-        Intent intent=new Intent(context,ProjectDocWebView.class);
-        intent.putExtra(DOCID,id);
-        intent.putExtra(DOCNAME,name);
+    public static Intent newIntent(Context context, int id, String name) {
+        Intent intent = new Intent(context, ProjectDocWebView.class);
+        intent.putExtra(DOCID, id);
+        intent.putExtra(DOCNAME, name);
         return intent;
 
     }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -134,8 +141,9 @@ public class ProjectDocWebView extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (disposable!=null){
-            disposable.dispose();;
+        if (disposable != null) {
+            disposable.dispose();
+            ;
         }
         Log.i("webview", "onDestroy: ");
         super.onDestroy();

@@ -21,9 +21,13 @@ import com.muxi.workbench.R;
 import com.muxi.workbench.commonUtils.customView.MyRefreshLayout;
 import com.muxi.workbench.ui.home.HomeContract;
 import com.muxi.workbench.ui.home.HomePresenter;
+import com.muxi.workbench.ui.home.model.BannerBean;
 import com.muxi.workbench.ui.home.model.FeedBean;
 import com.muxi.workbench.ui.home.model.FeedRepository;
 import com.muxi.workbench.ui.progress.view.progressDetail.ProgressDetailActivity;
+import com.muxi.workbench.ui.progress.view.progressEditor.EditorActivity;
+import com.muxi.workbench.ui.project.view.projectFolder.ProjectDocWebView;
+import com.youth.banner.Banner;
 
 public class HomeFragment extends Fragment implements HomeContract.View {
     private Toolbar toolbar;
@@ -34,6 +38,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     private ViewStub viewStub;
     private MyRefreshLayout mSwipeRefreshLayout;
     private Button mRetry;
+    private Banner mBanner;
     private FeedAdapter.ItemListener listener = new FeedAdapter.ItemListener() {
         @Override
         public void onNameClick() {
@@ -42,13 +47,21 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         }
 
         @Override
-        public void onFileClick(int sid, String username, String avatar, String title) {
+        public void onClickToFeed(int sid, String username, String avatar, String title) {
             Intent intent = ProgressDetailActivity.newIntent(getActivity(), sid, username, avatar,
                     false, title, -1);
-
             startActivity(intent);
         }
 
+        @Override
+        public void onCliCkToFile(int objectId, String docName) {
+            try {
+                Intent intent = ProjectDocWebView.newIntent(HomeFragment.this.getContext(), objectId, docName);
+                startActivity(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     };
 
     @Override
@@ -60,24 +73,25 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         Log.e("Fragment left cycle", ":onCreate");
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.e("Fragment left cycle", ":onStart");
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mPresenter.start();
-        Log.e("Fragment left cycle", ":onResume");
-    }
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        Log.e("Fragment left cycle", ":onStart");
+//    }
+//
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        Log.e("Fragment left cycle", ":onResume");
+//    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         toolbar = root.findViewById(R.id.home_toolbar);
+        mBanner = root.findViewById(R.id.home_banner);
+        mBanner.setAdapter(new BannerAdapter(BannerBean.getDefaultBanners()));
         recyclerView = root.findViewById(R.id.home_rcv);
 
         viewStub = root.findViewById(R.id.home_view_stub);
@@ -94,7 +108,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
             mPresenter.loadMore();
             mSwipeRefreshLayout.setLoading(false);
         });
-
+        mPresenter.start();
         initToolbar();
         initRv();
         return root;
@@ -107,7 +121,6 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     }
 
     public void initAdapter(FeedBean mBean) {
-        Log.e("TAG", "Home initAdapter");
         mAdapter = new FeedAdapter(mBean, mPresenter, listener);
         recyclerView.setAdapter(mAdapter);
     }
@@ -120,13 +133,22 @@ public class HomeFragment extends Fragment implements HomeContract.View {
                     //todo: scan code
                     break;
                 case R.id.home_add:
-                    //todo: add progress
+                    Intent addProgressIntent = EditorActivity.newIntent(this.getContext(), true);
+                    startActivityForResult(addProgressIntent, 2);
                     break;
                 default:
                     break;
             }
             return true;
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == 2)
+            if (resultCode == EditorActivity.RESULT_OK) {
+                mPresenter.refresh();
+            }
     }
 
     @Override
@@ -185,11 +207,9 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     @Override
     public void showLoadMoreSign(boolean isSuccess) {
         if (isSuccess) {
-            Toast.makeText(getContext(), "加载成功", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), "加载成功", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(getContext(), "加载失败", Toast.LENGTH_SHORT).show();
         }
     }
-
-
 }

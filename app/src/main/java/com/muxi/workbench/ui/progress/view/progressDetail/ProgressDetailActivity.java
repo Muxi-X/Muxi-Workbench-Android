@@ -1,5 +1,6 @@
 package com.muxi.workbench.ui.progress.view.progressDetail;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -21,6 +22,7 @@ import com.muxi.workbench.ui.progress.model.Progress;
 import com.muxi.workbench.ui.progress.model.progressDetail.ProgressDetailRemoteDataSource;
 import com.muxi.workbench.ui.progress.model.progressDetail.ProgressDetailRepository;
 import com.muxi.workbench.ui.progress.presenter.ProgressDetailPresenter;
+import com.muxi.workbench.ui.progress.view.progressEditor.EditorActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,8 +52,8 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
 
         @Override
         public void onEditClick() {
-            Toast.makeText(ProgressDetailActivity.this, "去编辑进度", Toast.LENGTH_SHORT).show();
-            ///todo 去编辑进度页
+            Intent intent = EditorActivity.newIntent(ProgressDetailActivity.this,false,mProgress.getSid(), mProgress.getTitle() ,mProgress.getContent());
+            startActivityForResult(intent, 2);
         }
 
         @Override
@@ -152,7 +154,6 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
             }
         });
 
-
         mCommentSendView = findViewById(R.id.csv_progressdetail);
         mCommentSendView.setBackgroundColor(Color.parseColor("#ffffff"));
         mCommentSendView.setElevation(35);
@@ -170,6 +171,18 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
 
         if ( mIfComment )
             showEditCommentView();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 2:
+                if (resultCode == RESULT_OK) {
+                    mPresenter.loadProgressAndCommentList();
+                }
+                break;
+        }
     }
 
     @Override

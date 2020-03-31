@@ -71,8 +71,15 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         vh.mHeadShot.setOnClickListener(view -> mListener.onNameClick());
         vh.mContent.setOnClickListener(view -> {
-            mListener.onFileClick(mSource.getObject_id(), mUser.getName(),
-                    mUser.getAvatar_url(), mSource.getObject_name());
+            if (mSource.getKind_id() == 6) {
+                mListener.onClickToFeed(mSource.getObject_id(), mUser.getName(),
+                        mUser.getAvatar_url(), mSource.getObject_name());
+            }
+            Log.e("kind=", String.valueOf(mSource.getKind_id()));
+            if (mSource.getKind_id() == 3) {
+
+                mListener.onCliCkToFile(mSource.getObject_id(), mSource.getObject_name());
+            }
         });
     }
 
@@ -99,9 +106,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             default:
                 break;
         }
-        if (!projectName.contains("noname"))
-            stringBuilder.append(projectName);
-
+//        if (!projectName.contains("noname"))
+//            stringBuilder.append(projectName);
+        stringBuilder.append(":");
         return stringBuilder.toString();
     }
 
@@ -142,14 +149,15 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
     void replaceData(FeedBean feedBean) {
-        Log.e("TAG", "feedAdapter replaceData");
+        mDataList.clear();
         mDataList = feedBean.getDataList();
         notifyDataSetChanged();
     }
 
     void addData(FeedBean feedBean) {
+        int start = mDataList.size();
         mDataList.addAll(feedBean.getDataList());
-        notifyDataSetChanged();
+        notifyItemRangeInserted(start, feedBean.getDataList().size());
     }
 
 
@@ -157,7 +165,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         void onNameClick();
 
-        void onFileClick(int sid, String username, String avatar, String title);
+        void onClickToFeed(int sid, String username, String avatar, String title);
+
+        void onCliCkToFile(int objectId, String docName);
     }
 
 }
