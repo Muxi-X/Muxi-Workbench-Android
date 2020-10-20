@@ -3,6 +3,7 @@ package com.muxi.workbench.ui.login;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -22,6 +23,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
     private EditText mEtAccount;
     private EditText mEtPassword;
     private Button mBtLogin;
+    private TextView mTvRegister;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,12 +45,14 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
         mEtAccount=findViewById(R.id.et_account);
         mEtPassword=findViewById(R.id.et_password);
         mBtLogin=findViewById(R.id.bt_login);
+        mTvRegister=findViewById(R.id.tv_register);
 
         mBtLogin.setOnClickListener(v -> {
             if (presenter!=null)
                 presenter.login();
 
         });
+        mTvRegister.setOnClickListener(v -> register());
 
     }
     @Override
@@ -82,6 +86,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
         this.finish();
     }
 
+
     @Override
     public Context getContext() {
         return this;
@@ -93,4 +98,9 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
             presenter.onDestroy();
         super.onDestroy();
     }
+    public void register() {
+        mTvRegister.setClickable(true);
+        Toast.makeText(getApplicationContext(),"请到 PC 端工作台注册",Toast.LENGTH_SHORT).show();
+    }
+
 }
