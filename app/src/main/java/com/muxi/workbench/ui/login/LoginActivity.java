@@ -1,6 +1,7 @@
 package com.muxi.workbench.ui.login;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.muxi.workbench.R;
@@ -100,7 +102,18 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
     }
     public void register() {
         mTvRegister.setClickable(true);
-        Toast.makeText(getApplicationContext(),"请到 PC 端工作台注册",Toast.LENGTH_SHORT).show();
+        AlertDialog.Builder builder=new AlertDialog.Builder(LoginActivity.this);
+        builder.setMessage("请到 PC 端工作台注册");
+        builder.setCancelable(false);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        AlertDialog dialog=builder.create();
+        dialog.show();
+
     }
 
 }
