@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.muxi.workbench.R;
 import com.muxi.workbench.ui.login.model.User;
 import com.muxi.workbench.ui.login.model.UserWrapper;
+import com.muxi.workbench.ui.login.view.RegisterDialog;
 import com.muxi.workbench.ui.mainControl.MainActivity;
 
 public class LoginActivity extends AppCompatActivity implements LoginContract.View{
@@ -100,19 +101,11 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
             presenter.onDestroy();
         super.onDestroy();
     }
+
     public void register() {
-        mTvRegister.setClickable(true);
-        AlertDialog.Builder builder=new AlertDialog.Builder(LoginActivity.this);
-        builder.setMessage("请到 PC 端工作台注册");
-        builder.setCancelable(false);
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
-        AlertDialog dialog=builder.create();
-        dialog.show();
+
+        RegisterDialog registerDialog = new RegisterDialog();
+        registerDialog.show(getFragmentManager(), "RegisterDialog");
 
     }
 
