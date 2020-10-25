@@ -4,22 +4,31 @@
     <meta charset="utf-8">
     <script>
          function loadContent(content){
-            document.write(content);
+            document.write("<div>" + content + "</div>");
+            document.write(`
+             <style type="text/css">
+                div{
+<!--                    border: 1px solid black;-->
+                    font-size: 16px;
+                    width: 95%;
+                    overflow-y: auto;
+                    overflow-x: auto;
+                    word-break: break-word;
+                    margin: 0px auto;
+                }
+                p, li{
+                    margin: 2px;
+                }
+                ul, ol {
+                    padding-left: 15px;
+                }
+                .language-markup{
+                    font-size: 16px;
+                }
+            </style>
+            `)
          }
       </script>
-    <style type="text/css">
-        status-details{
-            font-size: 16px;
-            width: 88%;
-            overflow-y: auto;
-            overflow-x: hidden;
-            word-break: break-all;
-            margin: 52px auto;
-        }
-        language-markup{
-            font-size: 16px;
-        }
-    </style>
 </head>
 <body>
 </body>
