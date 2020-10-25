@@ -54,4 +54,5 @@ public class RegisterDialog extends DialogFragment {
         }
 
 
-    }}
+    }
+}
