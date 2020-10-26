@@ -7,7 +7,7 @@
     <string name="Mine">我的</string>
     <string name="app_name_chinese">木犀工作台</string>
     <string name="bt_login">登录</string>
-    <string name="hint_account">账号/邮箱</string>
+    <string name="hint_account">邮箱</string>
     <string name="hint_password">密码</string>
     <string name="title_activity_login2">Sign in</string>
     <string name="prompt_email">Email</string>
@@ -24,6 +24,9 @@
     <string name="get_it">已读</string>
     <string name="def_project_name">默认项目</string>
     <string name="project">项目</string>
+    <string name="register">注册</string>
+    <string name="register_dialog">请到 PC 端工作台注册</string>
+    <string name="i_konw">我知道了</string>
 
     <array name="progress_titlebar_screening">
         <item>全部</item>
