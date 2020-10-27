@@ -129,6 +129,7 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
 
             mholder.mContentWv.loadUrl("file:///android_asset/ProgressDetail.html");
             mholder.mContentWv.getSettings().setJavaScriptEnabled(true);
+            mholder.mContentWv.setWebContentsDebuggingEnabled(true);
             mholder.mContentWv.requestFocus();
             /**
              * 监听WebView的加载状态    分别为 ： 加载的 前 中 后期
@@ -144,10 +145,6 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
                     super.onPageFinished(view, url);
                     view.loadUrl("javascript:loadContent('" + mProgress.getContent() + " ');");
                     Log.d("content","1"+mProgress.getContent());
-//                    view.getSettings().setUseWideViewPort(true);
-//                    view.getSettings().setLoadWithOverviewMode(true);
-//                    view.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);//自适应屏幕
-//                    view.getSettings().setLoadWithOverviewMode(true);//自适应屏幕
                     view.setHorizontalScrollBarEnabled(false);
                     view.setVerticalScrollBarEnabled(false);
                 }
