@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
@@ -128,6 +129,8 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
 
             mholder.mContentWv.loadUrl("file:///android_asset/ProgressDetail.html");
             mholder.mContentWv.getSettings().setJavaScriptEnabled(true);
+            mholder.mContentWv.setWebContentsDebuggingEnabled(true);
+            mholder.mContentWv.requestFocus();
             /**
              * 监听WebView的加载状态    分别为 ： 加载的 前 中 后期
              * */
@@ -141,6 +144,9 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
                 public void onPageFinished(WebView view, String url) {
                     super.onPageFinished(view, url);
                     view.loadUrl("javascript:loadContent('" + mProgress.getContent() + " ');");
+                    Log.d("content","1"+mProgress.getContent());
+                    view.setHorizontalScrollBarEnabled(false);
+                    view.setVerticalScrollBarEnabled(false);
                 }
 
                 @Override

@@ -4,19 +4,21 @@
     <meta charset="utf-8">
     <script>
          function loadContent(content){
-            document.write(content);
+                console.log(content)
+                    document.body.innerHTML = "<div class='status-details'>" + content + "</div>";
          }
       </script>
     <style type="text/css">
-        status-details{
+
+         .status-details{
             font-size: 16px;
-            width: 88%;
+            width: 95%;
             overflow-y: auto;
-            overflow-x: hidden;
-            word-break: break-all;
-            margin: 52px auto;
-        }
-        language-markup{
+            overflow-x: auto;
+            word-break: break-word;
+            margin: 0px auto;
+          }
+        .language-markup{
             font-size: 16px;
         }
     </style>
