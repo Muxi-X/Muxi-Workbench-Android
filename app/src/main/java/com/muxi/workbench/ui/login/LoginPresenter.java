@@ -25,6 +25,8 @@ public class LoginPresenter implements LoginContract.Presenter {
 
     private LoginContract.View view;
     private ListCompositeDisposable disposableContainer;
+    private static final String response_type = "code";
+    private static final String client_id = "51f03389-2a18-4941-ba73-c85d08201d42";
 
     public LoginPresenter(LoginContract.View view) {
         this.view = view;
@@ -45,7 +47,7 @@ public class LoginPresenter implements LoginContract.Presenter {
         }
         String encode= Base64.encodeToString(password.getBytes(),Base64.DEFAULT);
 
-        NetUtil.getInstance().getApi().loginFirst(new UserBean(account,encode))
+        NetUtil.getInstance().getApi().loginFirst(response_type,client_id,new UserBean(account,encode))
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(v->{
                     view.showLoading();
@@ -58,8 +60,7 @@ public class LoginPresenter implements LoginContract.Presenter {
                         }
 
                         UserBeanTwo userBeanTwo=new UserBeanTwo();
-                        userBeanTwo.setEmail(account);
-                        userBeanTwo.setToken(loginResponse1.getData().getToken());
+                        userBeanTwo.setOauth_code(loginResponse1.getData().getCode());
                         return NetUtil.getInstance().getApi().loginWorkbench(userBeanTwo);
 
                     }
@@ -74,7 +75,7 @@ public class LoginPresenter implements LoginContract.Presenter {
                     @Override
                     public void onNext(LoginResponse2 loginBean) {
 
-                        User user=new User(account,password,loginBean.getToken(),loginBean.getUid(),loginBean.getUrole() );
+                        User user=new User(account,password,loginBean.getData().getToken());
                         UserWrapper.getInstance().setUser(user);
 
                     }

@@ -33,11 +33,16 @@ import retrofit2.http.Query;
 
 public interface RetrofitApi {
 
-    @POST("http://pass.muxi-tech.xyz/auth/api/signin")
-    Observable<LoginResponse1> loginFirst(@Body UserBean userBean);
+//    @POST("http://pass.muxi-tech.xyz/auth/api/signin")
+//    Observable<LoginResponse1> loginFirst(@Body UserBean userBean);
 
+    @POST("http://pass.muxi-tech.xyz/auth/api/oauth")
+    Observable<LoginResponse1>  loginFirst(@Query("response_type") String response_type, @Query("client_id") String client_id, @Body UserBean userBean);
 
-    @POST("http://work.muxixyz.com/api/v1.0/auth/login/")
+//    @POST("http://work.muxixyz.com/api/v1.0/auth/login/")
+//    Observable<LoginResponse2> loginWorkbench(@Body UserBeanTwo userBeanTwo);
+
+    @POST("http://work.test.muxi-tech.xyz/api/v1/auth/login")
     Observable<LoginResponse2> loginWorkbench(@Body UserBeanTwo userBeanTwo);
 
     @GET("feed/list/{page}/")

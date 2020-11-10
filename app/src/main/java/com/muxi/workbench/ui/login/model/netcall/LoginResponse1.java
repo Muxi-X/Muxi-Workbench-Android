@@ -6,11 +6,16 @@ public class LoginResponse1 {
     /**
      * code : 0
      * message : OK
-     * data : {"user_id":78,"token":"****"}
+     * data : {"code":"NIRRHYJXNJ2SHL_0JVXJLG","expired":1800}
      */
 
     private int code;
     private String message;
+    /**
+     * code : NIRRHYJXNJ2SHL_0JVXJLG
+     * expired : 1800
+     */
+
     private DataBean data;
 
     public int getCode() {
@@ -38,28 +43,23 @@ public class LoginResponse1 {
     }
 
     public static class DataBean {
-        /**
-         * user_id : 1
-         * token : ***
-         */
+        private String code;
+        private int expired;
 
-        private int user_id;
-        private String token;
-
-        public int getUser_id() {
-            return user_id;
+        public String getCode() {
+            return code;
         }
 
-        public void setUser_id(int user_id) {
-            this.user_id = user_id;
+        public void setCode(String code) {
+            this.code = code;
         }
 
-        public String getToken() {
-            return token;
+        public int getExpired() {
+            return expired;
         }
 
-        public void setToken(String token) {
-            this.token = token;
+        public void setExpired(int expired) {
+            this.expired = expired;
         }
     }
 }

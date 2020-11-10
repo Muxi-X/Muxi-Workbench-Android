@@ -2,27 +2,18 @@ package com.muxi.workbench.ui.login.model.netcall;
 
 public class UserBeanTwo {
 
+
     /**
-     * email : 904315105@qq.com
-     * token : ****
+     * oauth_code : 5TGSZN_IM7KZ1I_2J2GQZW
      */
 
-    private String email;
-    private String token;
+    private String oauth_code;
 
-    public String getEmail() {
-        return email;
+    public String getOauth_code() {
+        return oauth_code;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
+    public void setOauth_code(String oauth_code) {
+        this.oauth_code = oauth_code;
     }
 }

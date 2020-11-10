@@ -4,36 +4,62 @@ public class LoginResponse2 {
 
 
     /**
-     * token : ****
-     * uid : 40
-     * urole : 3
+     * code : 0
+     * message : OK
+     * data : {"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDQ4ODg2NjksImlkIjoxNDIsInJvbGUiOjEsInRlYW1faWQiOjF9.PNCqJNAR-nDEjL4H6TvoHrFgpV70vMWfSjB_s2SVbkE","redirect_url":""}
      */
 
-    private String token;
-    private int uid;
-    private int urole;
+    private int code;
+    private String message;
+    /**
+     * token : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDQ4ODg2NjksImlkIjoxNDIsInJvbGUiOjEsInRlYW1faWQiOjF9.PNCqJNAR-nDEjL4H6TvoHrFgpV70vMWfSjB_s2SVbkE
+     * redirect_url :
+     */
 
-    public String getToken() {
-        return token;
+    private DataBean data;
+
+    public int getCode() {
+        return code;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setCode(int code) {
+        this.code = code;
     }
 
-    public int getUid() {
-        return uid;
+    public String getMessage() {
+        return message;
     }
 
-    public void setUid(int uid) {
-        this.uid = uid;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    public int getUrole() {
-        return urole;
+    public DataBean getData() {
+        return data;
     }
 
-    public void setUrole(int urole) {
-        this.urole = urole;
+    public void setData(DataBean data) {
+        this.data = data;
+    }
+
+    public static class DataBean {
+        private String token;
+        private String redirect_url;
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
+            this.token = token;
+        }
+
+        public String getRedirect_url() {
+            return redirect_url;
+        }
+
+        public void setRedirect_url(String redirect_url) {
+            this.redirect_url = redirect_url;
+        }
     }
 }
