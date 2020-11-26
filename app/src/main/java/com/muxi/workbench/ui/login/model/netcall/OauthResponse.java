@@ -1,6 +1,6 @@
 package com.muxi.workbench.ui.login.model.netcall;
 
-public class LoginResponse1 {
+public class OauthResponse {
 
 
     /**

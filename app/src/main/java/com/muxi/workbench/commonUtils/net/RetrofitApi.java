@@ -1,10 +1,10 @@
 package com.muxi.workbench.commonUtils.net;
 
 import com.muxi.workbench.ui.home.model.FeedBean;
-import com.muxi.workbench.ui.login.model.netcall.LoginResponse1;
-import com.muxi.workbench.ui.login.model.netcall.LoginResponse2;
-import com.muxi.workbench.ui.login.model.netcall.UserBean;
-import com.muxi.workbench.ui.login.model.netcall.UserBeanTwo;
+import com.muxi.workbench.ui.login.model.netcall.OauthResponse;
+import com.muxi.workbench.ui.login.model.netcall.LoginResponse;
+import com.muxi.workbench.ui.login.model.netcall.OauthUserBean;
+import com.muxi.workbench.ui.login.model.netcall.LoginUserBean;
 import com.muxi.workbench.ui.notifications.model.NotificationsResponse;
 import com.muxi.workbench.ui.progress.model.net.CommentStautsBean;
 import com.muxi.workbench.ui.progress.model.net.GetAStatusResponse;
@@ -33,17 +33,16 @@ import retrofit2.http.Query;
 
 public interface RetrofitApi {
 
-//    @POST("http://pass.muxi-tech.xyz/auth/api/signin")
-//    Observable<LoginResponse1> loginFirst(@Body UserBean userBean);
+    String BASE_URL = "http://work.test.muxi-tech.xyz/api/v1";
+    String OAUTH_URL = "http://pass.muxi-tech.xyz/auth/api/oauth";
+    String LOGIN_URL = "/auth/login";
 
-    @POST("http://pass.muxi-tech.xyz/auth/api/oauth")
-    Observable<LoginResponse1>  loginFirst(@Query("response_type") String response_type, @Query("client_id") String client_id, @Body UserBean userBean);
 
-//    @POST("http://work.muxixyz.com/api/v1.0/auth/login/")
-//    Observable<LoginResponse2> loginWorkbench(@Body UserBeanTwo userBeanTwo);
+    @POST(OAUTH_URL)
+    Observable<OauthResponse> loginOauth(@Query("response_type") String responseType, @Query("client_id") String clientId, @Body OauthUserBean oauthUserBean);
 
-    @POST("http://work.test.muxi-tech.xyz/api/v1/auth/login")
-    Observable<LoginResponse2> loginWorkbench(@Body UserBeanTwo userBeanTwo);
+    @POST(BASE_URL+LOGIN_URL)
+    Observable<LoginResponse> loginWorkbench(@Body LoginUserBean loginUserBean);
 
     @GET("feed/list/{page}/")
     Observable<FeedBean> getFeed(@Path("page") int page);

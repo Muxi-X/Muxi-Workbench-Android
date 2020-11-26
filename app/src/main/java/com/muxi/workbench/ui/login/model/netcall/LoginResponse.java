@@ -1,6 +1,6 @@
 package com.muxi.workbench.ui.login.model.netcall;
 
-public class LoginResponse2 {
+public class LoginResponse {
 
 
     /**
@@ -44,7 +44,7 @@ public class LoginResponse2 {
 
     public static class DataBean {
         private String token;
-        private String redirect_url;
+        private String redirectUrl;
 
         public String getToken() {
             return token;
@@ -54,12 +54,12 @@ public class LoginResponse2 {
             this.token = token;
         }
 
-        public String getRedirect_url() {
-            return redirect_url;
+        public String getRedirectUrl() {
+            return redirectUrl;
         }
 
-        public void setRedirect_url(String redirect_url) {
-            this.redirect_url = redirect_url;
+        public void setRedirectUrl(String redirectUrl) {
+            this.redirectUrl = redirectUrl;
         }
     }
 }
