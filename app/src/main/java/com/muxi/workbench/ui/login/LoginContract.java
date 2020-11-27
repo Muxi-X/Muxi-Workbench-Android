@@ -14,7 +14,6 @@ public interface LoginContract {
         void loginFail(String meg);
         void loginSuccess();
         Context getContext();
-
     }
 
     interface Presenter{
