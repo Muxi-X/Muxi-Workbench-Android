@@ -6,13 +6,13 @@ public class LoginResponse {
     /**
      * code : 0
      * message : OK
-     * data : {"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDQ4ODg2NjksImlkIjoxNDIsInJvbGUiOjEsInRlYW1faWQiOjF9.PNCqJNAR-nDEjL4H6TvoHrFgpV70vMWfSjB_s2SVbkE","redirect_url":""}
+     * data : {"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQyLCJyb2xlIjoxLCJ0ZWFtX2lkIjoxLCJleHBpcmVzX2F0IjoxNjEzODI4OTMyfQ.2pBj2QiJqWJjNDEH7jXitPYjb0utv25rp7azauH92oo","redirect_url":""}
      */
 
     private int code;
     private String message;
     /**
-     * token : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDQ4ODg2NjksImlkIjoxNDIsInJvbGUiOjEsInRlYW1faWQiOjF9.PNCqJNAR-nDEjL4H6TvoHrFgpV70vMWfSjB_s2SVbkE
+     * token : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQyLCJyb2xlIjoxLCJ0ZWFtX2lkIjoxLCJleHBpcmVzX2F0IjoxNjEzODI4OTMyfQ.2pBj2QiJqWJjNDEH7jXitPYjb0utv25rp7azauH92oo
      * redirect_url :
      */
 
@@ -44,7 +44,7 @@ public class LoginResponse {
 
     public static class DataBean {
         private String token;
-        private String redirectUrl;
+        private String redirect_url;
 
         public String getToken() {
             return token;
@@ -54,12 +54,12 @@ public class LoginResponse {
             this.token = token;
         }
 
-        public String getRedirectUrl() {
-            return redirectUrl;
+        public String getRedirect_url() {
+            return redirect_url;
         }
 
-        public void setRedirectUrl(String redirectUrl) {
-            this.redirectUrl = redirectUrl;
+        public void setRedirect_url(String redirectUrl) {
+            this.redirect_url = redirectUrl;
         }
     }
 }

@@ -2,6 +2,8 @@ package com.muxi.workbench.ui.login;
 
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
+import android.widget.ListAdapter;
 import android.widget.Toast;
 
 import com.muxi.workbench.commonUtils.net.NetUtil;
@@ -12,6 +14,8 @@ import com.muxi.workbench.ui.login.model.netcall.OauthUserBean;
 import com.muxi.workbench.ui.login.model.netcall.LoginUserBean;
 import com.muxi.workbench.ui.login.model.UserWrapper;
 
+import org.reactivestreams.Subscription;
+
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
@@ -20,6 +24,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.internal.disposables.ListCompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.Response;
 
 public class LoginPresenter implements LoginContract.Presenter {
 
@@ -60,7 +65,7 @@ public class LoginPresenter implements LoginContract.Presenter {
                         }
 
                         LoginUserBean loginUserBean =new LoginUserBean();
-                        loginUserBean.setOauthCode(oauthResponse.getData().getCode());
+                        loginUserBean.setOauth_code(oauthResponse.getData().getCode());
                         return NetUtil.getInstance().getApi().loginWorkbench(loginUserBean);
 
                     }
