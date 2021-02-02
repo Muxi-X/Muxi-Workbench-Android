@@ -7,6 +7,7 @@
 因为GFW原因，build.gradle有两个版本（仓库分为国外和阿里），请自行创建
 ### 阿里源：
 ```
+
 buildscript {
     repositories {
         maven { url'https://maven.aliyun.com/repository/public/' }

@@ -4,6 +4,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.muxi.workbench.ui.login.model.User;
+import com.muxi.workbench.ui.login.model.UserWrapper;
 import com.muxi.workbench.ui.progress.contract.ProgressContract;
 import com.muxi.workbench.ui.progress.ProgressFilterType;
 import com.muxi.workbench.ui.progress.model.Progress;
@@ -23,7 +25,7 @@ public class ProgressListPresenter implements ProgressContract.Presenter {
 
     private List<Progress> ProgressListToShow = new ArrayList<>();
 
-    private static int page = 1;
+    private static int page = 0;
 
     public ProgressListPresenter(@NonNull ProgressListRepository progressListRepository, @NonNull ProgressContract.View progressView) {
         mProgressListRepository = progressListRepository;
@@ -84,7 +86,7 @@ public class ProgressListPresenter implements ProgressContract.Presenter {
                 break;
         }
 
-        mProgressListRepository.getProgressList(page, new ProgressListDataSource.LoadProgressListCallback() {
+        mProgressListRepository.getProgressList( new ProgressListDataSource.LoadProgressListCallback() {
 
             @Override
             public void onProgressListLoaded(List<Progress> progressList) {
@@ -101,13 +103,13 @@ public class ProgressListPresenter implements ProgressContract.Presenter {
                 } else {
 
                     for ( int i = 0 ; i < AllStickyProgressList.size() ; i++ ) {
-                        if ( UserListToShow.contains(AllStickyProgressList.get(i).getUid()) )
+                        if ( UserListToShow.contains(AllStickyProgressList.get(i).getUsername()) )
                             ProgressListToShow.add(AllStickyProgressList.get(i));
                     }
 
                     for ( int i = 0 ; i < progressList.size() ; i++ ) {
                         Progress progress = progressList.get(i);
-                        if ( UserListToShow.contains(progress.getUid()) && !StickyProgressSidList.contains(progress.getSid()) )
+                        if ( UserListToShow.contains(progress.getUsername()) && !StickyProgressSidList.contains(progress.getSid()) )
                             ProgressListToShow.add(progressList.get(i));
                     }
                 }
@@ -132,7 +134,7 @@ public class ProgressListPresenter implements ProgressContract.Presenter {
         mProgressListRepository.ifLikeProgress(sid, true, new ProgressListDataSource.SetLikeProgressCallback() {
             @Override
             public void onSuccessfulSet() {
-                mProgressView.refreshLikeProgress(position, 1);
+                mProgressView.refreshLikeProgress(position, true);
             }
 
             @Override
@@ -147,7 +149,7 @@ public class ProgressListPresenter implements ProgressContract.Presenter {
         mProgressListRepository.ifLikeProgress(sid, false, new ProgressListDataSource.SetLikeProgressCallback() {
             @Override
             public void onSuccessfulSet() {
-                mProgressView.refreshLikeProgress(position, 0);
+                mProgressView.refreshLikeProgress(position, false);
             }
 
             @Override
@@ -187,8 +189,8 @@ public class ProgressListPresenter implements ProgressContract.Presenter {
     }
 
     @Override
-    public void deleteProgress(int position, int sid) {
-        mProgressListRepository.deleteProgress(sid, new ProgressListDataSource.DeleteProgressCallback() {
+    public void deleteProgress(int position, int sid,String title) {
+        mProgressListRepository.deleteProgress(sid,title, new ProgressListDataSource.DeleteProgressCallback() {
             @Override
             public void onSuccessfulDelete() {
                 mProgressView.showDeleteProgress(position);
@@ -215,7 +217,7 @@ public class ProgressListPresenter implements ProgressContract.Presenter {
 
     @Override
     public void loadProgress(int position, int sid, String avatar, String username, int uid) {
-        mProgressListRepository.getProgress(sid, avatar, username, uid, new ProgressListDataSource.LoadProgressCallback() {
+        mProgressListRepository.getProgress(sid, avatar, username,  new ProgressListDataSource.LoadProgressCallback() {
             @Override
             public void onProgressLoaded(Progress progress) {
                 mProgressView.refreshProgress(position, progress);

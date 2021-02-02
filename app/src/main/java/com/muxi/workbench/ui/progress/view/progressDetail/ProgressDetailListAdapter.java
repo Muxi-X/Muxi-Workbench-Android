@@ -62,6 +62,7 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
         this.mUsername = username;
     }
 
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -80,7 +81,7 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
 
             ContentViewHolder mholder = (ContentViewHolder)holder;
 
-            if ( mUsername.equals( mProgress.getUsername() ) ) {
+         /*   if ( mUsername.equals( mProgress.getUsername() ) ) {
                 mholder.mEditTv.setClickable(true);
                 mholder.mEditIv.setClickable(true);
                 mholder.mEditIv.setImageResource(R.drawable.editing_icon);
@@ -89,14 +90,14 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
                 mholder.mEditIv.setVisibility(View.VISIBLE);
                 mholder.mEditIv.setOnClickListener(v -> mProgressDetailListener.onEditClick());
                 mholder.mEditTv.setOnClickListener(v -> mProgressDetailListener.onEditClick());
-            } else {
+            } else {*/
                 mholder.mEditTv.setClickable(false);
                 mholder.mEditIv.setClickable(false);
                 mholder.mEditTv.setVisibility(View.INVISIBLE);
                 mholder.mEditIv.setVisibility(View.INVISIBLE);
-            }
-
-            if ( mProgress.getIfLike() == 1 ) {
+           // }
+//!!
+            if (mProgress.getIfLike()==1 ) {
                 mholder.mLikeIv.setImageResource(R.drawable.like_red);
             } else {
                 mholder.mLikeIv.setImageResource(R.drawable.like_none);
@@ -105,6 +106,7 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
             if ( mProgress.getLikeCount() == 0 ) {
                 mholder.mLikeTv.setText("赞");
             } else {
+
                 mholder.mLikeTv.setText(String.valueOf(mProgress.getLikeCount()));
             }
 
@@ -206,9 +208,9 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
         else return 1;
     }
 
-    public void refreshProgressLike(int iflike) {
+    public void refreshProgressLike(boolean iflike) {
         mProgress.setIfLike(iflike);
-        if ( iflike == 1 )
+        if ( iflike == true )
             mProgress.setLikeCount(mProgress.getLikeCount()+1);
         else
             mProgress.setLikeCount(mProgress.getLikeCount()-1);

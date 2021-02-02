@@ -37,6 +37,8 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
     private CommentSendView mCommentSendView;
     private String mAvatar = " ", mUsername = " ", mTitle = " ";
     private boolean mIfComment = false;
+    private int mLikeCount=0;
+    private boolean mIfLike=false;
     private Progress mProgress = new Progress(); // 当前进度
     private int mPosition = -1; //当前进度在ProgressList页的位置
     private int mSid = -1;
@@ -44,10 +46,10 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
     ProgressDetailListAdapter.ProgressDetailListener mProgressDetailListener = new ProgressDetailListAdapter.ProgressDetailListener() {
         @Override
         public void onLikeClick() {
-            if ( mProgress.getIfLike() == 1 )
-                mPresenter.setLikeProgress(0);
+            if ( mProgress.getIfLike()==1 )
+                mPresenter.setLikeProgress(false);
             else
-                mPresenter.setLikeProgress(1);
+                mPresenter.setLikeProgress(true);
         }
 
         @Override
@@ -95,6 +97,20 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
         return intent;
     }
 
+
+    public static Intent newIntent(Context packageContext, int sid, String username, String avatar, boolean ifComment, String title, int position,int likeCount,boolean ifLike) {
+        Intent intent = new Intent(packageContext, ProgressDetailActivity.class);
+        intent.putExtra("sid", sid);
+        intent.putExtra("avatar", avatar);
+        intent.putExtra("username", username);
+        intent.putExtra("ifComment", ifComment);
+        intent.putExtra("position", position);
+        intent.putExtra("title", title);
+        intent.putExtra("likeCount",likeCount);
+        intent.putExtra("ifLike",ifLike);
+        return intent;
+    }
+
     /**
      *
      * @param packageContext   跳转来的页面
@@ -129,6 +145,10 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
         mUsername = intent.getStringExtra("username");
         mAvatar = intent.getStringExtra("avatar");
         mTitle = intent.getStringExtra("title");
+        mLikeCount=intent.getIntExtra("likeCount",0);
+        mIfLike=intent.getBooleanExtra("ifLike",false);
+
+
 
         mAdapter = new ProgressDetailListAdapter(this, new Progress(), new ArrayList<Comment>(), mProgressDetailListener, mUsername);
 
@@ -143,12 +163,12 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent backIntent = new Intent();
+                    Intent backIntent = new Intent();
                 backIntent.putExtra("position", mPosition);
                 backIntent.putExtra("sid", mSid);
                 backIntent.putExtra("avatar", mAvatar);
                 backIntent.putExtra("username", mUsername);
-                backIntent.putExtra("uid",mProgress.getUid());
+              //  backIntent.putExtra("uid",mProgress.getUid());
                 setResult(RESULT_OK, backIntent);
                 finish();
             }
@@ -166,7 +186,7 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
             }
         });
 
-        mPresenter.start(mSid, mAvatar, mUsername);
+        mPresenter.start(mSid, mAvatar, mUsername,mLikeCount,mIfLike);
         mPresenter.loadProgressAndCommentList();
 
         if ( mIfComment )
@@ -180,6 +200,7 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
             case 2:
                 if (resultCode == RESULT_OK) {
                     mPresenter.loadProgressAndCommentList();
+                    //mAdapter.getLikeCountAndIfLike(mLikeCount,mIfLike);
                 }
                 break;
         }
@@ -188,11 +209,11 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
     @Override
     public void setPresenter(ProgressDetailContract.Presenter presenter) {
         mPresenter = presenter;
-        mPresenter.start(mSid, mAvatar, mUsername);
+        mPresenter.start(mSid, mAvatar, mUsername,mLikeCount,mIfLike);
     }
 
     @Override
-    public void refreshLike(int iflike) {
+    public void refreshLike(boolean iflike) {
         mAdapter.refreshProgressLike(iflike);
     }
 

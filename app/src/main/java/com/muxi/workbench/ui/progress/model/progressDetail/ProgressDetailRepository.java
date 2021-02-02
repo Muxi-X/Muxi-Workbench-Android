@@ -30,6 +30,11 @@ public class ProgressDetailRepository implements ProgressDetailDataSource {
     }
 
     @Override
+    public void getCommentList(int id, LoadCommentListCallback callback) {
+        mProgressDetailDataSource.getCommentList(id,callback);
+    }
+
+    @Override
     public void setLikeProgress(int sid, boolean iflike, SetLikeProgressCallback callback) {
         mProgressDetailDataSource.setLikeProgress(sid, iflike, callback);
     }
@@ -40,7 +45,7 @@ public class ProgressDetailRepository implements ProgressDetailDataSource {
     }
 
     @Override
-    public void deleteProgressComment(int sid, int cid, DeleteCommentCallback callback) {
-        mProgressDetailDataSource.deleteProgressComment(sid, cid, callback);
+    public void deleteProgressComment(int sid, int cid, String content,DeleteCommentCallback callback) {
+        mProgressDetailDataSource.deleteProgressComment(sid, cid, content, callback);
     }
 }

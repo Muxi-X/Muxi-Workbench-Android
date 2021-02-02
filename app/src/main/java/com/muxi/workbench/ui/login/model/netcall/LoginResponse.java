@@ -1,16 +1,21 @@
 package com.muxi.workbench.ui.login.model.netcall;
 
-public class LoginResponse1 {
+public class LoginResponse {
 
 
     /**
      * code : 0
      * message : OK
-     * data : {"user_id":78,"token":"****"}
+     * data : {"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQyLCJyb2xlIjoxLCJ0ZWFtX2lkIjoxLCJleHBpcmVzX2F0IjoxNjEzODI4OTMyfQ.2pBj2QiJqWJjNDEH7jXitPYjb0utv25rp7azauH92oo","redirect_url":""}
      */
 
     private int code;
     private String message;
+    /**
+     * token : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQyLCJyb2xlIjoxLCJ0ZWFtX2lkIjoxLCJleHBpcmVzX2F0IjoxNjEzODI4OTMyfQ.2pBj2QiJqWJjNDEH7jXitPYjb0utv25rp7azauH92oo
+     * redirect_url :
+     */
+
     private DataBean data;
 
     public int getCode() {
@@ -38,21 +43,8 @@ public class LoginResponse1 {
     }
 
     public static class DataBean {
-        /**
-         * user_id : 1
-         * token : ***
-         */
-
-        private int user_id;
         private String token;
-
-        public int getUser_id() {
-            return user_id;
-        }
-
-        public void setUser_id(int user_id) {
-            this.user_id = user_id;
-        }
+        private String redirect_url;
 
         public String getToken() {
             return token;
@@ -60,6 +52,14 @@ public class LoginResponse1 {
 
         public void setToken(String token) {
             this.token = token;
+        }
+
+        public String getRedirect_url() {
+            return redirect_url;
+        }
+
+        public void setRedirect_url(String redirectUrl) {
+            this.redirect_url = redirectUrl;
         }
     }
 }

@@ -17,7 +17,7 @@ public interface ProgressContract {
 
         void showUserInfo(int uid);
 
-        void refreshLikeProgress(int position, int iflike);
+        void refreshLikeProgress(int position, boolean iflike);
 
         void refreshProgress(int position, Progress progress);
 
@@ -51,7 +51,7 @@ public interface ProgressContract {
 
         void setProgressSticky(int position, Progress progress);
 
-        void deleteProgress(int position, int sid);
+        void deleteProgress(int position, int sid,String title);
 
         void cancelStickyProgress(int position, Progress progress);
 

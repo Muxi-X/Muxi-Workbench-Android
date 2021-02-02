@@ -1,6 +1,6 @@
 package com.muxi.workbench.ui.login.model.netcall;
 
-public class UserBean {
+public class OauthUserBean {
 
     /**
      * username : 904315105@qq.com
@@ -10,8 +10,8 @@ public class UserBean {
     private String username;
     private String password;
 
-    public UserBean(){}
-    public UserBean(String name,String password){
+    public OauthUserBean(){}
+    public OauthUserBean(String name, String password){
         this.username=name;
         this.password=password;
     }

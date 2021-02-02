@@ -53,13 +53,13 @@ public interface ProgressListDataSource {
 
     }
 
-    void getProgressList(int page, @NonNull LoadProgressListCallback callback);
+    void getProgressList( @NonNull LoadProgressListCallback callback);
 
     void ifLikeProgress(int sid, boolean iflike, SetLikeProgressCallback callback);
 
     void refreshProgressList();
 
-    void deleteProgress(int sid, @NonNull DeleteProgressCallback callback);
+    void deleteProgress(int sid, String title, @NonNull DeleteProgressCallback callback);
 
     void setStickyProgress(@NonNull Progress progress);
 
@@ -69,5 +69,5 @@ public interface ProgressListDataSource {
 
     void getGroupUserList(int gid, GetGroupUserListCallback callback);
 
-    void getProgress(int sid, String avatar, String username, int uid, LoadProgressCallback callback);
+    void getProgress(int sid, String avatar, String username,LoadProgressCallback callback);
 }

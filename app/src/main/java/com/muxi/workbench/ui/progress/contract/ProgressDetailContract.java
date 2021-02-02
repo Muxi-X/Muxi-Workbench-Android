@@ -11,7 +11,7 @@ public interface ProgressDetailContract {
 
         void setPresenter(Presenter mPresenter);
 
-        void refreshLike(int iflike);
+        void refreshLike(boolean ifLike);
 
         void deleteComment(int position);
 
@@ -27,9 +27,9 @@ public interface ProgressDetailContract {
 
     interface Presenter {
 
-        void start(int sid, String avatar, String username);
+        void start(int sid, String avatar, String username,int likeCount,boolean ifLike);
 
-        void setLikeProgress(int iflike);
+        void setLikeProgress(boolean ifLike);
 
         void submitComment(int sid, String comment);
 
