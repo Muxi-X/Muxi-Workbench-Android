@@ -27,7 +27,7 @@ public class NetUtil {
                 .client(client)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                .baseUrl("http://work.muxi-tech.xyz/api/v1.0/")
+                .baseUrl("http://work.test.muxi-tech.xyz/api/v1/")
                 .build()
                 .create(RetrofitApi.class);
     }

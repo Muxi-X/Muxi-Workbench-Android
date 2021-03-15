@@ -10,12 +10,10 @@ public class User {
 
 
     public User(){}
-    public User(String account, String password, String token, int uid,int urole) {
+    public User(String account, String password, String token) {
         this.account = account;
         this.password = password;
         this.token = token;
-        this.uid = uid;
-        this.urole=urole;
     }
 
     public String getAccount() {
