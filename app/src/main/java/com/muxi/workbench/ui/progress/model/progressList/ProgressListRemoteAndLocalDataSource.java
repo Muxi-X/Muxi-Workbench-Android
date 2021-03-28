@@ -1,5 +1,7 @@
 package com.muxi.workbench.ui.progress.model.progressList;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.muxi.workbench.commonUtils.AppExecutors;
@@ -13,6 +15,7 @@ import com.muxi.workbench.ui.progress.model.net.GetGroupUserListResponse;
 import com.muxi.workbench.ui.progress.model.net.GetStatusListResponse;
 import com.muxi.workbench.ui.progress.model.net.IfLikeStatusBean;
 import com.muxi.workbench.ui.progress.model.net.LikeStatusResponse;
+import com.muxi.workbench.ui.progress.model.net.StatusTitleBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +34,7 @@ public class ProgressListRemoteAndLocalDataSource implements ProgressListDataSou
 
     private AppExecutors mAppExecutors;
 
-    private final String token = UserWrapper.getInstance().getToken();
+   private final String token = UserWrapper.getInstance().getToken();
 
     public static ProgressListRemoteAndLocalDataSource getInstance(StickyProgressDao stickyProgressDao, AppExecutors mAppExecutors) {
         if (INSTANCE == null) {
@@ -50,11 +53,11 @@ public class ProgressListRemoteAndLocalDataSource implements ProgressListDataSou
     }
 
     @Override
-    public void getProgressList(int page, @NonNull LoadProgressListCallback callback) {
+    public void getProgressList(@NonNull LoadProgressListCallback callback) {
 
         List<Progress> progressList = new ArrayList<>();
-
-        NetUtil.getInstance().getApi().getStatusList(page)
+        NetUtil.getInstance().getApi()
+                .getStatusList(token)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe( new Observer<GetStatusListResponse>() {
@@ -65,12 +68,11 @@ public class ProgressListRemoteAndLocalDataSource implements ProgressListDataSou
 
                     @Override
                     public void onNext(GetStatusListResponse getStatusListResponse) {
-                        for (GetStatusListResponse.StatuListBean statuListBean : getStatusListResponse.getStatuList() ) {
-                            progressList.add(new Progress(statuListBean.getSid(),
-                                    statuListBean.getUid(), statuListBean.getAvatar(),
-                                    statuListBean.getUsername(), statuListBean.getTime(), statuListBean.getTitle(),
-                                    statuListBean.getContent(), statuListBean.isIflike(),
-                                    statuListBean.getCommentCount(), statuListBean.getLikeCount()));
+                        for (GetStatusListResponse.DataBean.StautsBean statusBean : getStatusListResponse.getData().getStauts()) {
+                            progressList.add(new Progress(statusBean.getId(), statusBean.getAvatar(),
+                                    statusBean.getUsername(), statusBean.getTime(), statusBean.getTitle(),
+                                    statusBean.getContent(), statusBean.isLiked(),
+                                    statusBean.getComment_count(), statusBean.getLike_count()));
                         }
                     }
 
@@ -90,7 +92,7 @@ public class ProgressListRemoteAndLocalDataSource implements ProgressListDataSou
         @Override
         public void ifLikeProgress(int sid, boolean iflike, SetLikeProgressCallback callback) {
 
-            NetUtil.getInstance().getApi().ifLikeStatus(sid, new IfLikeStatusBean(iflike?1:0))
+            NetUtil.getInstance().getApi().ifLikeStatus(token,sid, new IfLikeStatusBean(iflike?false:true))
                     .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<LikeStatusResponse>() {
@@ -123,8 +125,8 @@ public class ProgressListRemoteAndLocalDataSource implements ProgressListDataSou
     }
 
     @Override
-    public void deleteProgress(@NonNull int sid, DeleteProgressCallback callback) {
-        NetUtil.getInstance().getApi().deleteStatus(sid)
+    public void deleteProgress(@NonNull int sid,String title, DeleteProgressCallback callback) {
+        NetUtil.getInstance().getApi().deleteStatus(sid,token,new StatusTitleBean(title))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Response<Void>>() {
@@ -165,26 +167,27 @@ public class ProgressListRemoteAndLocalDataSource implements ProgressListDataSou
 
     @Override
     public void getAllStickyProgress(@NonNull LoadStickyProgressCallback callback) {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                List<StickyProgress> list = mStickyProgressDao.getStickyProgressList();
-                List<Progress> progressList = new ArrayList<>();
-                for ( int i = 0 ; i < list.size() ; i++ )
-                    progressList.add(new Progress(list.get(i)));
-                mAppExecutors.mainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        if ( !list.isEmpty() ) {
-                            callback.onStickyProgressLoaded(progressList);
-                        } else {
-                            callback.onDataNotAvailable();
-                        }
-                    }
-                });
-            }
-        };
-        mAppExecutors.diskIO().execute(runnable);
+//        这个方法如果不注释会在数据库那里报错，暂时不知道为什么
+//        Runnable runnable = new Runnable() {
+//            @Override
+//            public void run() {
+//                List<StickyProgress> list = mStickyProgressDao.getStickyProgressList();
+//                List<Progress> progressList = new ArrayList<>();
+//                for ( int i = 0 ; i < list.size() ; i++ )
+//                    progressList.add(new Progress(list.get(i)));
+//                mAppExecutors.mainThread().execute(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if ( !list.isEmpty() ) {
+//                            callback.onStickyProgressLoaded(progressList);
+//                        } else {
+//                            callback.onDataNotAvailable();
+//                        }
+//                    }
+//                });
+//            }
+//        };
+//        mAppExecutors.diskIO().execute(runnable);
     }
 
     @Override
@@ -231,9 +234,9 @@ public class ProgressListRemoteAndLocalDataSource implements ProgressListDataSou
     }
 
     @Override
-    public void getProgress(int sid, String avatar, String username, int uid, LoadProgressCallback callback) {
+    public void getProgress(int sid, String avatar, String username, LoadProgressCallback callback) {
         Progress progress = new Progress();
-        NetUtil.getInstance().getApi().getAStatus( sid)
+        NetUtil.getInstance().getApi().getAStatus(token,sid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GetAStatusResponse>() {
@@ -243,16 +246,12 @@ public class ProgressListRemoteAndLocalDataSource implements ProgressListDataSou
 
                     @Override
                     public void onNext(GetAStatusResponse getAStatusResponse) {
-                        progress.setIfLike(getAStatusResponse.getIflike());
-                        progress.setLikeCount(getAStatusResponse.getLikeCount());
-                        progress.setTime(getAStatusResponse.getTime());
-                        progress.setSid(getAStatusResponse.getSid());
-                        progress.setContent(getAStatusResponse.getContent());
-                        progress.setCommentCount(getAStatusResponse.getCommentList().size());
-                        progress.setTitle(getAStatusResponse.getTitle());
+                      progress.setTime(getAStatusResponse.getData().getTime());
+                        progress.setSid(getAStatusResponse.getData().getSid());
+                        progress.setContent(getAStatusResponse.getData().getContent());
+                        progress.setTitle(getAStatusResponse.getData().getTitle());
                         progress.setAvatar(avatar);
                         progress.setUsername(username);
-                        progress.setUid(uid);
                     }
 
                     @Override

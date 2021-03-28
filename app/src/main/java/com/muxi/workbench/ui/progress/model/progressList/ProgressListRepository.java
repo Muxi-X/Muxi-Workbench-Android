@@ -2,6 +2,7 @@ package com.muxi.workbench.ui.progress.model.progressList;
 
 import androidx.annotation.NonNull;
 
+import com.muxi.workbench.ui.login.model.UserWrapper;
 import com.muxi.workbench.ui.progress.model.Progress;
 
 
@@ -10,6 +11,7 @@ public class ProgressListRepository implements ProgressListDataSource {
     private static ProgressListRepository INSTANCE = null;
 
     private final ProgressListDataSource mProgressListDataSource;
+
 
     private ProgressListRepository(@NonNull ProgressListDataSource progressDataSource) {
         mProgressListDataSource = progressDataSource;
@@ -23,8 +25,8 @@ public class ProgressListRepository implements ProgressListDataSource {
     }
 
     @Override
-    public void getProgressList(int page, @NonNull LoadProgressListCallback callback) {
-        mProgressListDataSource.getProgressList(page,callback);
+    public void getProgressList( @NonNull LoadProgressListCallback callback) {
+        mProgressListDataSource.getProgressList(callback);
     }
 
 
@@ -38,8 +40,8 @@ public class ProgressListRepository implements ProgressListDataSource {
     }
 
     @Override
-    public void deleteProgress(@NonNull int sid, DeleteProgressCallback callback) {
-        mProgressListDataSource.deleteProgress(sid, callback);
+    public void deleteProgress(@NonNull int sid, String title,DeleteProgressCallback callback) {
+        mProgressListDataSource.deleteProgress(sid, title,callback);
     }
 
     @Override
@@ -62,7 +64,7 @@ public class ProgressListRepository implements ProgressListDataSource {
     }
 
     @Override
-    public void getProgress(int sid, String avatar, String username, int uid, LoadProgressCallback callback) {
-        mProgressListDataSource.getProgress(sid, avatar, username, uid, callback);
+    public void getProgress(int sid, String avatar, String username,  LoadProgressCallback callback) {
+        mProgressListDataSource.getProgress(sid, avatar, username,  callback);
     }
 }

@@ -62,4 +62,5 @@ public class LoginResponse {
             this.redirect_url = redirectUrl;
         }
     }
+
 }

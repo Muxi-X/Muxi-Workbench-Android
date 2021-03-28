@@ -33,13 +33,12 @@ public class ProgressEditorRemoteDataSource implements ProgressEditorDataSource{
     @Override
     public void newProgress(String title, String content, NewProgressCallback callback) {
         NetUtil.getInstance().getApi()
-                .newStatus(token,new StatusBean(title, content))
+                .newStatus(new StatusBean(content,title),token)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<PostNewStatusResponse>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
                     }
 
                     @Override
@@ -63,7 +62,7 @@ public class ProgressEditorRemoteDataSource implements ProgressEditorDataSource{
     @Override
     public void changeProgress(int sid, String title, String content, ChangeProgressCallback callback) {
         NetUtil.getInstance().getApi()
-                .editStatus(token,sid,new StatusBean(title, content))
+                .editStatus(token,sid,new StatusBean(content,title))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Response<Void>>() {

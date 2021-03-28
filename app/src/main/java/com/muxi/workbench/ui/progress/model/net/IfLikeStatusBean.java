@@ -2,17 +2,17 @@ package com.muxi.workbench.ui.progress.model.net;
 
 public class IfLikeStatusBean {
 
-    private int iflike;
+    private boolean liked;
 
-    public IfLikeStatusBean(int iflike) {
-        this.iflike = iflike;
+    public IfLikeStatusBean(boolean liked) {
+        this.liked = liked;
     }
 
-    public int getIflike() {
-        return iflike;
+    public boolean getIflike() {
+        return liked;
     }
 
-    public void setIflike(int iflike) {
-        this.iflike = iflike;
+    public void setIflike(boolean iflike) {
+        this.liked = iflike;
     }
 }

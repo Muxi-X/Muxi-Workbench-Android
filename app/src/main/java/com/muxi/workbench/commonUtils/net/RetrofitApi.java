@@ -7,13 +7,16 @@ import com.muxi.workbench.ui.login.model.netcall.OauthUserBean;
 import com.muxi.workbench.ui.login.model.netcall.LoginUserBean;
 import com.muxi.workbench.ui.notifications.model.NotificationsResponse;
 import com.muxi.workbench.ui.progress.model.net.CommentStautsBean;
+import com.muxi.workbench.ui.progress.model.net.DeleteCommentBean;
 import com.muxi.workbench.ui.progress.model.net.GetAStatusResponse;
+import com.muxi.workbench.ui.progress.model.net.GetCommentListResponse;
 import com.muxi.workbench.ui.progress.model.net.GetGroupUserListResponse;
 import com.muxi.workbench.ui.progress.model.net.GetStatusListResponse;
 import com.muxi.workbench.ui.progress.model.net.IfLikeStatusBean;
 import com.muxi.workbench.ui.progress.model.net.LikeStatusResponse;
 import com.muxi.workbench.ui.progress.model.net.PostNewStatusResponse;
 import com.muxi.workbench.ui.progress.model.net.StatusBean;
+import com.muxi.workbench.ui.progress.model.net.StatusTitleBean;
 import com.muxi.workbench.ui.project.model.bean.FileContent;
 import com.muxi.workbench.ui.project.model.bean.FilesId;
 import com.muxi.workbench.ui.project.model.bean.FilesResponse;
@@ -36,6 +39,11 @@ public interface RetrofitApi {
     String BASE_URL = "http://work.test.muxi-tech.xyz/api/v1";
     String OAUTH_URL = "http://pass.muxi-tech.xyz/auth/api/oauth";
     String LOGIN_URL = "/auth/login";
+    String DETAIL_URL = "/status/detail/{id}";
+    String COMMENTS_URL = "/status/detail/{id}/comments";
+    String STATUS_URL = "/status";
+    String STATUS_LIKE_URL = "/status/like/{id}";
+    String STATUS_COMMENT_URL = "/status/comment/{id}";
 
 
     @POST(OAUTH_URL)
@@ -47,32 +55,35 @@ public interface RetrofitApi {
     @GET("feed/list/{page}/")
     Observable<FeedBean> getFeed(@Path("page") int page);
 
-    @GET("http://work.muxi-tech.xyz/api/v1.0/status/{sid}/")
-    Observable<GetAStatusResponse> getAStatus( @Path("sid") int sid);
+    @GET(BASE_URL+DETAIL_URL)
+    Observable<GetAStatusResponse> getAStatus(@Header ("Authorization") String token,@Path("id") int id);
 
-    @PUT("http://work.muxi-tech.xyz/api/v1.0/status/{sid}/")
-    Observable<Response<Void>> editStatus(@Header ("token") String token, @Path("sid") int sid, @Body StatusBean changeStatusBean);
+    @GET(BASE_URL+COMMENTS_URL)
+    Observable<GetCommentListResponse> getCommentList(@Path("id") int id,@Header ("Authorization") String token);
 
-    @POST("http://work.muxi-tech.xyz/api/v1.0/status/new/")
-    Observable<PostNewStatusResponse> newStatus(@Header ("token") String token, @Body StatusBean changeStatusBean);
+    @PUT(BASE_URL+DETAIL_URL)
+    Observable<Response<Void>> editStatus(@Header ("Authorization") String token, @Path("id") int id, @Body StatusBean changeStatusBean);
 
-    @DELETE("http://work.muxi-tech.xyz/api/v1.0/status/{sid}/")
-    Observable<Response<Void>> deleteStatus(@Path("sid") int sid);
+    @POST(BASE_URL+STATUS_URL)
+    Observable<PostNewStatusResponse> newStatus( @Body StatusBean statusBean,@Header ("Authorization") String token);
 
-    @GET("http://work.muxi-tech.xyz/api/v1.0/status/list/{page}/")
-    Observable<GetStatusListResponse> getStatusList( @Path("page") int page);
+    @DELETE(BASE_URL+DETAIL_URL)
+    Observable<Response<Void>> deleteStatus(@Path("id") int id, @Header ("Authorization") String token,@Body StatusTitleBean statusTitleBean);
 
-    @PUT("http://work.muxi-tech.xyz/api/v1.0/status/{sid}/like/")
-    Observable<LikeStatusResponse> ifLikeStatus(@Path("sid") int sid, @Body IfLikeStatusBean ifLikeStatusBean);
+    @GET(BASE_URL+STATUS_URL)
+    Observable<GetStatusListResponse> getStatusList( @Header ("Authorization") String token);
 
-    @POST("http://work.muxi-tech.xyz/api/v1.0/status/{sid}/comments/")
-    Observable<Response<Void>> commentStatus( @Path("sid") int sid, @Body CommentStautsBean commentStautsBean);
+    @PUT(BASE_URL+STATUS_LIKE_URL)
+    Observable<LikeStatusResponse> ifLikeStatus(@Header ("Authorization") String token,@Path("id") int id, @Body IfLikeStatusBean ifLikeStatusBean);
+
+    @POST(BASE_URL+STATUS_COMMENT_URL)
+    Observable<Response<Void>> commentStatus( @Path("id") int id, @Body CommentStautsBean commentStautsBean,@Header ("Authorization") String token);
 
     @GET("http://work.muxi-tech.xyz/api/v1.0/group/{gid}/userList/")
     Observable<GetGroupUserListResponse> getGroupUserList( @Path("gid") int gid);
 
-    @DELETE("http://work.muxi-tech.xyz/api/v1.0/status/{sid}/comment/{cid}/")
-    Observable<Response<Void>> deleteComment( @Path("sid") int sid, @Path("cid") int cid);
+    @DELETE(BASE_URL+STATUS_COMMENT_URL)
+    Observable<Response<Void>> deleteComment(@Path("id") int id, @Header ("Authorization") String token, @Body DeleteCommentBean deleteCommentBean);
 
     @GET("http://work.muxi-tech.xyz/api/v1.0/message/list/")
     Observable<NotificationsResponse> getNotifications( @Query("page") int page);

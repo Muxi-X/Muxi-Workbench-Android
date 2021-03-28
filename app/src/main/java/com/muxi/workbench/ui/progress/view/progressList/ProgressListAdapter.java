@@ -119,27 +119,28 @@ public class ProgressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 mholder.stickyTv.setVisibility(View.VISIBLE);
             else mholder.stickyTv.setVisibility(View.GONE);
 
-            if ( progress.getUid() != uid ) {
+           //if ( progress.getUid() != uid ) {
                 mholder.editTv.setClickable(false);
                 mholder.editIv.setClickable(false);
                 mholder.editIv.setVisibility(View.INVISIBLE);
                 mholder.editTv.setVisibility(View.INVISIBLE);
-            } else {
+            /* } else {
                 mholder.editIv.setVisibility(View.VISIBLE);
                 mholder.editTv.setVisibility(View.VISIBLE);
 
                 mholder.editIv.setOnClickListener(v -> mItemListener.onEditClick(ProgressList.get(position)));
                 mholder.editTv.setOnClickListener(v -> mItemListener.onEditClick(ProgressList.get(position)));
-            }
+            }*/
 
             mholder.itemView.setOnClickListener(v -> mItemListener.onItemClick(ProgressList.get(position), position));
-            mholder.avatarSdv.setOnClickListener(v -> mItemListener.onUserClick(ProgressList.get(position).getUid()));
-            mholder.usernameTv.setOnClickListener(v -> mItemListener.onUserClick(ProgressList.get(position).getUid()));
+          //  mholder.avatarSdv.setOnClickListener(v -> mItemListener.onUserClick(ProgressList.get(position).getUid()));
+            //  mholder.usernameTv.setOnClickListener(v -> mItemListener.onUserClick(ProgressList.get(position).getUid()));
             mholder.likeIv.setOnClickListener(v -> mItemListener.onLikeClick(ProgressList.get(position), position));
             mholder.likeTv.setOnClickListener(v -> mItemListener.onLikeClick(ProgressList.get(position), position));
             mholder.commentIv.setOnClickListener(v -> mItemListener.onCommentClick(ProgressList.get(position), position));
             mholder.commentTv.setOnClickListener(v -> mItemListener.onCommentClick(ProgressList.get(position), position));
-            mholder.expandIv.setOnClickListener(v -> showPopupMenu(mholder.expandIv, mContext, uid == progress.getUid(), position, progress) );
+           // mholder.expandIv.setOnClickListener(v -> showPopupMenu(mholder.expandIv, mContext, uid == progress.getUid(), position, progress) );
+            mholder.expandIv.setOnClickListener(v -> showPopupMenu(mholder.expandIv, mContext, false, position, progress) );
 
         } else if (holder instanceof MoreViewHolder) {
             MoreViewHolder moreViewHolder = (MoreViewHolder)holder;
@@ -198,9 +199,9 @@ public class ProgressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         notifyItemRangeInserted(last, progresses.size());
     }
 
-    public void notifyProgressLike(int position, int iflike) {
+    public void notifyProgressLike(int position, Boolean iflike) {
         ProgressList.get(position).setIfLike(iflike);
-        ProgressList.get(position).setLikeCount(ProgressList.get(position).getLikeCount()+(iflike==1?1:-1));
+        ProgressList.get(position).setLikeCount(ProgressList.get(position).getLikeCount()+(iflike?1:-1));
         notifyItemChanged(position);
     }
 
@@ -280,7 +281,7 @@ public class ProgressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                                 mPresenter.setProgressSticky(position, progress);
                                 return true;
                             case R.id.progress_delete_user:
-                                mPresenter.deleteProgress(position, progress.getSid());
+                                mPresenter.deleteProgress(position, progress.getSid(),progress.getTitle());
                                 return true;
                         }
                         return true;
@@ -297,7 +298,7 @@ public class ProgressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                                 mPresenter.cancelStickyProgress(position, progress);
                                 return true;
                             case R.id.progress_sticky_delete_user:
-                                mPresenter.deleteProgress(position, progress.getSid());
+                                mPresenter.deleteProgress(position, progress.getSid(),progress.getTitle());
                                 return true;
                         }
                         return true;

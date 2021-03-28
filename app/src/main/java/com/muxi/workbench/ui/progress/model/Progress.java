@@ -1,64 +1,65 @@
 package com.muxi.workbench.ui.progress.model;
 
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import androidx.annotation.RequiresApi;
 
 public class Progress implements Parcelable {
 
     private int sid;
-    private int uid;
     private String avatar;
     private String username;
     private String time;
     private String title;
     private String content;
-    private int ifLike;
-    private int commentCount;
-    private int likeCount;
+    private boolean ifLike;
+    private int comment_count;
+    private int like_count;
     private boolean isSticky;
+
 
     public Progress() {
     }
 
-    public Progress(int sid, int uid, String avatar, String username, String time, String title, String content, int ifLike, int commentCount, int likeCount) {
+    public Progress(int sid, String avatar, String username, String time, String title, String content, boolean ifLike, int comment_count, int like_count) {
         this.sid = sid;
-        this.uid = uid;
         this.avatar = avatar;
         this.username = username;
         this.time = time;
         this.title = title;
         this.content = content;
         this.ifLike = ifLike;
-        this.commentCount = commentCount;
-        this.likeCount = likeCount;
+        this.comment_count = comment_count;
+        this.like_count = like_count;
         this.isSticky = false;
     }
 
     public Progress(StickyProgress stickyProgress) {
         this.sid = stickyProgress.getSid();
-        this.uid = stickyProgress.getUid();
         this.avatar = stickyProgress.getAvatar();
         this.username = stickyProgress.getUsername();
         this.time = stickyProgress.getTime();
         this.title = stickyProgress.getTitle();
         this.content = stickyProgress.getContent();
-        this.ifLike = stickyProgress.getIfLike();
-        this.commentCount = stickyProgress.getCommentCount();
-        this.likeCount = stickyProgress.getLikeCount();
+        this.ifLike = stickyProgress.getIfLike() == 1;
+        this.comment_count = stickyProgress.getCommentCount();
+        this.like_count = stickyProgress.getLikeCount();
         this.isSticky = true;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     public Progress(Parcel parcel) {
         this.sid = parcel.readInt();
-        this.uid = parcel.readInt();
         this.avatar = parcel.readString();
         this.username = parcel.readString();
         this.time = parcel.readString();
         this.title = parcel.readString();
         this.content = parcel.readString();
-        this.ifLike = parcel.readInt();
-        this.commentCount = parcel.readInt();
-        this.likeCount = parcel.readInt();
+        this.ifLike = parcel.readBoolean();
+        this.comment_count = parcel.readInt();
+        this.like_count = parcel.readInt();
         this.isSticky =  parcel.readByte() != 0;
     }
 
@@ -68,14 +69,6 @@ public class Progress implements Parcelable {
 
     public void setSid(int sid) {
         this.sid = sid;
-    }
-
-    public int getUid() {
-        return uid;
-    }
-
-    public void setUid(int uid) {
-        this.uid = uid;
     }
 
     public String getAvatar() {
@@ -111,10 +104,13 @@ public class Progress implements Parcelable {
     }
 
     public int getIfLike() {
-        return ifLike;
+        if(ifLike)
+            return 1;
+        else return 0;
+
     }
 
-    public void setIfLike(int ifLike) {
+    public void setIfLike(boolean ifLike) {
         this.ifLike = ifLike;
     }
 
@@ -127,19 +123,19 @@ public class Progress implements Parcelable {
     }
 
     public int getCommentCount() {
-        return commentCount;
+        return comment_count;
     }
 
     public void setCommentCount(int commentCount) {
-        this.commentCount = commentCount;
+        this.comment_count = commentCount;
     }
 
     public int getLikeCount() {
-        return likeCount;
+        return like_count;
     }
 
     public void setLikeCount(int likeCount) {
-        this.likeCount = likeCount;
+        this.like_count = likeCount;
     }
 
     public boolean isSticky() {
@@ -155,18 +151,18 @@ public class Progress implements Parcelable {
         return 0;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(sid);
-        dest.writeInt(uid);
         dest.writeString(avatar);
         dest.writeString(username);
         dest.writeString(time);
         dest.writeString(title);
         dest.writeString(content);
-        dest.writeInt(ifLike);
-        dest.writeInt(commentCount);
-        dest.writeInt(likeCount);
+        dest.writeBoolean(ifLike);
+        dest.writeInt(comment_count);
+        dest.writeInt(like_count);
         dest.writeByte((byte) (isSticky ? 1 : 0));
     }
 
@@ -183,6 +179,7 @@ public class Progress implements Parcelable {
         /**
          * 从Parcel中读取数据
          */
+        @RequiresApi(api = Build.VERSION_CODES.Q)
         @Override
         public Progress createFromParcel(Parcel source) {
             return new Progress(source);

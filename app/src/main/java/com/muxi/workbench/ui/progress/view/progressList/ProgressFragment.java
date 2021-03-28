@@ -53,7 +53,7 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
         public void onItemClick(Progress clickedProgress, int position) {
             Intent toDetailIntent = ProgressDetailActivity
                     .newIntent(getContext(), clickedProgress.getSid(), clickedProgress.getUsername(),
-                            clickedProgress.getAvatar(), false, clickedProgress.getTitle(), position);
+                            clickedProgress.getAvatar(), false, clickedProgress.getTitle(), position,clickedProgress.getLikeCount(),clickedProgress.getIfLike()==1?true:false);
             startActivityForResult(toDetailIntent, 1);
         }
 
@@ -243,7 +243,7 @@ public class ProgressFragment extends Fragment implements ProgressContract.View 
     }
 
     @Override
-    public void refreshLikeProgress(int position, int iflike) {
+    public void refreshLikeProgress(int position, boolean iflike) {
         mAdapter.notifyProgressLike(position, iflike);
     }
 

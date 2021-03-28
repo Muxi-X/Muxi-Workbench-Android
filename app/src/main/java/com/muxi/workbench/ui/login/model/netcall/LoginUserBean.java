@@ -16,4 +16,5 @@ public class LoginUserBean {
     public void setOauth_code(String oauth_code) {
         this.oauth_code = oauth_code;
     }
+
 }

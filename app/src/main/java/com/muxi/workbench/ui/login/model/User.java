@@ -14,7 +14,6 @@ public class User {
         this.account = account;
         this.password = password;
         this.token = token;
-
     }
 
     public String getAccount() {
