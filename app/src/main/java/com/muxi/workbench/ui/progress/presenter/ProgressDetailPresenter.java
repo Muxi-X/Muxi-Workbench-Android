@@ -1,5 +1,9 @@
 package com.muxi.workbench.ui.progress.presenter;
 
+import android.util.Log;
+
+import com.muxi.workbench.ui.login.model.User;
+import com.muxi.workbench.ui.login.model.UserWrapper;
 import com.muxi.workbench.ui.progress.contract.ProgressDetailContract;
 import com.muxi.workbench.ui.progress.model.Comment;
 import com.muxi.workbench.ui.progress.model.Progress;
@@ -19,6 +23,8 @@ public class ProgressDetailPresenter implements ProgressDetailContract.Presenter
 
     private int mSid;
 
+    private String mTitle;
+
     private String mAvatar;
 
     private String mUsername;
@@ -34,12 +40,13 @@ public class ProgressDetailPresenter implements ProgressDetailContract.Presenter
     }
 
     @Override
-    public void start(int sid, String avatar, String username,int likeCount,boolean ifLike) {
+    public void start(int sid, String avatar, String username,int likeCount,boolean ifLike,String title) {
         mSid = sid;
         mAvatar = avatar;
         mUsername = username;
         mLikeCount=likeCount;
         mIfLike=ifLike;
+        mTitle=title;
     }
 
     @Override
@@ -76,14 +83,14 @@ public class ProgressDetailPresenter implements ProgressDetailContract.Presenter
 
     @Override
     public void deleteComment(int sid, int cid, int position) {
-        List<Comment> commentList = new ArrayList<>();
+     /*   List<Comment> commentList = new ArrayList<>();
         mProgressDetailRepository.getCommentList(mSid, new ProgressDetailDataSource.LoadCommentListCallback() {
                     @Override
                     public void onSuccessGetCommentList(GetCommentListResponse getCommentListResponse) {
 
-                        for (int i = 0; i < getCommentListResponse.getCommentlist().size(); i++) {
-                            GetCommentListResponse.CommentlistBean temp = getCommentListResponse.getCommentlist().get(i);
-                            commentList.add(new Comment(temp.getCid(), temp.getUsername(), temp.getAvatar(), temp.getTime(), temp.getContent()));
+                        for (int i = 0; i < getCommentListResponse.getData().getCount(); i++) {
+                            GetCommentListResponse.DataBean.CommentlistBean temp = getCommentListResponse.getData().getCommentlist().get(i);
+                            commentList.add(new Comment(temp.getUid(),temp.getCid(), temp.getUsername(), temp.getAvatar(), temp.getTime(), temp.getContent()));
                         }
                     }
 
@@ -91,9 +98,8 @@ public class ProgressDetailPresenter implements ProgressDetailContract.Presenter
                     public void onFail() {
 
                     }
-        });
-        String content=commentList.get(position).getContent();
-        mProgressDetailRepository.deleteProgressComment(sid, cid,content ,new ProgressDetailDataSource.DeleteCommentCallback() {
+        });*/
+        mProgressDetailRepository.deleteProgressComment(sid, cid,mTitle,new ProgressDetailDataSource.DeleteCommentCallback() {
             @Override
             public void onSuccessfulDelete() {
                 mProgressDetailView.deleteComment(position);
@@ -113,10 +119,10 @@ public class ProgressDetailPresenter implements ProgressDetailContract.Presenter
             @Override
             public void onSuccessGetCommentList(GetCommentListResponse getCommentListResponse) {
                 //
-                if(getCommentListResponse.getCommentlist()!=null)
-                for (int i = 0; i < getCommentListResponse.getCommentlist().size(); i++) {
-                    GetCommentListResponse.CommentlistBean temp = getCommentListResponse.getCommentlist().get(i);
-                    commentList.add(new Comment(temp.getCid(), temp.getUsername(), temp.getAvatar(), temp.getTime(), temp.getContent()));
+                if(getCommentListResponse.getData().getCommentlist()!=null)
+                for (int i = 0; i < getCommentListResponse.getData().getCount(); i++) {
+                    GetCommentListResponse.DataBean.CommentlistBean temp = getCommentListResponse.getData().getCommentlist().get(i);
+                    commentList.add(new Comment(temp.getUid(),temp.getCid(), temp.getUsername(), temp.getAvatar(), temp.getTime(), temp.getContent()));
                 }
 
             }
@@ -134,8 +140,7 @@ public class ProgressDetailPresenter implements ProgressDetailContract.Presenter
                 Progress progress = new Progress(mSid, mAvatar, mUsername,
                         getAStatusResponse.getData().getTime(), getAStatusResponse.getData().getTitle(), getAStatusResponse.getData().getContent(),
                         mIfLike,commentList.size() ,mLikeCount);
-
-                mProgressDetailView.showProgressDetail(progress, commentList, getAStatusResponse.getData().getUserid()+""/*getUser_name()*/);
+                mProgressDetailView.showProgressDetail(progress, commentList,UserWrapper.getInstance().getUid() );
             }
 
             @Override

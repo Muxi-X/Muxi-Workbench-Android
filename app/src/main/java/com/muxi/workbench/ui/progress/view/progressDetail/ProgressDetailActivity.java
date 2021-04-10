@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -72,7 +73,7 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
 
         @Override
         public void onDeleteCommentClick(int cid, int position) {
-            mPresenter.deleteComment(mSid, cid, position);
+           mPresenter.deleteComment(mSid, cid, position);
         }
     };
 
@@ -186,7 +187,7 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
             }
         });
 
-        mPresenter.start(mSid, mAvatar, mUsername,mLikeCount,mIfLike);
+        mPresenter.start(mSid, mAvatar, mUsername,mLikeCount,mIfLike,mTitle);
         mPresenter.loadProgressAndCommentList();
 
         if ( mIfComment )
@@ -209,7 +210,7 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
     @Override
     public void setPresenter(ProgressDetailContract.Presenter presenter) {
         mPresenter = presenter;
-        mPresenter.start(mSid, mAvatar, mUsername,mLikeCount,mIfLike);
+        mPresenter.start(mSid, mAvatar, mUsername,mLikeCount,mIfLike,mTitle);
     }
 
     @Override
@@ -229,9 +230,9 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
     }
 
     @Override
-    public void showProgressDetail(Progress progress, List<Comment> commentList, String username) {
+    public void showProgressDetail(Progress progress, List<Comment> commentList, int uid) {
         mProgress = progress;
-        mAdapter.refresh(progress, commentList, username);
+        mAdapter.refresh(progress, commentList, uid);
     }
 
     @Override

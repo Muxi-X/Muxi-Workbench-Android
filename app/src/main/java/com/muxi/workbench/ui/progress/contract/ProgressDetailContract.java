@@ -19,7 +19,7 @@ public interface ProgressDetailContract {
 
         void clearCommentContent();
 
-        void showProgressDetail(Progress progress, List<Comment> commentList, String username);
+        void showProgressDetail(Progress progress, List<Comment> commentList, int uid);
 
         void showError();
 
@@ -27,7 +27,7 @@ public interface ProgressDetailContract {
 
     interface Presenter {
 
-        void start(int sid, String avatar, String username,int likeCount,boolean ifLike);
+        void start(int sid, String avatar, String username,int likeCount,boolean ifLike,String title);
 
         void setLikeProgress(boolean ifLike);
 

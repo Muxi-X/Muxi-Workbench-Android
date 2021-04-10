@@ -38,6 +38,8 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
 
     private String mUsername = "";
 
+    private int mUid;
+
     private ProgressDetailListener mProgressDetailListener;
 
     public interface ProgressDetailListener {
@@ -168,8 +170,7 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
 
             CommentViewHolder mholder = (CommentViewHolder)holder;
             Comment comment = mCommentList.get(position-1);
-
-            if ( mUsername.equals(comment.getUsername())) {
+            if ( mUid==comment.getUid()) {
                 mholder.mDeleteTv.setVisibility(View.VISIBLE);
                 mholder.mDeleteTv.setText("删除");
                 mholder.mDeleteTv.setClickable(true);
@@ -227,9 +228,10 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
         notifyDataSetChanged();
     }
 
-    public void refresh (Progress progress, List<Comment> commentList, String username) {
+    public void refresh (Progress progress, List<Comment> commentList, int uid) {
         mProgress = progress;
-        mUsername = username;
+        mUid=uid;
+       // mUsername = username;
         mCommentList = commentList;
         notifyDataSetChanged();
     }
