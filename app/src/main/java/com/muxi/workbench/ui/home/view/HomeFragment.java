@@ -73,17 +73,6 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         Log.e("Fragment left cycle", ":onCreate");
     }
 
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        Log.e("Fragment left cycle", ":onStart");
-//    }
-//
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        Log.e("Fragment left cycle", ":onResume");
-//    }
 
     @Nullable
     @Override
