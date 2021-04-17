@@ -201,7 +201,6 @@ public class ProgressDetailActivity extends AppCompatActivity implements Progres
             case 2:
                 if (resultCode == RESULT_OK) {
                     mPresenter.loadProgressAndCommentList();
-                    //mAdapter.getLikeCountAndIfLike(mLikeCount,mIfLike);
                 }
                 break;
         }

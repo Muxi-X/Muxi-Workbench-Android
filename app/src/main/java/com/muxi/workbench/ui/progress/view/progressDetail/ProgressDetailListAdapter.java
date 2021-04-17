@@ -83,22 +83,11 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
 
             ContentViewHolder mholder = (ContentViewHolder)holder;
 
-         /*   if ( mUsername.equals( mProgress.getUsername() ) ) {
-                mholder.mEditTv.setClickable(true);
-                mholder.mEditIv.setClickable(true);
-                mholder.mEditIv.setImageResource(R.drawable.editing_icon);
-                mholder.mEditTv.setText("编辑");
-                mholder.mEditTv.setVisibility(View.VISIBLE);
-                mholder.mEditIv.setVisibility(View.VISIBLE);
-                mholder.mEditIv.setOnClickListener(v -> mProgressDetailListener.onEditClick());
-                mholder.mEditTv.setOnClickListener(v -> mProgressDetailListener.onEditClick());
-            } else {*/
                 mholder.mEditTv.setClickable(false);
                 mholder.mEditIv.setClickable(false);
                 mholder.mEditTv.setVisibility(View.INVISIBLE);
                 mholder.mEditIv.setVisibility(View.INVISIBLE);
-           // }
-//!!
+
             if (mProgress.getIfLike()==1 ) {
                 mholder.mLikeIv.setImageResource(R.drawable.like_red);
             } else {
@@ -218,10 +207,7 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
         notifyItemChanged(0);
     }
 
-    /*public void addComment(Comment comment) {
-        mCommentList.add(comment);
-        notifyItemInserted(mCommentList.size());
-    }*/
+
 
     public void deleteComment(int position) {
         mCommentList.remove(position);
@@ -231,7 +217,6 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
     public void refresh (Progress progress, List<Comment> commentList, int uid) {
         mProgress = progress;
         mUid=uid;
-       // mUsername = username;
         mCommentList = commentList;
         notifyDataSetChanged();
     }
