@@ -232,7 +232,7 @@ public class ProgressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         } else {
             Progress temp = ProgressList.get(position);
             ProgressList.remove(position);
-            notifyItemRangeRemoved(position,1);
+            notifyItemRangeRemoved(position,ProgressList.size());
             temp.setSticky(false);
             for ( int i = position ; i < ProgressList.size() ; i++ ) {
                 if ( !ProgressList.get(i).isSticky() ) {
