@@ -165,7 +165,6 @@
         android:id="@+id/tv_sticky_tag_progress_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
         android:text="置顶"
         android:textColor="#FF4E92E3"
         android:textSize="13sp"
