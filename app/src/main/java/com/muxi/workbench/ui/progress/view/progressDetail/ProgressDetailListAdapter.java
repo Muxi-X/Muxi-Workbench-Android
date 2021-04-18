@@ -38,6 +38,8 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
 
     private String mUsername = "";
 
+    private int mUid;
+
     private ProgressDetailListener mProgressDetailListener;
 
     public interface ProgressDetailListener {
@@ -81,22 +83,11 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
 
             ContentViewHolder mholder = (ContentViewHolder)holder;
 
-         /*   if ( mUsername.equals( mProgress.getUsername() ) ) {
-                mholder.mEditTv.setClickable(true);
-                mholder.mEditIv.setClickable(true);
-                mholder.mEditIv.setImageResource(R.drawable.editing_icon);
-                mholder.mEditTv.setText("编辑");
-                mholder.mEditTv.setVisibility(View.VISIBLE);
-                mholder.mEditIv.setVisibility(View.VISIBLE);
-                mholder.mEditIv.setOnClickListener(v -> mProgressDetailListener.onEditClick());
-                mholder.mEditTv.setOnClickListener(v -> mProgressDetailListener.onEditClick());
-            } else {*/
                 mholder.mEditTv.setClickable(false);
                 mholder.mEditIv.setClickable(false);
                 mholder.mEditTv.setVisibility(View.INVISIBLE);
                 mholder.mEditIv.setVisibility(View.INVISIBLE);
-           // }
-//!!
+
             if (mProgress.getIfLike()==1 ) {
                 mholder.mLikeIv.setImageResource(R.drawable.like_red);
             } else {
@@ -168,8 +159,7 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
 
             CommentViewHolder mholder = (CommentViewHolder)holder;
             Comment comment = mCommentList.get(position-1);
-
-            if ( mUsername.equals(comment.getUsername())) {
+            if ( mUid==comment.getUid()) {
                 mholder.mDeleteTv.setVisibility(View.VISIBLE);
                 mholder.mDeleteTv.setText("删除");
                 mholder.mDeleteTv.setClickable(true);
@@ -217,19 +207,16 @@ public class ProgressDetailListAdapter extends RecyclerView.Adapter<RecyclerView
         notifyItemChanged(0);
     }
 
-    /*public void addComment(Comment comment) {
-        mCommentList.add(comment);
-        notifyItemInserted(mCommentList.size());
-    }*/
+
 
     public void deleteComment(int position) {
         mCommentList.remove(position);
         notifyDataSetChanged();
     }
 
-    public void refresh (Progress progress, List<Comment> commentList, String username) {
+    public void refresh (Progress progress, List<Comment> commentList, int uid) {
         mProgress = progress;
-        mUsername = username;
+        mUid=uid;
         mCommentList = commentList;
         notifyDataSetChanged();
     }

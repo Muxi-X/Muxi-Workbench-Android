@@ -119,27 +119,18 @@ public class ProgressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 mholder.stickyTv.setVisibility(View.VISIBLE);
             else mholder.stickyTv.setVisibility(View.GONE);
 
-           //if ( progress.getUid() != uid ) {
+
                 mholder.editTv.setClickable(false);
                 mholder.editIv.setClickable(false);
                 mholder.editIv.setVisibility(View.INVISIBLE);
                 mholder.editTv.setVisibility(View.INVISIBLE);
-            /* } else {
-                mholder.editIv.setVisibility(View.VISIBLE);
-                mholder.editTv.setVisibility(View.VISIBLE);
 
-                mholder.editIv.setOnClickListener(v -> mItemListener.onEditClick(ProgressList.get(position)));
-                mholder.editTv.setOnClickListener(v -> mItemListener.onEditClick(ProgressList.get(position)));
-            }*/
 
             mholder.itemView.setOnClickListener(v -> mItemListener.onItemClick(ProgressList.get(position), position));
-          //  mholder.avatarSdv.setOnClickListener(v -> mItemListener.onUserClick(ProgressList.get(position).getUid()));
-            //  mholder.usernameTv.setOnClickListener(v -> mItemListener.onUserClick(ProgressList.get(position).getUid()));
             mholder.likeIv.setOnClickListener(v -> mItemListener.onLikeClick(ProgressList.get(position), position));
             mholder.likeTv.setOnClickListener(v -> mItemListener.onLikeClick(ProgressList.get(position), position));
             mholder.commentIv.setOnClickListener(v -> mItemListener.onCommentClick(ProgressList.get(position), position));
             mholder.commentTv.setOnClickListener(v -> mItemListener.onCommentClick(ProgressList.get(position), position));
-           // mholder.expandIv.setOnClickListener(v -> showPopupMenu(mholder.expandIv, mContext, uid == progress.getUid(), position, progress) );
             mholder.expandIv.setOnClickListener(v -> showPopupMenu(mholder.expandIv, mContext, false, position, progress) );
 
         } else if (holder instanceof MoreViewHolder) {

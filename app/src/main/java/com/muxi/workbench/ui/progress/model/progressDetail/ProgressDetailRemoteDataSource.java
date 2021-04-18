@@ -1,5 +1,7 @@
 package com.muxi.workbench.ui.progress.model.progressDetail;
 
+import android.util.Log;
+
 import com.muxi.workbench.commonUtils.net.NetUtil;
 import com.muxi.workbench.ui.login.model.UserWrapper;
 import com.muxi.workbench.ui.progress.model.net.CommentStautsBean;
@@ -155,8 +157,9 @@ public class ProgressDetailRemoteDataSource implements ProgressDetailDataSource 
     }
 
     @Override
-    public void deleteProgressComment(int sid, int cid,String content, DeleteCommentCallback callback) {
-        NetUtil.getInstance().getApi().deleteComment(cid,token,new DeleteCommentBean(sid,content))
+    public void deleteProgressComment(int sid, int cid,String title, DeleteCommentCallback callback) {
+        Log.d("qwqq",cid+" "+sid+" "+title);
+      /*  NetUtil.getInstance().getApi().deleteComment(cid,token,new DeleteCommentBean(sid,title))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Response<Void>>() {
@@ -180,6 +183,6 @@ public class ProgressDetailRemoteDataSource implements ProgressDetailDataSource 
                     public void onComplete() {
 
                     }
-                });
+                });*/
     }
 }
